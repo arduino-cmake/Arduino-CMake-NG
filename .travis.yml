@@ -1,0 +1,41 @@
+language: c
+os:
+  - linux
+  - osx
+env:
+  matrix:
+    - ARDUINO_SDK_VERSION=1.6.13
+    - ARDUINO_SDK_VERSION=1.8.5
+addons:
+  apt:
+    packages:
+      - gcc-avr
+      - binutils-avr
+      - avr-libc
+      - avrdude
+before_install:
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      export ARDUINO_SDK_FILE="arduino-$ARDUINO_SDK_VERSION-linux32.tar.xz"
+    else
+      export ARDUINO_SDK_FILE="arduino-$ARDUINO_SDK_VERSION-macosx.zip"
+    fi
+  - wget "https://downloads.arduino.cc/$ARDUINO_SDK_FILE" -O "$ARDUINO_SDK_FILE"
+  - mkdir arduino-sdk
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      tar xf "$ARDUINO_SDK_FILE" -C arduino-sdk --strip-components 1
+      export ARDUINO_SDK_PATH="$(pwd)/arduino-sdk"
+    else
+      unzip "$ARDUINO_SDK_FILE" "Arduino.app/Contents/Java/*" -d arduino-sdk
+      export ARDUINO_SDK_PATH="$(pwd)/arduino-sdk/Arduino.app/Contents/Java"
+    fi
+install:
+  - mkdir build
+  - rm -rf build/*
+  - cd build/
+script:
+  - cmake -D ARDUINO_SDK_PATH="$ARDUINO_SDK_PATH" ..
+  - make
+after_script:
+  - cat CMakeFiles/CMakeOutput.log

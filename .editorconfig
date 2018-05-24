@@ -1,0 +1,17 @@
+root = true
+
+[*]
+charset = utf-8
+
+end_of_line = lf
+insert_final_newline = true
+
+indent_style = space
+indent_size = 4
+# Editor support is limited. Make your you align multiline statements accordingly, should your editor not honour this attribute
+continuation_indent_size = 8
+
+trim_trailing_whitespace = true
+
+[*.{md,rst}]
+trim_trailing_whitespace = false

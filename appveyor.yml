@@ -1,0 +1,23 @@
+version: '{build}'
+image: Visual Studio 2017
+environment:
+  matrix:
+    - ARDUINO_SDK_VERSION: 1.6.13
+    - ARDUINO_SDK_VERSION: 1.8.5
+install:
+  - ps: choco install make unzip
+  - ps: $env:ARDUINO_SDK_FILE = "arduino-$env:ARDUINO_SDK_VERSION-windows.zip"
+  - ps: $env:ARDUINO_SDK_URI = "https://downloads.arduino.cc/$env:ARDUINO_SDK_FILE"
+  - ps: wget "$env:ARDUINO_SDK_URI" -O "$env:ARDUINO_SDK_FILE"
+  - ps: unzip "$env:ARDUINO_SDK_FILE" -d "arduino-sdk"
+  - ps: $env:ARDUINO_SDK_PATH = "$pwd\arduino-sdk\arduino-$env:ARDUINO_SDK_VERSION"
+  # FIXME: Windows path separators (\) need to be changed to "/" for cmake to properly handle it
+  - ps: $env:ARDUINO_SDK_PATH = ($env:ARDUINO_SDK_PATH -replace "\\","/")
+build_script:
+  - ps: mkdir build
+  - ps: cd build
+  - ps: echo "$env:ARDUINO_SDK_PATH"
+  - ps: cmake -G "Unix Makefiles" -D ARDUINO_SDK_PATH="$env:ARDUINO_SDK_PATH" ..
+  - cmd: make
+on_finish:
+  - ps: cat CMakeFiles/CMakeOutput.log
