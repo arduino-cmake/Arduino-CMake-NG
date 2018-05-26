@@ -12,14 +12,14 @@ if (NOT ARDUINO_SDK_PATH)
     endif ()
 endif ()
 
-set(ARDUINO_CMAKE_SDK_BIN_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr/bin" CACHE PATH
+set(ARDUINO_SDK_BIN_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr/bin" CACHE PATH
         "Path to Arduino SDK's binaries folder")
-set(ARDUINO_CMAKE_SDK_ROOT_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr" CACHE PATH
+set(ARDUINO_SDK_ROOT_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr" CACHE PATH
         "Path to Aduino SDK's sys-root folder")
 
-set(CMAKE_ASM_COMPILER "${ARDUINO_CMAKE_SDK_BIN_PATH}/avr-gcc")
-set(CMAKE_C_COMPILER "${ARDUINO_CMAKE_SDK_BIN_PATH}/avr-gcc")
-set(CMAKE_CXX_COMPILER "${ARDUINO_CMAKE_SDK_BIN_PATH}/avr-g++")
+set(CMAKE_ASM_COMPILER "${ARDUINO_SDK_BIN_PATH}/avr-gcc")
+set(CMAKE_C_COMPILER "${ARDUINO_SDK_BIN_PATH}/avr-gcc")
+set(CMAKE_CXX_COMPILER "${ARDUINO_SDK_BIN_PATH}/avr-g++")
 
 # Append '.exe' if in Windows
 if (${CMAKE_HOST_WIN32})
@@ -28,7 +28,7 @@ if (${CMAKE_HOST_WIN32})
 endif ()
 
 # where is the target environment
-set(CMAKE_FIND_ROOT_PATH "${ARDUINO_CMAKE_SDK_ROOT_PATH}")
+set(CMAKE_FIND_ROOT_PATH "${ARDUINO_SDK_ROOT_PATH}")
 
 # search for programs in the build host directories
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
