@@ -40,7 +40,7 @@ find_file(PLATFORM_LIBRARIES_PATH
         DOC "Path to platform directory containing the Arduino libraries"
         NO_CMAKE_FIND_ROOT_PATH)
 
-if (${PLATFORM}_BOARDS_PATH)
+#[[if (${PLATFORM}_BOARDS_PATH)
     set(SETTINGS_LIST ${PLATFORM}_BOARDS)
     set(SETTINGS_PATH "${${PLATFORM}_BOARDS_PATH}")
     include(LoadArduinoPlatformSettings)
@@ -50,4 +50,4 @@ if (${PLATFORM}_PROGRAMMERS_PATH)
     set(SETTINGS_LIST ${PLATFORM}_PROGRAMMERS)
     set(SETTINGS_PATH "${${PLATFORM}_PROGRAMMERS_PATH}")
     include(LoadArduinoPlatformSettings)
-endif ()
+endif ()]]
