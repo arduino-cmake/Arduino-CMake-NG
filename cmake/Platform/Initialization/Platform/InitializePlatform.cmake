@@ -1,4 +1,4 @@
-function(read_properties_files)
+function(_read_properties_files)
 
     # Read properties from property files based on type
     list(FIND PROPERTY_FILE_TYPES platform file_type)
@@ -26,9 +26,9 @@ elseif (NOT DEFINED ARDUINO_CMAKE_PLATFORM_ARCHITECTURE) # Platform defined with
     set(ARDUINO_CMAKE_PLATFORM_ARCHITECTURE "avr" CACHE STRING "")
 endif ()
 
+# Find all platform elements
 include(FindPlatformElements)
 
 # Setup property file types
 set(PROPERTY_FILE_TYPES platform boards programmers CACHE STRING "Types of property files")
-
-read_properties_files()
+_read_properties_files()
