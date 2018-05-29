@@ -29,29 +29,42 @@ function(_resolve_property_value_links _property_value _return_var)
 
 endfunction()
 
-function(read_properties _properties_file_path)
+function(read_properties _properties_file_path _file_type)
 
     file(STRINGS ${_properties_file_path} properties)  # Settings file split into lines
     list(FILTER properties INCLUDE REGEX "^[^#]+=.*")
 
     foreach (property ${properties})
-            string(REGEX MATCH "^[^=]+" property_name ${property})
-            string(REGEX MATCH "name" property_name_string_name ${property_name})
-            if (NOT ${property_name_string_name} STREQUAL "")
-                continue()
+        string(REGEX MATCH "^[^=]+" property_name "${property}")
+        string(REGEX MATCH "name" property_name_string_name "${property_name}")
+        if (NOT ${property_name_string_name} STREQUAL "") # Property contains 'name' string
+            list(FIND PROPERTY_FILE_TYPES boards board_type)
+            if (${_file_type} EQUAL ${board_type})
+                string(REGEX MATCH "[^.]+" board_name "${property_name}")
+                if (board_list)
+                    list(APPEND board_list ${board_name})
+                else ()
+                    set(board_list ${board_name})
+                endif ()
             endif ()
-            string(REPLACE "." "_" property_separated_names ${property_name})
+            continue() # Don't process further - Unnecessary information
+        endif ()
+        string(REPLACE "." "_" property_separated_names ${property_name})
 
-            # Allow for values to contain '='
-            string(REGEX REPLACE "^[^=]+=(.*)" "\\1" property_value "${property}")
-            string(STRIP "${property_value}" property_value)
-            if ("${property_value}" STREQUAL "") # Empty value
-                continue() # Don't store value - unnecessary
-            endif ()
-            string(REPLACE " " ";" property_value "${property_value}")
-            _resolve_property_value_links("${property_value}" resolved_property_value)
+        # Allow for values to contain '='
+        string(REGEX REPLACE "^[^=]+=(.*)" "\\1" property_value "${property}")
+        string(STRIP "${property_value}" property_value)
+        if ("${property_value}" STREQUAL "") # Empty value
+            continue() # Don't store value - unnecessary
+        endif ()
+        string(REPLACE " " ";" property_value "${property_value}")
+        _resolve_property_value_links("${property_value}" resolved_property_value)
 
-            set("${property_separated_names}" "${resolved_property_value}" CACHE STRING "")
+        set("${property_separated_names}" "${resolved_property_value}" CACHE STRING "")
     endforeach ()
+
+    if (DEFINED board_list)
+        set(ARDUINO_CMAKE_BOARDS ${board_list} CACHE STRING "List of platform boards")
+    endif ()
 
 endfunction()

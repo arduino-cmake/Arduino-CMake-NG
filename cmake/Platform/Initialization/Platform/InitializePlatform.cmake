@@ -1,3 +1,17 @@
+function(read_properties_files)
+
+    # Read properties from property files based on type
+    list(FIND PROPERTY_FILE_TYPES platform file_type)
+    read_properties(${PLATFORM_PROPERTIES_FILE_PATH} ${file_type})
+
+    list(FIND PROPERTY_FILE_TYPES boards file_type)
+    read_properties(${PLATFORM_BOARDS_PATH} ${file_type})
+
+    list(FIND PROPERTY_FILE_TYPES programmers file_type)
+    read_properties(${PLATFORM_PROGRAMMERS_PATH} ${file_type})
+
+endfunction()
+
 include(PropertiesReader)
 
 if (NOT DEFINED ARDUINO_CMAKE_PLATFORM_NAME OR NOT DEFINED ARDUINO_CMAKE_PLATFORM_PATH)
@@ -14,6 +28,7 @@ endif ()
 
 include(FindPlatformElements)
 
-read_properties(${PLATFORM_PROPERTIES_FILE_PATH})
-read_properties(${PLATFORM_BOARDS_PATH})
-read_properties(${PLATFORM_PROGRAMMERS_PATH})
+# Setup property file types
+set(PROPERTY_FILE_TYPES platform boards programmers CACHE STRING "Types of property files")
+
+read_properties_files()
