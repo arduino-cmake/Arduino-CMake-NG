@@ -15,3 +15,5 @@ endif ()
 include(FindPlatformElements)
 
 read_properties(${PLATFORM_PROPERTIES_FILE_PATH})
+read_properties(${PLATFORM_BOARDS_PATH})
+read_properties(${PLATFORM_PROGRAMMERS_PATH})

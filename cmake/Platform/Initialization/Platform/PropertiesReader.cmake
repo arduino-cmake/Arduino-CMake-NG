@@ -32,9 +32,9 @@ endfunction()
 function(read_properties _properties_file_path)
 
     file(STRINGS ${_properties_file_path} properties)  # Settings file split into lines
+    list(FILTER properties INCLUDE REGEX "^[^#]+=.*")
 
     foreach (property ${properties})
-        if ("${property}" MATCHES "^[^#]+=.*")
             string(REGEX MATCH "^[^=]+" property_name ${property})
             string(REGEX MATCH "name" property_name_string_name ${property_name})
             if (NOT ${property_name_string_name} STREQUAL "")
@@ -52,7 +52,6 @@ function(read_properties _properties_file_path)
             _resolve_property_value_links("${property_value}" resolved_property_value)
 
             set("${property_separated_names}" "${resolved_property_value}" CACHE STRING "")
-        endif ()
     endforeach ()
 
 endfunction()
