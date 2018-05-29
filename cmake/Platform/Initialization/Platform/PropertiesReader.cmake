@@ -1,3 +1,34 @@
+function(_resolve_entry_link _entry _return_var)
+
+    string(REGEX REPLACE "^{(.+)}$" "\\1" _entry "${_entry}")
+    string(REPLACE "." "_" _entry "${_entry}")
+    if (DEFINED ${_entry})
+        set(${_return_var} "${${_entry}}" PARENT_SCOPE)
+    endif ()
+
+endfunction()
+
+function(_resolve_property_value_links _property_value _return_var)
+
+    set(index 0)
+    foreach (property_value_entry ${_property_value})
+
+        string(REGEX MATCH "^{.+}$" entry_link "${property_value_entry}")
+        if ("${entry_link}" STREQUAL "") # Entry is not a link
+            increment_integer(index 1)
+        else ()
+            _resolve_entry_link("${entry_link}" resolved_entry)
+            if (NOT "${resolved_entry}" STREQUAL "")
+                list_replace("${_property_value}" ${index} "${resolved_entry}" _property_value)
+            endif ()
+        endif ()
+
+    endforeach ()
+
+    set(${_return_var} "${_property_value}" PARENT_SCOPE)
+
+endfunction()
+
 function(read_properties _properties_file_path)
 
     file(STRINGS ${_properties_file_path} properties)  # Settings file split into lines
@@ -17,9 +48,10 @@ function(read_properties _properties_file_path)
             if ("${property_value}" STREQUAL "") # Empty value
                 continue() # Don't store value - unnecessary
             endif ()
-            string(REGEX REPLACE " " ";" property_value "${property_value}")
+            string(REPLACE " " ";" property_value "${property_value}")
+            _resolve_property_value_links("${property_value}" resolved_property_value)
 
-            set("${property_separated_names}" "${property_value}" CACHE STRING "")
+            set("${property_separated_names}" "${resolved_property_value}" CACHE STRING "")
         endif ()
     endforeach ()
 
