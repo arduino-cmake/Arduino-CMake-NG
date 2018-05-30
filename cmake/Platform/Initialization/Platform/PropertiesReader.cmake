@@ -29,7 +29,7 @@ function(_resolve_property_value_links _property_value _return_var)
 
 endfunction()
 
-function(read_properties _properties_file_path _file_type)
+function(read_properties _properties_file_path)
 
     file(STRINGS ${_properties_file_path} properties)  # Settings file split into lines
     list(FILTER properties INCLUDE REGEX "^[^#]+=.*")
@@ -38,15 +38,6 @@ function(read_properties _properties_file_path _file_type)
         string(REGEX MATCH "^[^=]+" property_name "${property}")
         string(REGEX MATCH "name" property_name_string_name "${property_name}")
         if (NOT ${property_name_string_name} STREQUAL "") # Property contains 'name' string
-            list(FIND PROPERTY_FILE_TYPES boards board_type)
-            if (${_file_type} EQUAL ${board_type})
-                string(REGEX MATCH "[^.]+" board_name "${property_name}")
-                if (board_list)
-                    list(APPEND board_list ${board_name})
-                else ()
-                    set(board_list ${board_name})
-                endif ()
-            endif ()
             continue() # Don't process further - Unnecessary information
         endif ()
         string(REPLACE "." "_" property_separated_names ${property_name})
@@ -62,9 +53,5 @@ function(read_properties _properties_file_path _file_type)
 
         set("${property_separated_names}" "${resolved_property_value}" CACHE STRING "")
     endforeach ()
-
-    if (DEFINED board_list)
-        set(ARDUINO_CMAKE_BOARDS ${board_list} CACHE STRING "List of platform boards")
-    endif ()
 
 endfunction()
