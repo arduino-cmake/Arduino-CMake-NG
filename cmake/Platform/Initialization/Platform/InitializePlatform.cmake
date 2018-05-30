@@ -1,4 +1,5 @@
 include(PropertiesReader)
+include(BoardPropertiesReader)
 
 if (NOT DEFINED ARDUINO_CMAKE_PLATFORM_NAME OR NOT DEFINED ARDUINO_CMAKE_PLATFORM_PATH)
     if (USE_DEFAULT_PLATFORM_IF_NONE_EXISTING)
@@ -12,8 +13,9 @@ elseif (NOT DEFINED ARDUINO_CMAKE_PLATFORM_ARCHITECTURE) # Platform defined with
     set(ARDUINO_CMAKE_PLATFORM_ARCHITECTURE "avr" CACHE STRING "")
 endif ()
 
+# Find all platform elements
 include(FindPlatformElements)
 
 read_properties(${PLATFORM_PROPERTIES_FILE_PATH})
-read_properties(${PLATFORM_BOARDS_PATH})
 read_properties(${PLATFORM_PROGRAMMERS_PATH})
+read_boards_properties(${PLATFORM_BOARDS_PATH})

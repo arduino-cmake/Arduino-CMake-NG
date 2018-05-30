@@ -35,23 +35,23 @@ function(read_properties _properties_file_path)
     list(FILTER properties INCLUDE REGEX "^[^#]+=.*")
 
     foreach (property ${properties})
-            string(REGEX MATCH "^[^=]+" property_name ${property})
-            string(REGEX MATCH "name" property_name_string_name ${property_name})
-            if (NOT ${property_name_string_name} STREQUAL "")
-                continue()
-            endif ()
-            string(REPLACE "." "_" property_separated_names ${property_name})
+        string(REGEX MATCH "^[^=]+" property_name "${property}")
+        string(REGEX MATCH "name" property_name_string_name "${property_name}")
+        if (NOT ${property_name_string_name} STREQUAL "") # Property contains 'name' string
+            continue() # Don't process further - Unnecessary information
+        endif ()
+        string(REPLACE "." "_" property_separated_names ${property_name})
 
-            # Allow for values to contain '='
-            string(REGEX REPLACE "^[^=]+=(.*)" "\\1" property_value "${property}")
-            string(STRIP "${property_value}" property_value)
-            if ("${property_value}" STREQUAL "") # Empty value
-                continue() # Don't store value - unnecessary
-            endif ()
-            string(REPLACE " " ";" property_value "${property_value}")
-            _resolve_property_value_links("${property_value}" resolved_property_value)
+        # Allow for values to contain '='
+        string(REGEX REPLACE "^[^=]+=(.*)" "\\1" property_value "${property}")
+        string(STRIP "${property_value}" property_value)
+        if ("${property_value}" STREQUAL "") # Empty value
+            continue() # Don't store value - unnecessary
+        endif ()
+        string(REPLACE " " ";" property_value "${property_value}")
+        _resolve_property_value_links("${property_value}" resolved_property_value)
 
-            set("${property_separated_names}" "${resolved_property_value}" CACHE STRING "")
+        set("${property_separated_names}" "${resolved_property_value}" CACHE STRING "")
     endforeach ()
 
 endfunction()
