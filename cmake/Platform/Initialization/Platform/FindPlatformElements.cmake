@@ -1,13 +1,20 @@
 function(_find_platform_cores)
 
+    set(core_list "")
+
     file(GLOB sub-dir ${PLATFORM_CORES_PATH}/*)
     foreach (dir ${sub-dir})
         if (IS_DIRECTORY ${dir})
             get_filename_component(core ${dir} NAME)
             string(TOUPPER ${core} CORE)
             set(CORE_${CORE}_PATH "${dir}" CACHE INTERNAL "Path to ${core} core")
+            list(APPEND core_list ${CORE})
         endif ()
     endforeach ()
+
+    list(GET core_list 0 main_core)
+    set(PLATFORM_DEFAULT_CORE "${main_core}" CACHE STRING "Default platform core")
+    set(PLATFORM_CORES "${core_list}" CACHE STRING "List of existing platform cores")
 
 endfunction()
 
