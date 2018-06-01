@@ -16,6 +16,6 @@ endif ()
 # Find all platform elements
 include(FindPlatformElements)
 
-read_properties(${PLATFORM_PROPERTIES_FILE_PATH})
-read_properties(${PLATFORM_PROGRAMMERS_PATH})
-read_boards_properties(${PLATFORM_BOARDS_PATH})
+read_properties(${ARDUINO_CMAKE_PLATFORM_PROPERTIES_FILE_PATH})
+read_properties(${ARDUINO_CMAKE_PLATFORM_PROGRAMMERS_PATH})
+read_boards_properties(${ARDUINO_CMAKE_PLATFORM_BOARDS_PATH})
