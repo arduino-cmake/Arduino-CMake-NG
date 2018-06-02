@@ -2,7 +2,7 @@ function(_find_platform_cores)
 
     set(core_list "")
 
-    file(GLOB sub-dir ${PLATFORM_CORES_PATH}/*)
+    file(GLOB sub-dir ${ARDUINO_CMAKE_PLATFORM_CORES_PATH}/*)
     foreach (dir ${sub-dir})
         if (IS_DIRECTORY ${dir})
             get_filename_component(core ${dir} NAME)
@@ -13,21 +13,33 @@ function(_find_platform_cores)
     endforeach ()
 
     list(GET core_list 0 main_core)
-    set(ARDUINO_CMAKE_PLATFORM_DEFAULT_CORE "${main_core}" CACHE STRING "Default platform core")
+    set(ARDUINO_CMAKE_PLATFORM_CORE "${main_core}" CACHE STRING "Default platform core")
     set(ARDUINO_CMAKE_PLATFORM_CORES "${core_list}" CACHE STRING "List of existing platform cores")
 
 endfunction()
 
 function(_find_platform_variants)
 
-    file(GLOB sub-dir ${PLATFORM_VARIANTS_PATH}/*)
+    set(variant_list "")
+
+    file(GLOB sub-dir ${ARDUINO_CMAKE_PLATFORM_VARIANTS_PATH}/*)
     foreach (dir ${sub-dir})
         if (IS_DIRECTORY ${dir})
             get_filename_component(variant ${dir} NAME)
             string(TOUPPER ${variant} VARIANT)
             set(ARDUINO_CMAKE_VARIANT_${VARIANT}_PATH ${dir} CACHE INTERNAL "Path to ${variant} variant")
+            list(APPEND variant_list ${VARIANT})
         endif ()
     endforeach ()
+
+    list(FIND variant_list "standard" main_variant_index)
+    if (${main_variant_index} LESS 0) # Negative index = variant nout found
+        list(GET variant_list 0 main_variant)
+    else () # 'standard' variant is found
+        set(main_variant "standard")
+    endif ()
+    set(ARDUINO_CMAKE_PLATFORM_VARIANT "${main_variant}" CACHE STRING "Default platform variant")
+    set(ARDUINO_CMAKE_PLATFORM_VARIANTS "${variant_list}" CACHE STRING "List of existing platform variants")
 
 endfunction()
 
