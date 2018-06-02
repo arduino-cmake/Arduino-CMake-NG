@@ -3,4 +3,5 @@ cmake_minimum_required(VERSION 3.8)
 project(Blink LANGUAGES CXX)
 
 get_board_id(uno board_id)
-add_arduino_executable(Blink board_id blink.cpp)
+add_arduino_executable(Blink ${board_id} blink.cpp)
+upload_arduino_target(Blink ${board_id} COM3)
