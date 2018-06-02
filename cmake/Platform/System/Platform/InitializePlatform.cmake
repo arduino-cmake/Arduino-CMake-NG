@@ -1,5 +1,6 @@
 include(PropertiesReader)
 include(BoardPropertiesReader)
+include(PlatformFlags)
 
 if (NOT DEFINED ARDUINO_CMAKE_PLATFORM_NAME OR NOT DEFINED ARDUINO_CMAKE_PLATFORM_PATH)
     if (USE_DEFAULT_PLATFORM_IF_NONE_EXISTING)
@@ -19,3 +20,5 @@ include(FindPlatformElements)
 read_properties(${ARDUINO_CMAKE_PLATFORM_PROPERTIES_FILE_PATH})
 read_properties(${ARDUINO_CMAKE_PLATFORM_PROGRAMMERS_PATH})
 read_boards_properties(${ARDUINO_CMAKE_PLATFORM_BOARDS_PATH})
+
+setup_remaining_platform_flags()
