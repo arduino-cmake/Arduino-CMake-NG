@@ -11,5 +11,7 @@ include(ListUtils)
 
 include(InitializeBuildSystem)
 
+include(BoardManager)
+
 include(ExecutableTarget)
 include(UploadTarget)

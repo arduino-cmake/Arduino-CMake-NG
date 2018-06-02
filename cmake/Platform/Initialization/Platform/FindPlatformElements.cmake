@@ -2,7 +2,7 @@ function(_find_platform_cores)
 
     set(core_list "")
 
-    file(GLOB sub-dir ${PLATFORM_CORES_PATH}/*)
+    file(GLOB sub-dir ${ARDUINO_CMAKE_PLATFORM_CORES_PATH}/*)
     foreach (dir ${sub-dir})
         if (IS_DIRECTORY ${dir})
             get_filename_component(core ${dir} NAME)
@@ -13,14 +13,14 @@ function(_find_platform_cores)
     endforeach ()
 
     list(GET core_list 0 main_core)
-    set(ARDUINO_CMAKE_PLATFORM_DEFAULT_CORE "${main_core}" CACHE STRING "Default platform core")
+    set(ARDUINO_CMAKE_PLATFORM_CORE "${main_core}" CACHE STRING "Default platform core")
     set(ARDUINO_CMAKE_PLATFORM_CORES "${core_list}" CACHE STRING "List of existing platform cores")
 
 endfunction()
 
 function(_find_platform_variants)
 
-    file(GLOB sub-dir ${PLATFORM_VARIANTS_PATH}/*)
+    file(GLOB sub-dir ${ARDUINO_CMAKE_PLATFORM_VARIANTS_PATH}/*)
     foreach (dir ${sub-dir})
         if (IS_DIRECTORY ${dir})
             get_filename_component(variant ${dir} NAME)
