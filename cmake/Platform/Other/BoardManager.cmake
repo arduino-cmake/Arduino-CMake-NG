@@ -5,8 +5,8 @@
 #        fatal error will be invoked.
 #
 #        _board_name - name of the board, eg.: nano, uno, etc...
-#        _return_var - BOARD_ID constructed from _board_name and _board_cpu
-#        _board_cpu - some boards have multiple versions with different cpus, eg.: nano has atmega168 and atmega328
+#        _return_var - Board ID constructed from board's name and CPU.
+#        _board_cpu - explicit cpu of the board if there are multiple versions of the board.
 #
 #=============================================================================#
 function(get_board_id _board_name _return_var)
@@ -22,11 +22,11 @@ function(get_board_id _board_name _return_var)
         message(FATAL_ERROR "Unknown given board name, not defined in 'boards.txt'. Check your\
         spelling.")
     else () # Board is valid and has been found
-        if (DEFINED ${found_board}_cpu_list) # Board cpu is to be expected
-            if (NOT ${_board_cpu})
-                message(FATAL_ERROR "Expected board CPU to be provided for the ${found_board} board")
+        if (DEFINED ${_board_name}_cpu_list) # Board cpu is to be expected
+            if (NOT _board_cpu)
+                message(FATAL_ERROR "Expected board CPU to be provided for the ${_board_name} board")
             else ()
-                list(FIND ${found_board}_cpu_list ${_board_cpu} found_cpu)
+                list(FIND ${_board_name}_cpu_list ${_board_cpu} found_cpu)
                 if (${found_cpu} LESS 0)
                     message(FATAL_ERROR "Unknown given board cpu")
                 endif ()
