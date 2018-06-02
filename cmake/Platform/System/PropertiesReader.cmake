@@ -1,7 +1,7 @@
 function(_resolve_entry_link _entry _return_var)
 
     string(REGEX REPLACE "^{(.+)}$" "\\1" _entry "${_entry}")
-    string(REPLACE "." "_" _entry "${_entry}")
+    string(REPLACE "Platform" "_" _entry "${_entry}")
     if (DEFINED ${_entry})
         set(${_return_var} "${${_entry}}" PARENT_SCOPE)
     endif ()
@@ -40,7 +40,7 @@ function(read_properties _properties_file_path)
         if (NOT ${property_name_string_name} STREQUAL "") # Property contains 'name' string
             continue() # Don't process further - Unnecessary information
         endif ()
-        string(REPLACE "." "_" property_separated_names ${property_name})
+        string(REPLACE "Platform" "_" property_separated_names ${property_name})
 
         # Allow for values to contain '='
         string(REGEX REPLACE "^[^=]+=(.*)" "\\1" property_value "${property}")
