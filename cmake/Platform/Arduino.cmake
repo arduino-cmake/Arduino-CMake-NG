@@ -9,9 +9,11 @@ include(MathUtils)
 include(ListUtils)
 include(PropertyUtils)
 
-include(InitializeBuildSystem)
-
 include(BoardManager)
+include(RecipeParser)
+include(TargetFlagsManager)
+
+include(InitializeBuildSystem)
 
 include(ExecutableTarget)
 include(UploadTarget)
