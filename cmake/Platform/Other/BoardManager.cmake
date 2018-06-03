@@ -56,10 +56,15 @@ function(get_board_property _board_id _property _return_var)
 
     string(REPLACE "." ";" board_id ${_board_id})
     string(REPLACE "." "_" property "${_property}")
-    list(GET board_id 0 board_name)
+
+    # Get the length of the board to determine whether board CPU is to be expected
+    list(LENGTH board_id num_of_board_elements)
+    list(GET board_id 0 board_name) # Get the board name which is mandatory
 
     if (DEFINED ${board_name}_${property})
         set(retrieved_property ${${board_name}_${property}})
+    elseif (${num_of_board_elements} EQUAL 1) # Only board name is supplied
+        message(WARNING "Property ${_property} couldn't be found on board ${_board_id}")
     else ()
         list(GET board_id 1 board_cpu)
         if (NOT DEFINED ${board_name}_menu_cpu_${board_cpu}_${property})
@@ -70,5 +75,42 @@ function(get_board_property _board_id _property _return_var)
     endif ()
 
     set(${_return_var} ${retrieved_property} PARENT_SCOPE)
+
+endfunction()
+
+#=============================================================================#
+# Gets board property.
+# Reconstructs board_name and board_cpu from _board_id and tries to find value at
+# ${board_name}.${_property},
+# if not found than try to find value at ${board_name}.menu.cpu.${board_cpu}.${_property}
+# if not found that show fatal error
+#
+#        _board_id - return value from function "_get_board_id (board_name, board_cpu)".
+#                   It contains board_name and board_cpu.
+#        _property - property name for the board, eg.: bootloader.high_fuses
+#        _return_var - Name of variable in parent-scope holding the return value.
+#=============================================================================#
+function(try_get_board_property _board_id _property _return_var)
+
+    string(REPLACE "." ";" board_id ${_board_id})
+    string(REPLACE "." "_" property "${_property}")
+
+    # Get the length of the board to determine whether board CPU is to be expected
+    list(LENGTH board_id num_of_board_elements)
+    list(GET board_id 0 board_name) # Get the board name which is mandatory
+
+    if (DEFINED ${board_name}_${property})
+        set(${_return_var} ${${board_name}_${property}} PARENT_SCOPE)
+    elseif (${num_of_board_elements} EQUAL 1) # Only board name is supplied
+        return()
+    else ()
+        list(GET board_id 1 board_cpu)
+        if (NOT DEFINED ${board_name}_menu_cpu_${board_cpu}_${property})
+            return()
+        else ()
+            set(${_return_var} ${${board_name}_menu_cpu_${board_cpu}_${property}} PARENT_SCOPE)
+        endif ()
+    endif ()
+
 
 endfunction()
