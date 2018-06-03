@@ -19,7 +19,7 @@ function(read_boards_properties _boards_properties_file)
         _get_property_value(${property} property_value)
         # Create a list if values are separated by spaces
         string(REPLACE " " ";" property_value "${property_value}")
-        _resolve_value(${property_value} resolved_property_value)
+        _resolve_value("${property_value}" resolved_property_value)
 
         string(REPLACE "." "_" property_cache_name ${property_name})
         set(${property_cache_name} ${resolved_property_value} CACHE STRING "")

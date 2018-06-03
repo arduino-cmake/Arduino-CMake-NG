@@ -46,6 +46,12 @@ endfunction()
 
 function(_resolve_value _value _return_var)
 
+    # Don't resolve empty values - There's nothing to resolve
+    if ("${_value}" STREQUAL "")
+        set(${_return_var} "" PARENT_SCOPE)
+        return()
+    endif ()
+
     # Treat value as if it were a list and get its length to know if it's actually a list or not
     list(LENGTH _value value_list_length)
     if (${value_list_length} GREATER 1)

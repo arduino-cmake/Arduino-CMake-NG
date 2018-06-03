@@ -12,10 +12,6 @@ function(_get_property_value _property _return_var)
     string(REGEX REPLACE "^[^=]+=(.*)" "\\1" property_value "${_property}")
     string(STRIP "${property_value}" property_value)
 
-    if ("${property_value}" STREQUAL "") # Empty value
-        return()
-    endif ()
-
     set(${_return_var} "${property_value}" PARENT_SCOPE)
 
 endfunction()
