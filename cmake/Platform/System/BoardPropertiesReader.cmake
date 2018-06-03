@@ -4,7 +4,7 @@ function(read_boards_properties _boards_properties_file)
     list(FILTER properties INCLUDE REGEX "^[^#]+=.*")
 
     foreach (property ${properties})
-        string(REGEX MATCH "^[^=]+" property_name "${property}")
+        _get_property_name(${property} property_name)
         string(REGEX MATCH "name" property_name_string_name "${property_name}")
         if (NOT ${property_name_string_name} STREQUAL "") # Property contains 'name' string
             string(REGEX MATCH "[^.]+" board_name "${property_name}")
@@ -15,18 +15,14 @@ function(read_boards_properties _boards_properties_file)
             endif ()
             continue() # Don't process further - Unnecessary information
         endif ()
-        string(REPLACE "." "_" property_separated_names ${property_name})
 
-        # Allow for values to contain '='
-        string(REGEX REPLACE "^[^=]+=(.*)" "\\1" property_value "${property}")
-        string(STRIP "${property_value}" property_value)
-        if ("${property_value}" STREQUAL "") # Empty value
-            continue() # Don't store value - unnecessary
-        endif ()
+        _get_property_value(${property} property_value)
+        # Create a list if values are separated by spaces
         string(REPLACE " " ";" property_value "${property_value}")
-        _resolve_property_value_links("${property_value}" resolved_property_value)
+        _resolve_value(${property_value} resolved_property_value)
 
-        set("${property_separated_names}" "${resolved_property_value}" CACHE STRING "")
+        string(REPLACE "." "_" property_cache_name ${property_name})
+        set(${property_cache_name} ${resolved_property_value} CACHE STRING "")
     endforeach ()
 
     list(REMOVE_DUPLICATES board_list) # Remove possible duplicates
