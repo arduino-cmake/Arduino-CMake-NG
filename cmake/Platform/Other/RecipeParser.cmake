@@ -1,9 +1,33 @@
 include(RecipePropertyValueResolver)
 
+function(_determine_compiler_language _return_var)
+
+    set(extra_args ${ARGN})
+    list(LENGTH extra_args num_of_extra_args)
+    if (${num_of_extra_args} GREATER 0)
+        list(GET extra_args 0 language)
+    else ()
+        set(language cpp) # Use C++ by default
+    endif ()
+
+    # Convert language to expected recipe format
+    if ("${language}" EQUAL "CXX")
+        set(language cpp)
+    else ()
+        string(TOLOWER "${language}" language)
+    endif ()
+
+    set(${_return_var} "${language}" PARENT_SCOPE)
+
+endfunction()
+
 function(parse_compiler_recipe_flags _board_id _return_var)
 
-    set(recipe_language cpp) # Use C++ by default
-    set(original_list "${recipe_cpp_o_pattern}")
+    set(extra_args ${ARGN})
+
+    _determine_compiler_language(recipe_language "${extra_args}")
+
+    set(original_list "${recipe_${recipe_language}_o_pattern}")
     set(final_recipe "")
 
     # Filter unwanted patterns from the recipe, so that only wanted ones will be parsed
