@@ -31,9 +31,10 @@ function(parse_compiler_recipe_flags _board_id _return_var)
     set(final_recipe "")
 
     # Filter unwanted patterns from the recipe, so that only wanted ones will be parsed
-    list(FILTER original_list INCLUDE REGEX "(^[^\"].+[^\"]$)")
+    list(FILTER original_list INCLUDE REGEX "(^[^\"].*[^\"]$)")
+    list(FILTER original_list EXCLUDE REGEX "-o")
 
-    foreach (recipe_element ${recipe_cpp_o_pattern})
+    foreach (recipe_element ${original_list})
         _resolve_recipe_property("${recipe_element}" resolved_element)
         if (NOT "${resolved_element}" STREQUAL "") # Unresolved element, don't append
             list(APPEND final_recipe "${resolved_element}")

@@ -19,8 +19,15 @@ function(_resolve_recipe_property _property _return_var)
     if ("${normal_property}" STREQUAL "") # Recipe property, doesn't have '='
         _get_recipe_property_name("${_property}" property_name)
         _get_recipe_property_value("${_property}" property_value)
-        _resolve_value("${property_value}" resolved_property_value ${_board_id})
-        set(resolved_property "${property_name}${resolved_property_value}")
+
+        # If property has no value and can't be resolved, it probably has been already resolved
+        if ("${property_value}" STREQUAL "" AND "${property_name}" STREQUAL "${_property}")
+            set(resolved_property_value 0)
+            set(resolved_property "${_property}")
+        else ()
+            _resolve_value("${property_value}" resolved_property_value ${_board_id})
+            set(resolved_property "${property_name}${resolved_property_value}")
+        endif ()
     else ()
         _get_property_name("${_property}" property_name)
         _get_property_value("${_property}" property_value)
