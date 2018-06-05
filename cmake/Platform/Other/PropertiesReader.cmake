@@ -17,6 +17,7 @@ function(read_properties _properties_file_path)
 
         string(REPLACE "." "_" property_cache_name ${property_name})
         set(${property_cache_name} ${resolved_property_value} CACHE STRING "")
+
     endforeach ()
 
 endfunction()
