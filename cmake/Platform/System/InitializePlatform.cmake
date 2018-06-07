@@ -14,6 +14,9 @@ elseif (NOT DEFINED ARDUINO_CMAKE_PLATFORM_ARCHITECTURE) # Platform defined with
     set(ARDUINO_CMAKE_PLATFORM_ARCHITECTURE "avr" CACHE STRING "")
 endif ()
 
+# Required by compiler recipes
+set(build_arch "${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE}" CACHE STRING "")
+
 # Find all platform elements
 include(FindPlatformElements)
 
