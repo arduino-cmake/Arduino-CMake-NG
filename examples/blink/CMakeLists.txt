@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 
 project(Blink LANGUAGES CXX)
 
-get_board_id(uno board_id)
+get_board_id(nano board_id atmega328)
 
-add_arduino_executable(Blink ${board_id} blink.cpp)
-upload_arduino_target(Blink ${board_id} COM3)
+add_arduino_executable(Blink "${board_id}" blink.cpp)
+upload_arduino_target(Blink "${board_id}" COM3)

@@ -54,7 +54,7 @@ endfunction()
 #=============================================================================#
 function(get_board_property _board_id _property _return_var)
 
-    string(REPLACE "." ";" board_id ${_board_id})
+    string(REPLACE "." ";" board_id "${_board_id}")
     string(REPLACE "." "_" property "${_property}")
 
     # Get the length of the board to determine whether board CPU is to be expected
@@ -92,7 +92,7 @@ endfunction()
 #=============================================================================#
 function(try_get_board_property _board_id _property _return_var)
 
-    string(REPLACE "." ";" board_id ${_board_id})
+    string(REPLACE "." ";" board_id "${_board_id}")
     string(REPLACE "." "_" property "${_property}")
 
     # Get the length of the board to determine whether board CPU is to be expected

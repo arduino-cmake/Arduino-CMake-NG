@@ -11,12 +11,16 @@ function(_resolve_single_value _value _return_var)
         list(LENGTH extra_args num_of_extra_args)
         if (${num_of_extra_args} EQUAL 0) # No extra arguments
             return() # Link simply not found, it's probably desired
-        elseif (${num_of_extra_args} GREATER 0)
+        elseif (${num_of_extra_args} GREATER 1)
+            list(GET extra_args 0 board_name)
+            list(GET extra_args 1 board_cpu)
+            set(board_id ${board_name} ${board_cpu})
+        else (${num_of_extra_args} GREATER 0)
             list(GET extra_args 0 board_id)
         endif ()
 
         # Maybe value is a board property?
-        try_get_board_property(${board_id} "${value}" value_as_board_property)
+        try_get_board_property("${board_id}" "${value}" value_as_board_property)
         if (NOT "${value_as_board_property}" STREQUAL "") # Value is indeed a board property
             set(${_return_var} ${value_as_board_property} PARENT_SCOPE)
         endif ()
@@ -33,7 +37,7 @@ function(_resolve_list_value _value _return_var)
         set(index_inc 1) # Always reset incrementation to 1
         string(REGEX MATCH "^{.+}$" wrapping_brackets "${value_entry}")
         if (NOT "${wrapping_brackets}" STREQUAL "") # Wrapped with brackets - resolvable
-            _resolve_single_value(${value_entry} resolved_entry ${ARGN})
+            _resolve_single_value(${value_entry} resolved_entry "${ARGN}")
             if (DEFINED resolved_entry) # Entry has been resolved
                 if ("${resolved_entry}" STREQUAL "") # Resolved entry is an empty string
                     list(REMOVE_AT temp_list ${index}) # Remove the entry completely
@@ -67,13 +71,13 @@ function(_resolve_value _value _return_var)
     # Treat value as if it were a list and get its length to know if it's actually a list or not
     list(LENGTH _value value_list_length)
     if (${value_list_length} GREATER 1)
-        _resolve_list_value("${_value}" resolved_var ${ARGN})
+        _resolve_list_value("${_value}" resolved_var "${ARGN}")
     else ()
         string(REGEX MATCH "^{.+}$" wrapping_brackets "${_value}")
         if ("${wrapping_brackets}" STREQUAL "") # No wrapping brackets, shouldn't be resolved
             set(resolved_var "${_value}")
         else ()
-            _resolve_single_value("${_value}" resolved_var ${ARGN})
+            _resolve_single_value("${_value}" resolved_var "${ARGN}")
         endif ()
     endif ()
 

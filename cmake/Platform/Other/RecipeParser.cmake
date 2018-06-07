@@ -35,7 +35,7 @@ function(parse_compiler_recipe_flags _board_id _return_var)
     list(FILTER original_list EXCLUDE REGEX "-o")
 
     foreach (recipe_element ${original_list})
-        _resolve_recipe_property("${recipe_element}" resolved_element ${_board_id})
+        _resolve_recipe_property("${recipe_element}" "${_board_id}" resolved_element)
         if (NOT "${resolved_element}" STREQUAL "") # Unresolved element, don't append
             list(APPEND final_recipe "${resolved_element}")
         endif ()
@@ -69,7 +69,7 @@ function(parse_upload_recipe_pattern _board_id _port _return_var)
             set(serial_port "${_port}")
         endif ()
 
-        _resolve_recipe_property("${recipe_element}" resolved_element ${_board_id})
+        _resolve_recipe_property("${recipe_element}" "${_board_id}" resolved_element)
         if (NOT "${resolved_element}" STREQUAL "")
             list(APPEND final_recipe "${resolved_element}")
         endif ()
