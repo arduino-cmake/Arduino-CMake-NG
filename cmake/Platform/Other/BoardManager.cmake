@@ -4,12 +4,12 @@
 #        If board has multiple CPUS, and _board_cpu is not defined or incorrect, 
 #        fatal error will be invoked.
 #
-#        _board_name - name of the board, eg.: nano, uno, etc...
 #        _return_var - Board ID constructed from board's name and CPU.
+#        _board_name - name of the board, eg.: nano, uno, etc...
 #        _board_cpu - explicit cpu of the board if there are multiple versions of the board.
 #
 #=============================================================================#
-function(get_board_id _board_name _return_var)
+function(get_board_id _return_var _board_name)
 
     set(extra_args ${ARGN})
     list(LENGTH extra_args num_of_extra_args)
@@ -17,8 +17,8 @@ function(get_board_id _board_name _return_var)
         list(GET extra_args 0 _board_cpu)
     endif ()
 
-    list(FIND ARDUINO_CMAKE_BOARDS ${_board_name} found_board)
-    if (${found_board} LESS 0) # Negative value = not found in list
+    list(FIND ARDUINO_CMAKE_BOARDS ${_board_name} board_name_index)
+    if (${board_name_index} LESS 0) # Negative value = not found in list
         message(FATAL_ERROR "Unknown given board name, not defined in 'boards.txt'. Check your\
         spelling.")
     else () # Board is valid and has been found
@@ -26,12 +26,12 @@ function(get_board_id _board_name _return_var)
             if (NOT _board_cpu)
                 message(FATAL_ERROR "Expected board CPU to be provided for the ${_board_name} board")
             else ()
-                list(FIND ${_board_name}_cpu_list ${_board_cpu} found_cpu)
-                if (${found_cpu} LESS 0)
+                list(FIND ${_board_name}_cpu_list ${_board_cpu} board_cpu_index)
+                if (${board_cpu_index} LESS 0)
                     message(FATAL_ERROR "Unknown given board cpu")
                 endif ()
-                set(board_id ${_board_name} ${_board_cpu})
-                set(${_return_var} ${board_id} PARENT_SCOPE)
+                set(board_id "${_board_name}.${_board_cpu}")
+                set(${_return_var} "${board_id}" PARENT_SCOPE)
             endif ()
         else () # Board without explicit CPU
             set(${_return_var} ${_board_name} PARENT_SCOPE)

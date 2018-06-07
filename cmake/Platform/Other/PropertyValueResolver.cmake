@@ -11,11 +11,7 @@ function(_resolve_single_value _value _return_var)
         list(LENGTH extra_args num_of_extra_args)
         if (${num_of_extra_args} EQUAL 0) # No extra arguments
             return() # Link simply not found, it's probably desired
-        elseif (${num_of_extra_args} GREATER 1)
-            list(GET extra_args 0 board_name)
-            list(GET extra_args 1 board_cpu)
-            set(board_id ${board_name} ${board_cpu})
-        else (${num_of_extra_args} GREATER 0)
+        elseif (${num_of_extra_args} EQUAL 1)
             list(GET extra_args 0 board_id)
         endif ()
 
