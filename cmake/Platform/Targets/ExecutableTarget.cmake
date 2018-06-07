@@ -11,9 +11,6 @@ function(add_arduino_executable _target_name _board_id _src_files)
     # Add compiler and linker flags
     set_executable_target_flags(${_target_name} "${_board_id}")
 
-    # Modify executable's suffix to be '.elf'
-    set_target_properties(${_target_name} PROPERTIES SUFFIX ".elf")
-
     # Create EEP object file from build's ELF object file
     add_custom_command(TARGET ${_target_name} POST_BUILD
             COMMAND ${CMAKE_OBJCOPY}

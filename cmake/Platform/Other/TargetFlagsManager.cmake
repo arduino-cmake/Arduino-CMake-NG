@@ -1,7 +1,10 @@
 function(set_executable_target_flags _target_name _board_id)
 
-    parse_compiler_recipe_flags("${_board_id}" parsed_recipe)
-    target_compile_options(${_target_name} PUBLIC ${parsed_recipe})
+    parse_compiler_recipe_flags("${_board_id}" compiler_recipe_flags)
+    target_compile_options("${_target_name}" PUBLIC ${compiler_recipe_flags})
+
+    # Modify executable's suffix to be '.elf'
+    set_target_properties("${_target_name}" PROPERTIES SUFFIX ".elf")
 
 endfunction()
 
