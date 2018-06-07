@@ -1,28 +1,12 @@
 function(_setup_bootloader_arguments _board_id _port _return_var)
 
-    set(avrdude_flags ${ARDUINO_CMAKE_AVRDUDE_FLAGS})
+    set(avrdude_flags "")
 
-    message("BID: ${_board_id}")
-    get_board_property(${_board_id} build.mcu board_mcu)
-    if (NOT "${board_mcu}" STREQUAL "") # MCU is found
-        list(APPEND avrdude_flags "-p${board_mcu}")
-    endif ()
+    # Parse and append recipe flags
+    parse_upload_recipe_pattern(${_board_id} ${_port} upload_recipe_flags)
+    list(APPEND avrdude_flags "${upload_recipe_flags}")
 
-    get_board_property(${_board_id} upload.protocol board_upload_protocol)
-    if (NOT "${board_upload_protocol}" STREQUAL "") # Upload protocol is found
-        if ("${board_upload_protocol}" STREQUAL "stk500")
-            set(board_upload_protocol "stk500v1")
-        endif ()
-        list(APPEND avrdude_flags "-c${board_upload_protocol}")
-    endif ()
-
-    get_board_property(${_board_id} upload.speed board_upload_speed)
-    if (NOT "${board_upload_speed}" STREQUAL "") # Speed is found
-        list(APPEND avrdude_flags "-b${board_upload_speed}")
-    endif ()
-
-    list(APPEND avrdude_flags "-P${_port}" "-D") # Upload port, don't erase
-    list(APPEND avrdude_flags "-C${ARDUINO_CMAKE_AVRDUDE_CONFIG_PATH}") # Avrdude config file
+    message("Bootloader args: ${avrdude_flags}")
 
     set(${_return_var} ${avrdude_flags} PARENT_SCOPE)
 

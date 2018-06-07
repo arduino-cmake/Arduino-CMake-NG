@@ -9,7 +9,6 @@ function(add_arduino_executable _target_name _board_id _src_files)
             "${ARDUINO_CMAKE_VARIANT_${ARDUINO_CMAKE_PLATFORM_VARIANT}_PATH}")
 
     # Add compiler and linker flags
-    #target_compile_options(${_target_name} PUBLIC ${compiler_cpp_flags})
     set_executable_target_flags(${_target_name} ${_board_id})
 
     # Modify executable's suffix to be '.elf'
