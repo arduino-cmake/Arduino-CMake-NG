@@ -5,4 +5,4 @@ project(Blink LANGUAGES CXX)
 get_board_id(board_id nano atmega328)
 
 add_arduino_executable(Blink "${board_id}" blink.cpp)
-upload_arduino_target(Blink "${board_id}" COM3)
+#upload_arduino_target(Blink "${board_id}" COM3)
