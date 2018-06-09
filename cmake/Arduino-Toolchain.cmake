@@ -5,6 +5,9 @@ if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/Platform/Arduino.cmake)
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR})
 endif ()
 
+set(ARDUINO_CMAKE_TOOLCHAIN_DIR ${CMAKE_CURRENT_LIST_DIR} CACHE PATH
+        "Path to Arduino-CMake's toolchain directory")
+
 # Set default path if none is set
 if (NOT ARDUINO_SDK_PATH)
     if (${CMAKE_HOST_WIN32})
