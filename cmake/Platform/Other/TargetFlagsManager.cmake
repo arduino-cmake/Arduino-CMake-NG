@@ -5,9 +5,18 @@ function(set_compiler_target_flags _target_name _board_id)
 
 endfunction()
 
+function(set_linker_flags _target_name _board_id)
+
+    target_compile_options(${_target_name} PUBLIC ${compiler_c_elf_flags})
+
+endfunction()
+
 function(set_executable_target_flags _target_name _board_id)
 
     set_compiler_target_flags(${_target_name} "${_board_id}")
+    set_linker_flags(${_target_name} "${_board_id}")
+
+    target_link_libraries(${_target_name} PUBLIC m) # Add math library
 
     # Modify executable's suffix to be '.elf'
     set_target_properties("${_target_name}" PROPERTIES SUFFIX ".elf")

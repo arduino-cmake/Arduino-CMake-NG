@@ -37,10 +37,11 @@ function(add_arduino_core_lib _target_name _board_id)
             target_include_directories(${core_lib_target} PUBLIC
                     "${ARDUINO_CMAKE_VARIANT_${board_variant}_PATH}")
             set_compiler_target_flags(${core_lib_target} "${_board_id}")
+            set_linker_flags(${core_lib_target} "${_board_id}")
 
             # Link Core-Lib to executable target
             if (TARGET ${_target_name})
-                target_link_libraries(${_target_name} ${core_lib_target})
+                target_link_libraries(${_target_name} PUBLIC "${core_lib_target}")
             endif ()
         endif ()
     endif ()

@@ -1,10 +1,8 @@
 function(add_arduino_executable _target_name _board_id _src_files)
 
     add_executable(${_target_name} "${_src_files}")
-
     # Always add board's core lib
     add_arduino_core_lib(${_target_name} "${_board_id}")
-
     # Add compiler and linker flags
     set_executable_target_flags(${_target_name} "${_board_id}")
 
