@@ -2,11 +2,8 @@ function(add_arduino_executable _target_name _board_id _src_files)
 
     add_executable(${_target_name} "${_src_files}")
 
-    # Include platform's core and variant directories
-    target_include_directories(${_target_name} PUBLIC
-            "${ARDUINO_CMAKE_CORE_${ARDUINO_CMAKE_PLATFORM_CORE}_PATH}")
-    target_include_directories(${_target_name} PUBLIC
-            "${ARDUINO_CMAKE_VARIANT_${ARDUINO_CMAKE_PLATFORM_VARIANT}_PATH}")
+    # Always add board's core lib
+    add_arduino_core_lib(${_target_name} "${_board_id}")
 
     # Add compiler and linker flags
     set_executable_target_flags(${_target_name} "${_board_id}")

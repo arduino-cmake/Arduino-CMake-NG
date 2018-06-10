@@ -12,8 +12,10 @@ include(PropertyUtils)
 include(BoardManager)
 include(RecipeParser)
 include(TargetFlagsManager)
+include(SourceFileManager)
 
 include(InitializeBuildSystem)
 
 include(ExecutableTarget)
 include(UploadTarget)
+include(CoreLibTarget)

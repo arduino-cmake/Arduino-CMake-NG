@@ -1,7 +1,13 @@
-function(set_executable_target_flags _target_name _board_id)
+function(set_compiler_target_flags _target_name _board_id)
 
     parse_compiler_recipe_flags("${_board_id}" compiler_recipe_flags)
-    target_compile_options("${_target_name}" PUBLIC ${compiler_recipe_flags})
+    target_compile_options(${_target_name} PUBLIC ${compiler_recipe_flags})
+
+endfunction()
+
+function(set_executable_target_flags _target_name _board_id)
+
+    set_compiler_target_flags(${_target_name} "${_board_id}")
 
     # Modify executable's suffix to be '.elf'
     set_target_properties("${_target_name}" PROPERTIES SUFFIX ".elf")
@@ -24,3 +30,4 @@ function(set_upload_target_flags _target_name _board_id _upload_port _return_var
     set(${_return_var} "${upload_flags}" PARENT_SCOPE)
 
 endfunction()
+

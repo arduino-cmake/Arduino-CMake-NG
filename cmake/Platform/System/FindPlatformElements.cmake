@@ -6,14 +6,12 @@ function(_find_platform_cores)
     foreach (dir ${sub-dir})
         if (IS_DIRECTORY ${dir})
             get_filename_component(core ${dir} NAME)
-            string(TOUPPER ${core} CORE)
-            set(ARDUINO_CMAKE_CORE_${CORE}_PATH "${dir}" CACHE INTERNAL "Path to ${core} core")
-            list(APPEND core_list ${CORE})
+            string(TOLOWER ${core} core)
+            set(ARDUINO_CMAKE_CORE_${core}_PATH "${dir}" CACHE INTERNAL "Path to ${core} core")
+            list(APPEND core_list ${core})
         endif ()
     endforeach ()
 
-    list(GET core_list 0 main_core)
-    set(ARDUINO_CMAKE_PLATFORM_CORE "${main_core}" CACHE STRING "Default platform core")
     set(ARDUINO_CMAKE_PLATFORM_CORES "${core_list}" CACHE STRING "List of existing platform cores")
 
 endfunction()
@@ -26,20 +24,15 @@ function(_find_platform_variants)
     foreach (dir ${sub-dir})
         if (IS_DIRECTORY ${dir})
             get_filename_component(variant ${dir} NAME)
-            string(TOUPPER ${variant} VARIANT)
-            set(ARDUINO_CMAKE_VARIANT_${VARIANT}_PATH ${dir} CACHE INTERNAL "Path to ${variant} variant")
-            list(APPEND variant_list ${VARIANT})
+            string(TOLOWER ${variant} variant)
+            set(ARDUINO_CMAKE_VARIANT_${variant}_PATH ${dir} CACHE INTERNAL
+                    "Path to ${variant} variant")
+            list(APPEND variant_list ${variant})
         endif ()
     endforeach ()
 
-    list(FIND variant_list "standard" main_variant_index)
-    if (${main_variant_index} LESS 0) # Negative index = variant nout found
-        list(GET variant_list 0 main_variant)
-    else () # 'standard' variant is found
-        set(main_variant "standard")
-    endif ()
-    set(ARDUINO_CMAKE_PLATFORM_VARIANT "${main_variant}" CACHE STRING "Default platform variant")
-    set(ARDUINO_CMAKE_PLATFORM_VARIANTS "${variant_list}" CACHE STRING "List of existing platform variants")
+    set(ARDUINO_CMAKE_PLATFORM_VARIANTS "${variant_list}" CACHE STRING
+            "List of existing platform variants")
 
 endfunction()
 
