@@ -7,7 +7,7 @@ endfunction()
 
 function(set_linker_flags _target_name _board_id)
 
-    target_compile_options(${_target_name} PUBLIC ${compiler_c_elf_flags})
+    target_link_libraries(${_target_name} PUBLIC "${compiler_c_elf_flags}")
 
 endfunction()
 

@@ -2,7 +2,7 @@ function(add_arduino_core_lib _target_name _board_id)
 
     string(REPLACE "." "_" board_id "${_board_id}")
     set(core_lib_target "${board_id}_core_lib")
-    string(TOUPPER "${core_lib_target}" core_lib_target)
+    string(TOLOWER "${core_lib_target}" core_lib_target)
 
     if (TARGET ${core_lib_target}) # Core-lib target already created for the given board
         if (TARGET ${_target_name}) # Executable/Firmware target also exists
