@@ -20,23 +20,28 @@ set(ARDUINO_SDK_BIN_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr/bin" CACHE PATH
 set(ARDUINO_SDK_ROOT_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr" CACHE PATH
         "Path to Aduino SDK's sys-root folder")
 
-set(CMAKE_ASM_COMPILER "${ARDUINO_SDK_BIN_PATH}/avr-gcc")
-set(CMAKE_C_COMPILER "${ARDUINO_SDK_BIN_PATH}/avr-gcc")
-set(CMAKE_CXX_COMPILER "${ARDUINO_SDK_BIN_PATH}/avr-g++")
-#[[set(CMAKE_AR "${ARDUINO_SDK_BIN_PATH}/avr-gcc-ar")
-set(CMAKE_RANLIB "${ARDUINO_SDK_BIN_PATH}/avr-gcc-ranlib")]]
-
-# Append '.exe' if in Windows
-if (${CMAKE_HOST_WIN32})
-    set(CMAKE_C_COMPILER "${CMAKE_C_COMPILER}.exe")
-    set(CMAKE_CXX_COMPILER "${CMAKE_CXX_COMPILER}.exe")
-    set(CMAKE_ASM_COMPILER "${CMAKE_ASM_COMPILER}.exe")
-    #[[set(CMAKE_AR "${CMAKE_AR}.exe")
-    set(CMAKE_RANLIB "${CMAKE_RANLIB}.exe")]]
-endif ()
-
-#[[set(CMAKE_C_ARCHIVE_CREATE "<CMAKE_AR> rcs <TARGET> <LINK_FLAGS> <OBJECTS>")
-set(CMAKE_CXX_ARCHIVE_CREATE "<CMAKE_AR> rcs <TARGET> <LINK_FLAGS> <OBJECTS>")]]
+# Find ASM compiler
+find_program(CMAKE_ASM_COMPILER avr-gcc
+        PATHS ${ARDUINO_SDK_BIN_PATH}
+        NO_CMAKE_FIND_ROOT_PATH)
+# Find C compiler
+find_program(CMAKE_C_COMPILER avr-gcc
+        PATHS ${ARDUINO_SDK_BIN_PATH}
+        NO_CMAKE_FIND_ROOT_PATH)
+# Find C++ compiler
+find_program(CMAKE_CXX_COMPILER avr-g++
+        PATHS ${ARDUINO_SDK_BIN_PATH}
+        NO_CMAKE_FIND_ROOT_PATH)
+# Find AR required for linkage
+find_program(CMAKE_AR avr-gcc-ar
+        PATHS ${ARDUINO_SDK_BIN_PATH}
+        NO_CMAKE_FIND_ROOT_PATH)
+find_program(CMAKE_RANLIB avr-gcc-ranlib
+        PATHS ${ARDUINO_SDK_BIN_PATH}
+        NO_CMAKE_FIND_ROOT_PATH)
+find_program(CMAKE_NM avr-gcc-nm
+        PATHS ${ARDUINO_SDK_BIN_PATH}
+        NO_CMAKE_FIND_ROOT_PATH)
 
 # where is the target environment
 set(CMAKE_FIND_ROOT_PATH "${ARDUINO_SDK_ROOT_PATH}")
