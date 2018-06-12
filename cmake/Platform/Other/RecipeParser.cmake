@@ -23,8 +23,6 @@ function(parse_compiler_recipe_flags _board_id _return_var)
     set(original_list "${recipe_${recipe_language}_o_pattern}")
     set(final_recipe "")
 
-    message("Language: ${recipe_language}")
-
     # Filter unwanted patterns from the recipe, so that only wanted ones will be parsed
     list(FILTER original_list INCLUDE REGEX "(^[^\"].*[^\"]$)")
     list(FILTER original_list EXCLUDE REGEX "-o")

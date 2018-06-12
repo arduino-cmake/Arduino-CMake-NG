@@ -37,9 +37,20 @@ function(add_arduino_core_lib _target_name _board_id)
             target_include_directories(${core_lib_target} PUBLIC
                     "${ARDUINO_CMAKE_VARIANT_${board_variant}_PATH}")
 
-            set_compiler_target_flags(${core_lib_target} "${_board_id}" PRIVATE LANGUAGE ASM)
-            set_compiler_target_flags(${core_lib_target} "${_board_id}" PRIVATE LANGUAGE C)
-            set_compiler_target_flags(${core_lib_target} "${_board_id}" PRIVATE LANGUAGE CXX)
+            # Set Assembly compiler flags
+            get_cmake_compliant_language_name(asm flags_language)
+            set_compiler_target_flags(${core_lib_target} "${_board_id}" PRIVATE
+                    LANGUAGE ${flags_language})
+            # Set C compiler flags
+            get_cmake_compliant_language_name(c flags_language)
+            set_compiler_target_flags(${core_lib_target} "${_board_id}" PRIVATE
+                    LANGUAGE ${flags_language})
+            # Set C++ compiler flags
+            get_cmake_compliant_language_name(cpp flags_language)
+            set_compiler_target_flags(${core_lib_target} "${_board_id}" PRIVATE
+                    LANGUAGE ${flags_language})
+
+            # Set linker flags
             set_linker_flags(${core_lib_target} "${_board_id}")
 
             # Link Core-Lib to executable target
