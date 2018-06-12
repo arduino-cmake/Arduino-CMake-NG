@@ -23,9 +23,14 @@ endfunction()
 
 function(parse_compiler_recipe_flags _board_id _return_var)
 
-    set(extra_args ${ARGN})
+    set(single_args "LANGUAGE")
+    cmake_parse_arguments(recipe_flags "" "${single_args}" "" ${ARGN})
 
-    _determine_compiler_language(recipe_language "${extra_args}")
+    if (recipe_flags_LANGUAGE)
+        _determine_compiler_language(recipe_language "${recipe_flags_LANGUAGE}")
+    else ()
+        set(recipe_language cpp) # Set default language
+    endif ()
 
     set(original_list "${recipe_${recipe_language}_o_pattern}")
     set(final_recipe "")

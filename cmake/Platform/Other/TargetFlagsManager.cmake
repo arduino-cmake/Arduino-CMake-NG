@@ -1,7 +1,26 @@
 function(set_compiler_target_flags _target_name _board_id)
 
-    parse_compiler_recipe_flags("${_board_id}" compiler_recipe_flags)
-    target_compile_options(${_target_name} PUBLIC ${compiler_recipe_flags})
+    set(option_args PRIVATE PUBLIC INTERFACE)
+    set(single_args LANGUAGE)
+    cmake_parse_arguments(compiler "${option_args}" "${single_args}" "" ${ARGN})
+
+    if (compiler_LANGUAGE)
+        if (compiler_PRIVATE)
+            set(scope PRIVATE)
+        elseif (compiler_INTERFACE)
+            set(scope INTERFACE)
+        else ()
+            set(scope PUBLIC)
+        endif ()
+        parse_compiler_recipe_flags("${_board_id}" compiler_recipe_flags
+                LANGUAGE "${compiler_LANGUAGE}")
+        target_compile_options(${_target_name} ${scope}
+                $<$<COMPILE_LANGUAGE:${compiler_LANGUAGE}>:${compiler_recipe_flags}>)
+    else ()
+        parse_compiler_recipe_flags("${_board_id}" compiler_recipe_flags)
+        target_compile_options(${_target_name} PUBLIC ${compiler_recipe_flags})
+    endif ()
+
 
 endfunction()
 
