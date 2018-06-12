@@ -7,6 +7,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Targets)
 
 include(MathUtils)
 include(ListUtils)
+include(StringUtils)
 include(PropertyUtils)
 
 include(BoardManager)

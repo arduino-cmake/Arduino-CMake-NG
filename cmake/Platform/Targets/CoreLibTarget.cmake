@@ -39,7 +39,7 @@ function(add_arduino_core_lib _target_name _board_id)
 
             set_compiler_target_flags(${core_lib_target} "${_board_id}" PRIVATE LANGUAGE ASM)
             set_compiler_target_flags(${core_lib_target} "${_board_id}" PRIVATE LANGUAGE C)
-            set_compiler_target_flags(${core_lib_target} "${_board_id}" PRIVATE)
+            set_compiler_target_flags(${core_lib_target} "${_board_id}" PRIVATE LANGUAGE CXX)
             set_linker_flags(${core_lib_target} "${_board_id}")
 
             # Link Core-Lib to executable target
