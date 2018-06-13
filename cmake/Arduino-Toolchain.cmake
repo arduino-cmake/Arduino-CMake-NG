@@ -36,9 +36,11 @@ find_program(CMAKE_CXX_COMPILER avr-g++
 find_program(CMAKE_AR avr-gcc-ar
         PATHS ${ARDUINO_SDK_BIN_PATH}
         NO_CMAKE_FIND_ROOT_PATH)
+# Find Ranlib required for linkage
 find_program(CMAKE_RANLIB avr-gcc-ranlib
         PATHS ${ARDUINO_SDK_BIN_PATH}
         NO_CMAKE_FIND_ROOT_PATH)
+# Find NM
 find_program(CMAKE_NM avr-gcc-nm
         PATHS ${ARDUINO_SDK_BIN_PATH}
         NO_CMAKE_FIND_ROOT_PATH)

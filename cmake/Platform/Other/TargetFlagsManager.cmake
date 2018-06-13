@@ -26,7 +26,9 @@ endfunction()
 
 function(set_linker_flags _target_name _board_id)
 
-    target_link_libraries(${_target_name} PUBLIC "${compiler_c_elf_flags}")
+    parse_linker_recpie_pattern("${_board_id}" linker_recipe_flags)
+    string(REPLACE ";" " " cmake_compliant_linker_flags "${linker_recipe_flags}")
+    set(CMAKE_EXE_LINKER_FLAGS "${cmake_compliant_linker_flags}" CACHE STRING "" FORCE)
 
 endfunction()
 
