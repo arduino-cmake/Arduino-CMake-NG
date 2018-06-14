@@ -20,15 +20,30 @@ set(ARDUINO_SDK_BIN_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr/bin" CACHE PATH
 set(ARDUINO_SDK_ROOT_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr" CACHE PATH
         "Path to Aduino SDK's sys-root folder")
 
-set(CMAKE_ASM_COMPILER "${ARDUINO_SDK_BIN_PATH}/avr-gcc")
-set(CMAKE_C_COMPILER "${ARDUINO_SDK_BIN_PATH}/avr-gcc")
-set(CMAKE_CXX_COMPILER "${ARDUINO_SDK_BIN_PATH}/avr-g++")
-
-# Append '.exe' if in Windows
-if (${CMAKE_HOST_WIN32})
-    set(CMAKE_C_COMPILER "${CMAKE_C_COMPILER}.exe")
-    set(CMAKE_CXX_COMPILER "${CMAKE_CXX_COMPILER}.exe")
-endif ()
+# Find ASM compiler
+find_program(CMAKE_ASM_COMPILER avr-gcc
+        PATHS ${ARDUINO_SDK_BIN_PATH}
+        NO_CMAKE_FIND_ROOT_PATH)
+# Find C compiler
+find_program(CMAKE_C_COMPILER avr-gcc
+        PATHS ${ARDUINO_SDK_BIN_PATH}
+        NO_CMAKE_FIND_ROOT_PATH)
+# Find C++ compiler
+find_program(CMAKE_CXX_COMPILER avr-g++
+        PATHS ${ARDUINO_SDK_BIN_PATH}
+        NO_CMAKE_FIND_ROOT_PATH)
+# Find AR required for linkage
+find_program(CMAKE_AR avr-gcc-ar
+        PATHS ${ARDUINO_SDK_BIN_PATH}
+        NO_CMAKE_FIND_ROOT_PATH)
+# Find Ranlib required for linkage
+find_program(CMAKE_RANLIB avr-gcc-ranlib
+        PATHS ${ARDUINO_SDK_BIN_PATH}
+        NO_CMAKE_FIND_ROOT_PATH)
+# Find NM
+find_program(CMAKE_NM avr-gcc-nm
+        PATHS ${ARDUINO_SDK_BIN_PATH}
+        NO_CMAKE_FIND_ROOT_PATH)
 
 # where is the target environment
 set(CMAKE_FIND_ROOT_PATH "${ARDUINO_SDK_ROOT_PATH}")

@@ -7,13 +7,16 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Targets)
 
 include(MathUtils)
 include(ListUtils)
+include(StringUtils)
 include(PropertyUtils)
 
 include(BoardManager)
 include(RecipeParser)
 include(TargetFlagsManager)
+include(SourceFileManager)
 
 include(InitializeBuildSystem)
 
 include(ExecutableTarget)
 include(UploadTarget)
+include(CoreLibTarget)

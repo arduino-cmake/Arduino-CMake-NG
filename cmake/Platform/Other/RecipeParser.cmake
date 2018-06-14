@@ -1,20 +1,12 @@
 include(RecipePropertyValueResolver)
 
-function(_determine_compiler_language _return_var)
+function(_determine_compiler_language _language _return_var)
 
-    set(extra_args ${ARGN})
-    list(LENGTH extra_args num_of_extra_args)
-    if (${num_of_extra_args} GREATER 0)
-        list(GET extra_args 0 language)
-    else ()
-        set(language cpp) # Use C++ by default
-    endif ()
-
-    # Convert language to expected recipe format
-    if ("${language}" EQUAL "CXX")
+    if (NOT _language) # Use default language
         set(language cpp)
     else ()
-        string(TOLOWER "${language}" language)
+        # Convert language to expected recipe format
+        get_arduino_compliant_language_name(${_language} language)
     endif ()
 
     set(${_return_var} "${language}" PARENT_SCOPE)
@@ -23,9 +15,10 @@ endfunction()
 
 function(parse_compiler_recipe_flags _board_id _return_var)
 
-    set(extra_args ${ARGN})
+    set(single_args "LANGUAGE")
+    cmake_parse_arguments(recipe_flags "" "${single_args}" "" ${ARGN})
 
-    _determine_compiler_language(recipe_language "${extra_args}")
+    _determine_compiler_language("${recipe_flags_LANGUAGE}" recipe_language)
 
     set(original_list "${recipe_${recipe_language}_o_pattern}")
     set(final_recipe "")
@@ -33,6 +26,26 @@ function(parse_compiler_recipe_flags _board_id _return_var)
     # Filter unwanted patterns from the recipe, so that only wanted ones will be parsed
     list(FILTER original_list INCLUDE REGEX "(^[^\"].*[^\"]$)")
     list(FILTER original_list EXCLUDE REGEX "-o")
+
+    foreach (recipe_element ${original_list})
+        _resolve_recipe_property("${recipe_element}" "${_board_id}" resolved_element)
+        if (NOT "${resolved_element}" STREQUAL "") # Unresolved element, don't append
+            list(APPEND final_recipe "${resolved_element}")
+        endif ()
+    endforeach ()
+
+    set(${_return_var} "${final_recipe} " PARENT_SCOPE)
+
+endfunction()
+
+function(parse_linker_recpie_pattern _board_id _return_var)
+
+    set(original_list "${recipe_c_combine_pattern}")
+    set(final_recipe "")
+
+    # Filter unwanted patterns from the recipe, so that only wanted ones will be parsed
+    list(FILTER original_list INCLUDE REGEX "(^[^\"].*[^\"]$)")
+    list(FILTER original_list EXCLUDE REGEX "-[ol]")
 
     foreach (recipe_element ${original_list})
         _resolve_recipe_property("${recipe_element}" "${_board_id}" resolved_element)
