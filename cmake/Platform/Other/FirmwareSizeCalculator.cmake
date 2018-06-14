@@ -18,33 +18,42 @@ endfunction()
 function(format_output_message _message_prefix _sections _inner_sections _message_suffix
         _return_var)
 
-    set(extra_args ${ARGN})
-    list(LENGTH extra_args num_of_extra_args)
-    if (${num_of_extra_args} GREATER 0)
-        list(GET extra_args 0 use_special_characters)
-        if ("${use_special_characters}" STREQUAL "USE_SPECIAL_CHARACTER")
-            set(use_special_characters TRUE)
+    set(options USE_CUSTOM_CHARACTERS)
+    set(multi_args CUSTOM_CHARACTERS CUSTOM_CHAR_INDICES)
+    cmake_parse_arguments(format_args "${options}" "" "${multi_args}" ${ARGN})
+
+    if (format_args_USE_CUSTOM_CHARACTERS)
+        if (NOT format_args_CUSTOM_CHARACTERS OR NOT format_args_CUSTOM_CHAR_INDICES)
+            set(valid_custom_chars FALSE)
+            string(CONCAT message_str "If custom characters are to be used"
+                    "," "they must also be provided" "," "along with their indices")
+            message(WARNING "${message_str}")
         else ()
-            set(use_special_characters FALSE)
-        endif ()
-        if (use_special_characters AND ${num_of_extra_args} GREATER 1)
-            list(GET extra_args 1 special_character)
-            list(GET extra_args 2 section_index)
-        else ()
-            set(section_index -1)
+            set(valid_custom_chars TRUE)
         endif ()
     endif ()
 
     set(message "${_message_prefix}")
 
+    # Exclude "name" inner-section as it's treated differently
     list(FILTER _inner_sections EXCLUDE REGEX "name")
+    # Decrement all custom chars' indices if they should be used since the "name" has been removed
+    if (valid_custom_chars)
+        set(new_custom_char_indices "")
+        foreach (char ${format_args_CUSTOM_CHAR_INDICES})
+            math(EXPR char "${char}-1")
+            list(APPEND new_custom_char_indices ${char})
+        endforeach ()
+        set(format_args_CUSTOM_CHAR_INDICES "${new_custom_char_indices}")
+    endif ()
 
     foreach (section ${_sections})
         set(index 0)
         string(APPEND message "[${${section}_name}: ")
         foreach (inner_section ${_inner_sections})
-            if (${index} EQUAL ${section_index})
-                string(APPEND message "${${section}_${inner_section}}${special_character} ")
+            if (valid_custom_chars AND ${index} IN_LIST format_args_CUSTOM_CHAR_INDICES)
+                string(APPEND message "${${section}_${inner_section}}")
+                string(APPEND message "${format_args_CUSTOM_CHARACTERS} ")
             else ()
                 string(APPEND message "${${section}_${inner_section}} ")
             endif ()
@@ -84,7 +93,7 @@ function(format_image_size _original_size_list _image_type _return_var)
 
     set(sections "program_entry" "data_entry")
     format_output_message("${_image_type} Size: " "${sections}" "${inner_sections}" "on ${MCU}"
-            formatted_message USE_SPECIAL_CHARACTER "%" 3)
+            formatted_message USE_CUSTOM_CHARACTERS CUSTOM_CHARACTERS "%" CUSTOM_CHAR_INDICES 3)
 
     set(${_return_var} "${formatted_message}" PARENT_SCOPE)
 
