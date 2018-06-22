@@ -1,3 +1,5 @@
+include(${CMAKE_CURRENT_LIST_DIR}/Platform/Other/FindArduinoSDK.cmake)
+
 set(CMAKE_SYSTEM_NAME Arduino)
 
 # Add current directory to CMake Module path automatically
@@ -10,9 +12,8 @@ set(ARDUINO_CMAKE_TOOLCHAIN_DIR ${CMAKE_CURRENT_LIST_DIR} CACHE PATH
 
 # Set default path if none is set
 if (NOT ARDUINO_SDK_PATH)
-    if (${CMAKE_HOST_WIN32})
-        set(ARDUINO_SDK_PATH "C:/Program Files (x86)/Arduino")
-    endif ()
+    find_arduino_sdk(arduino_sdk_path)
+    set(ARDUINO_SDK_PATH "${arduino_sdk_path}" CACHE PATH "Arduino SDK Path")
 endif ()
 
 set(ARDUINO_SDK_BIN_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr/bin" CACHE PATH
