@@ -1,3 +1,7 @@
+#=============================================================================#
+# Setups any remaining Arduino platform-related flags which haven't been set
+# when platform file has been read
+#=============================================================================#
 function(setup_remaining_platform_flags)
 
     set(ARDUINO_CMAKE_AVRDUDE_FLAGS ${tools_avrdude_upload_params_verbose})
