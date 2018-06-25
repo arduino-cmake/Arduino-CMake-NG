@@ -1,3 +1,11 @@
+#=============================================================================#
+# Adds/Creates an Arduino-Executable target with the given name,
+# using the given board ID and source files.
+#       _target_name - Name of the target (Executable) to create.
+#       _board_id - ID of the board to bind to the target (Each target can have a single board).
+#       _src_files - List of source file (Could also be headers for code-inspection in some IDEs)
+#                    to create the executable from, just like it's done with a standard executable.
+#=============================================================================#
 function(add_arduino_executable _target_name _board_id _src_files)
 
     add_executable(${_target_name} "${_src_files}")
