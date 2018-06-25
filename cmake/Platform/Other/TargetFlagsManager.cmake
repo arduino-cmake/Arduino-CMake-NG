@@ -1,3 +1,8 @@
+#=============================================================================#
+# Sets compiler flags on the given target, according also to the given board ID.
+#       _target_name - Name of the target (Executable or Library) to set flags on.
+#       _board_id - Target's bounded board ID.
+#=============================================================================#
 function(set_compiler_target_flags _target_name _board_id)
 
     set(option_args PRIVATE PUBLIC INTERFACE)
@@ -21,9 +26,13 @@ function(set_compiler_target_flags _target_name _board_id)
         target_compile_options(${_target_name} PUBLIC ${compiler_recipe_flags})
     endif ()
 
-
 endfunction()
 
+#=============================================================================#
+# Sets linker flags on the given target, according also to the given board ID.
+#       _target_name - Name of the target (Executable or Library) to set flags on.
+#       _board_id - Target's bounded board ID.
+#=============================================================================#
 function(set_linker_flags _target_name _board_id)
 
     parse_linker_recpie_pattern("${_board_id}" linker_recipe_flags)
@@ -32,6 +41,12 @@ function(set_linker_flags _target_name _board_id)
 
 endfunction()
 
+#=============================================================================#
+# Sets compiler and linker flags on the given Executable target,
+# according also to the given board ID.
+#       _target_name - Name of the target (Executable) to set flags on.
+#       _board_id - Target's bounded board ID.
+#=============================================================================#
 function(set_executable_target_flags _target_name _board_id)
 
     set_compiler_target_flags(${_target_name} "${_board_id}")
@@ -44,6 +59,11 @@ function(set_executable_target_flags _target_name _board_id)
 
 endfunction()
 
+#=============================================================================#
+# Sets upload/flash flags on the given target, according also to the given board ID.
+#       _target_name - Name of the target (Executable) to set flags on.
+#       _board_id - Target's bounded board ID.
+#=============================================================================#
 function(set_upload_target_flags _target_name _board_id _upload_port _return_var)
 
     set(upload_flags "")
