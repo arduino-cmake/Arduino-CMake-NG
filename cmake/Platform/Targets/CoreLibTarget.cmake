@@ -2,7 +2,7 @@
 # Checks whether the given core is valid by searching it in the list of known cores.
 # The function doesn't return on failure but fails generation completely instead.
 #=============================================================================#
-function(_is_board_core_valid _board_core)
+function(_is_board_core_valid _board_core _board_id)
 
     list(FIND ARDUINO_CMAKE_PLATFORM_CORES "${board_core}" index)
     if (${index} LESS 0)
@@ -15,7 +15,7 @@ endfunction()
 # Checks whether the given variant is valid by searching it in the list of known variants.
 # The function doesn't return on failure but fails generation completely instead.
 #=============================================================================#
-function(_is_board_variant_valid _board_variant)
+function(_is_board_variant_valid _board_variant _board_id)
 
     list(FIND ARDUINO_CMAKE_PLATFORM_VARIANTS "${board_variant}" index)
     if (${index} LESS 0)
@@ -32,9 +32,9 @@ endfunction()
 #=============================================================================#
 function(_get_board_core _board_id _return_var)
 
-    get_board_property("${_board_id}" "build.core" board_core)
+    get_board_property(${_board_id} "build.core" board_core)
     string(TOLOWER ${board_core} board_core)
-    _is_board_core_valid(${board_core})
+    _is_board_core_valid(${board_core} ${_board_id})
 
     set(${_return_var} ${board_core} PARENT_SCOPE)
 
@@ -48,9 +48,9 @@ endfunction()
 #=============================================================================#
 function(_get_board_variant _board_id _return_var)
 
-    get_board_property("${_board_id}" "build.variant" board_variant)
+    get_board_property(${_board_id} "build.variant" board_variant)
     string(TOLOWER ${board_variant} board_variant)
-    _is_board_variant_valid(${board_variant})
+    _is_board_variant_valid(${board_variant} ${_board_id})
 
     set(${_return_var} ${board_variant} PARENT_SCOPE)
 
@@ -104,9 +104,9 @@ function(add_arduino_core_lib _target_name _board_id)
         return()
     else () # Core-Lib target needs to be created
         # Get board's core
-        _get_board_core("${_board_id}" board_core)
+        _get_board_core(${_board_id} board_core)
         # Get board's variant
-        _get_board_variant("${_board_id}" board_variant)
+        _get_board_variant(${_board_id} board_variant)
 
         find_source_files("${ARDUINO_CMAKE_CORE_${board_core}_PATH}" core_sources)
 
