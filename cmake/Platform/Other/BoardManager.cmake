@@ -4,9 +4,9 @@
 #        If board has multiple CPUS, and _board_cpu is not defined or incorrect, 
 #        fatal error will be invoked.
 #
-#        _return_var - Board ID constructed from board's name and CPU.
-#        _board_name - name of the board, eg.: nano, uno, etc...
-#        _board_cpu - explicit cpu of the board if there are multiple versions of the board.
+#       _return_var - Board ID constructed from board's name and CPU.
+#       _board_name - name of the board, eg.: nano, uno, etc...
+#       _board_cpu - explicit cpu of the board if there are multiple versions of the board.
 #
 #=============================================================================#
 function(get_board_id _return_var _board_name)
@@ -47,10 +47,10 @@ endfunction()
 # if not found than try to find value at ${board_name}.menu.cpu.${board_cpu}.${_property}
 # if not found that show fatal error
 #
-#        _board_id - return value from function "_get_board_id (board_name, board_cpu)". 
+#       _board_id - return value from function "_get_board_id (board_name, board_cpu)".
 #                   It contains board_name and board_cpu.
-#        _property - property name for the board, eg.: bootloader.high_fuses
-#        _return_var - Name of variable in parent-scope holding the return value.
+#       _property - property name for the board, eg.: bootloader.high_fuses
+#       _return_var - Name of variable in parent-scope holding the return value.
 #=============================================================================#
 function(get_board_property _board_id _property _return_var)
 
@@ -85,10 +85,10 @@ endfunction()
 # if not found than try to find value at ${board_name}.menu.cpu.${board_cpu}.${_property}
 # if not found that show fatal error
 #
-#        _board_id - return value from function "_get_board_id (board_name, board_cpu)".
+#       _board_id - return value from function "_get_board_id (board_name, board_cpu)".
 #                   It contains board_name and board_cpu.
-#        _property - property name for the board, eg.: bootloader.high_fuses
-#        _return_var - Name of variable in parent-scope holding the return value.
+#       _property - property name for the board, eg.: bootloader.high_fuses
+#       _return_var - Name of variable in parent-scope holding the return value.
 #=============================================================================#
 function(try_get_board_property _board_id _property _return_var)
 
@@ -111,6 +111,5 @@ function(try_get_board_property _board_id _property _return_var)
             set(${_return_var} ${${board_name}_menu_cpu_${board_cpu}_${property}} PARENT_SCOPE)
         endif ()
     endif ()
-
 
 endfunction()

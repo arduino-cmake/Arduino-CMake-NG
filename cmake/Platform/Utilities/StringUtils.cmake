@@ -1,3 +1,11 @@
+#=============================================================================#
+# Converts the given language string to a format recognized by CMake, thus 'compliant'.
+# Language means programming language, such as 'C++', which gets converted to 'CXX'.
+#       _language - Language to get its' CMake-Compliant version.
+#       _return_var - Name of variable in parent-scope holding the return value.
+#       Returns - CMake-Compliant version of the given language.
+#                 If input language is invalid, an error is printed.
+#=============================================================================#
 function(get_cmake_compliant_language_name _language _return_var)
 
     string(TOLOWER "${_language}" language)
@@ -16,6 +24,14 @@ function(get_cmake_compliant_language_name _language _return_var)
 
 endfunction()
 
+#=============================================================================#
+# Converts the given language string to a format recognized by Arduino, thus 'compliant'.
+# Language means programming language, such as 'C++', which gets converted to 'cpp'.
+#       _language - Language to get its' Arduino-Compliant version.
+#       _return_var - Name of variable in parent-scope holding the return value.
+#       Returns - Arduino-Compliant version of the given language.
+#                 If input language is invalid, an error is printed.
+#=============================================================================#
 function(get_arduino_compliant_language_name _language _return_var)
 
     string(TOLOWER "${_language}" language)
