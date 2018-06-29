@@ -34,7 +34,11 @@ function(initialize_arduino_platform)
 
     if (NOT DEFINED ARDUINO_CMAKE_PLATFORM_NAME OR NOT DEFINED ARDUINO_CMAKE_PLATFORM_PATH)
         if (USE_DEFAULT_PLATFORM_IF_NONE_EXISTING)
-            set(ARDUINO_CMAKE_PLATFORM_NAME "arduino" CACHE STRING "")
+            if (${CMAKE_HOST_ARCHLINUX} AND ${USE_ARCHLINUX_BUILTIN_SUPPORT})
+                set(ARDUINO_CMAKE_PLATFORM_NAME "archlinux-arduino" CACHE STRING "")
+            else ()
+                set(ARDUINO_CMAKE_PLATFORM_NAME "arduino" CACHE STRING "")
+            endif ()
             set(ARDUINO_CMAKE_PLATFORM_ARCHITECTURE "avr" CACHE STRING "")
             string(CONCAT platform_path "${ARDUINO_SDK_PATH}"
                     /hardware/
