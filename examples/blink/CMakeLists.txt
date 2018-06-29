@@ -4,5 +4,9 @@ project(Blink LANGUAGES C CXX ASM)
 
 get_board_id(board_id nano atmega328)
 
-add_arduino_executable(Blink "${board_id}" blink.cpp)
+add_arduino_executable(Blink ${board_id} blink.cpp)
+
+find_arduino_library(servo_lib Stepper)
+link_arduino_library(Blink servo_lib ${board_id})
+
 #upload_arduino_target(Blink "${board_id}" COM3)
