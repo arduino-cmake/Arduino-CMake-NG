@@ -9,7 +9,6 @@ function(find_arduino_library _target_name _library_name)
     if (NOT library_path OR "${library_path}" MATCHES "NOTFOUND")
         message(SEND_ERROR "Couldn't find library named ${_library_name}")
     else () # Library is found
-
         find_file(library_main_header
                 NAME "${_library_name}.h" "${_library_name}.hpp"
                 PATHS "${library_path}"
@@ -20,7 +19,6 @@ function(find_arduino_library _target_name _library_name)
             message(SEND_ERROR
                     "${_library_name} doesn't have a header file under the 'src' directory")
         else ()
-
             # For now, assume the source file is located in the same directory
             # ToDo: Handle situations when source file don't exist or located under additional dirs
             find_source_files("${library_path}/src" library_sources)
@@ -33,9 +31,7 @@ function(find_arduino_library _target_name _library_name)
                         ${library_main_header} "${library_sources}")
                 target_include_directories(${_target_name} PUBLIC "${library_path}/src")
             endif ()
-
         endif ()
-
     endif ()
 
 endfunction()
