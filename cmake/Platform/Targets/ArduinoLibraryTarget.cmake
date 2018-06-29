@@ -1,4 +1,21 @@
-function(find_arduino_library _target_name _library_name)
+#=============================================================================#
+# Sets compiler and linker flags on the given library target.
+# Changes are kept even outside the scope of the function since they apply on a target.
+#       _library_target - Name of the library target.
+#       _board_id - Board ID associated with the library. Some flags require it.
+#=============================================================================#
+function(_set_library_flags _library_target _board_id)
+
+    # Set C++ compiler flags
+    get_cmake_compliant_language_name(cpp flags_language)
+    set_compiler_target_flags(${_library_target} "${_board_id}" PUBLIC LANGUAGE ${flags_language})
+
+    # Set linker flags
+    set_linker_flags(${_library_target} "${_board_id}")
+
+endfunction()
+
+function(find_arduino_library _target_name _library_name _board_id)
 
     find_path(library_path
             NAME library.properties
@@ -30,6 +47,7 @@ function(find_arduino_library _target_name _library_name)
                 add_library(${_target_name} STATIC
                         ${library_main_header} "${library_sources}")
                 target_include_directories(${_target_name} PUBLIC "${library_path}/src")
+                _set_library_flags(${_target_name} ${_board_id})
             endif ()
         endif ()
     endif ()
