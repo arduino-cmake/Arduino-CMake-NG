@@ -2,7 +2,7 @@ function(read_properties _properties_list)
 
     list(FILTER _properties_list INCLUDE REGEX "^[^#]+=.*")
 
-    foreach (property ${properties})
+    foreach (property ${_properties_list})
         _get_property_name(${property} property_name)
         if ("${property_name}" MATCHES "name") # Property contains 'name' string
             continue() # Don't process further - Unnecessary information
