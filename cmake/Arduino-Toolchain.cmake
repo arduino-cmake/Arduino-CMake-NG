@@ -1,3 +1,34 @@
+function(find_required_programs)
+
+    # Find ASM compiler
+    find_program(CMAKE_ASM_COMPILER avr-gcc
+            PATHS ${ARDUINO_SDK_BIN_PATH}
+            NO_CMAKE_FIND_ROOT_PATH)
+    # Find C compiler
+    find_program(CMAKE_C_COMPILER avr-gcc
+            PATHS ${ARDUINO_SDK_BIN_PATH}
+            NO_CMAKE_FIND_ROOT_PATH)
+    # Find C++ compiler
+    find_program(CMAKE_CXX_COMPILER avr-g++
+            PATHS ${ARDUINO_SDK_BIN_PATH}
+            NO_CMAKE_FIND_ROOT_PATH)
+    # Find AR required for linkage
+    find_program(CMAKE_AR avr-gcc-ar
+            PATHS ${ARDUINO_SDK_BIN_PATH}
+            NO_CMAKE_FIND_ROOT_PATH)
+    # Find Ranlib required for linkage
+    find_program(CMAKE_RANLIB avr-gcc-ranlib
+            PATHS ${ARDUINO_SDK_BIN_PATH}
+            NO_CMAKE_FIND_ROOT_PATH)
+    # Find NM
+    find_program(CMAKE_NM avr-gcc-nm
+            PATHS ${ARDUINO_SDK_BIN_PATH}
+            NO_CMAKE_FIND_ROOT_PATH)
+
+endfunction()
+
+include(${CMAKE_CURRENT_LIST_DIR}/Platform/Other/FindArduinoSDK.cmake)
+
 set(CMAKE_SYSTEM_NAME Arduino)
 
 # Add current directory to CMake Module path automatically
@@ -10,9 +41,8 @@ set(ARDUINO_CMAKE_TOOLCHAIN_DIR ${CMAKE_CURRENT_LIST_DIR} CACHE PATH
 
 # Set default path if none is set
 if (NOT ARDUINO_SDK_PATH)
-    if (${CMAKE_HOST_WIN32})
-        set(ARDUINO_SDK_PATH "C:/Program Files (x86)/Arduino")
-    endif ()
+    find_arduino_sdk(arduino_sdk_path)
+    set(ARDUINO_SDK_PATH "${arduino_sdk_path}" CACHE PATH "Arduino SDK Path")
 endif ()
 
 set(ARDUINO_SDK_BIN_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr/bin" CACHE PATH
@@ -20,30 +50,7 @@ set(ARDUINO_SDK_BIN_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr/bin" CACHE PATH
 set(ARDUINO_SDK_ROOT_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr" CACHE PATH
         "Path to Aduino SDK's sys-root folder")
 
-# Find ASM compiler
-find_program(CMAKE_ASM_COMPILER avr-gcc
-        PATHS ${ARDUINO_SDK_BIN_PATH}
-        NO_CMAKE_FIND_ROOT_PATH)
-# Find C compiler
-find_program(CMAKE_C_COMPILER avr-gcc
-        PATHS ${ARDUINO_SDK_BIN_PATH}
-        NO_CMAKE_FIND_ROOT_PATH)
-# Find C++ compiler
-find_program(CMAKE_CXX_COMPILER avr-g++
-        PATHS ${ARDUINO_SDK_BIN_PATH}
-        NO_CMAKE_FIND_ROOT_PATH)
-# Find AR required for linkage
-find_program(CMAKE_AR avr-gcc-ar
-        PATHS ${ARDUINO_SDK_BIN_PATH}
-        NO_CMAKE_FIND_ROOT_PATH)
-# Find Ranlib required for linkage
-find_program(CMAKE_RANLIB avr-gcc-ranlib
-        PATHS ${ARDUINO_SDK_BIN_PATH}
-        NO_CMAKE_FIND_ROOT_PATH)
-# Find NM
-find_program(CMAKE_NM avr-gcc-nm
-        PATHS ${ARDUINO_SDK_BIN_PATH}
-        NO_CMAKE_FIND_ROOT_PATH)
+find_required_programs()
 
 # where is the target environment
 set(CMAKE_FIND_ROOT_PATH "${ARDUINO_SDK_ROOT_PATH}")

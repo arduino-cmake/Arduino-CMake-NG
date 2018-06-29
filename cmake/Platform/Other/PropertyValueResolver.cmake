@@ -1,3 +1,11 @@
+#=============================================================================#
+# Resolves the given value by trying to find a variable with the same name.
+# The variable can be a Cache variable or a board property.
+# The original, given value is then replaced with the resolved one.
+#        _value - Value to resolve, enclosed in curly-brackets ('{}')
+#        _return_var - Name of variable in parent-scope holding the return value.
+#        Returns - Resolved value if one is found, nothing otherwise.
+#=============================================================================#
 function(_resolve_single_value _value _return_var)
 
     set(extra_args ${ARGN})
@@ -24,6 +32,12 @@ function(_resolve_single_value _value _return_var)
 
 endfunction()
 
+#=============================================================================#
+# Resolves the given value by trying to find a variable with the same name for each 'inner-value'.
+#        _value - Value to resolve as a list of 'inner-values', enclosed in curly-brackets ('{}')
+#        _return_var - Name of variable in parent-scope holding the return value.
+#        Returns - Resolved list of values. If nothing is resolved, simply the original list.
+#=============================================================================#
 function(_resolve_list_value _value _return_var)
 
     set(index 0)
@@ -31,8 +45,7 @@ function(_resolve_list_value _value _return_var)
 
     foreach (value_entry ${_value})
         set(index_inc 1) # Always reset incrementation to 1
-        string(REGEX MATCH "^{.+}$" wrapping_brackets "${value_entry}")
-        if (NOT "${wrapping_brackets}" STREQUAL "") # Wrapped with brackets - resolvable
+        if ("${value_entry}" MATCHES "^{.+}$") # Wrapped with brackets - resolvable
             _resolve_single_value(${value_entry} resolved_entry "${ARGN}")
             if (DEFINED resolved_entry) # Entry has been resolved
                 if ("${resolved_entry}" STREQUAL "") # Resolved entry is an empty string
@@ -56,6 +69,13 @@ function(_resolve_list_value _value _return_var)
 
 endfunction()
 
+#=============================================================================#
+# Resolves the given value by trying to find a variable with the same name.
+# The value can be a single value or a list value, and is resolved accordingly.
+#        _value - Value to resolve.
+#        _return_var - Name of variable in parent-scope holding the return value.
+#        Returns - Resolved value if one is found, original value otherwise.
+#=============================================================================#
 function(_resolve_value _value _return_var)
 
     # Don't resolve empty values - There's nothing to resolve
@@ -69,8 +89,7 @@ function(_resolve_value _value _return_var)
     if (${value_list_length} GREATER 1)
         _resolve_list_value("${_value}" resolved_var "${ARGN}")
     else ()
-        string(REGEX MATCH "^{.+}$" wrapping_brackets "${_value}")
-        if ("${wrapping_brackets}" STREQUAL "") # No wrapping brackets, shouldn't be resolved
+        if (NOT "${_value}" MATCHES "^{.+}$") # No wrapping brackets, shouldn't be resolved
             set(resolved_var "${_value}")
         else ()
             _resolve_single_value("${_value}" resolved_var "${ARGN}")

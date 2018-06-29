@@ -1,12 +1,12 @@
 #=============================================================================#
-#        returns BOARD_ID constructing from _board_name and _board_cpu, 
-#        if board doesn't has multiple cpus then BOARD_ID = _board_name.
-#        If board has multiple CPUS, and _board_cpu is not defined or incorrect, 
-#        fatal error will be invoked.
+# Creates a board ID from the given board name and optionally cpu, effectively creating an usable ID.
+# If board has multiple CPUs, and the cpu argument isn't provided or incorrect,
+# fatal error will be invoked.
 #
-#        _return_var - Board ID constructed from board's name and CPU.
-#        _board_name - name of the board, eg.: nano, uno, etc...
-#        _board_cpu - explicit cpu of the board if there are multiple versions of the board.
+#       _return_var - Board ID constructed from board's name and CPU.
+#       _board_name - name of the board, eg.: nano, uno, etc...
+#       _board_cpu - explicit cpu of the board if there are multiple versions of the board.
+#       Returns - Board ID in the form of 'Board_Name.Board_CPU'.
 #
 #=============================================================================#
 function(get_board_id _return_var _board_name)
@@ -41,16 +41,15 @@ function(get_board_id _return_var _board_name)
 endfunction()
 
 #=============================================================================#
-# Gets board property.
-# Reconstructs board_name and board_cpu from _board_id and tries to find value at 
-# ${board_name}.${_property},
-# if not found than try to find value at ${board_name}.menu.cpu.${board_cpu}.${_property}
-# if not found that show fatal error
+# Gets the given board property from the given board, identified by a board ID.
+# Properties are name-value pairs that were parsed earlier during platform initialization.
+# If a property isn't found a fatal error is invoked.
 #
-#        _board_id - return value from function "_get_board_id (board_name, board_cpu)". 
-#                   It contains board_name and board_cpu.
-#        _property - property name for the board, eg.: bootloader.high_fuses
-#        _return_var - Name of variable in parent-scope holding the return value.
+#       _board_id - Board ID asociated with the property.
+#       _property - Name of the property to get its' value, eg.: bootloader.high_fuses
+#       _return_var - Name of variable in parent-scope holding the return value.
+#       Returns - Value of the retrieved property.
+#
 #=============================================================================#
 function(get_board_property _board_id _property _return_var)
 
@@ -79,16 +78,14 @@ function(get_board_property _board_id _property _return_var)
 endfunction()
 
 #=============================================================================#
-# Gets board property.
-# Reconstructs board_name and board_cpu from _board_id and tries to find value at
-# ${board_name}.${_property},
-# if not found than try to find value at ${board_name}.menu.cpu.${board_cpu}.${_property}
-# if not found that show fatal error
+# Same as 'get_board_property' except it fails gracefully by returning an empty string
+# if a property isn't found, instead of invoking a fatal error.
 #
-#        _board_id - return value from function "_get_board_id (board_name, board_cpu)".
-#                   It contains board_name and board_cpu.
-#        _property - property name for the board, eg.: bootloader.high_fuses
-#        _return_var - Name of variable in parent-scope holding the return value.
+#       _board_id - Board ID asociated with the property.
+#       _property - Name of the property to get its' value, eg.: bootloader.high_fuses
+#       _return_var - Name of variable in parent-scope holding the return value.
+#       Returns - Value of the retrieved property.
+#
 #=============================================================================#
 function(try_get_board_property _board_id _property _return_var)
 
@@ -111,6 +108,5 @@ function(try_get_board_property _board_id _property _return_var)
             set(${_return_var} ${${board_name}_menu_cpu_${board_cpu}_${property}} PARENT_SCOPE)
         endif ()
     endif ()
-
 
 endfunction()

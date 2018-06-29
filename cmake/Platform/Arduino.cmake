@@ -14,9 +14,12 @@ include(BoardManager)
 include(RecipeParser)
 include(TargetFlagsManager)
 include(SourceFileManager)
+include(DefaultsManager)
 
-include(InitializeBuildSystem)
+include(BuildSystemInitializer)
 
 include(ExecutableTarget)
 include(UploadTarget)
 include(CoreLibTarget)
+
+initialize_build_system()
