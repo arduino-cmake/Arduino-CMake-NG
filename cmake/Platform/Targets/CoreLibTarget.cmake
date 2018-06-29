@@ -101,7 +101,6 @@ function(add_arduino_core_lib _target_name _board_id)
             # Link Core-Lib to executable
             target_link_libraries(${_target_name} ${core_lib_target})
         endif ()
-        return()
     else () # Core-Lib target needs to be created
         # Get board's core
         _get_board_core(${_board_id} board_core)
@@ -111,6 +110,7 @@ function(add_arduino_core_lib _target_name _board_id)
         find_source_files("${ARDUINO_CMAKE_CORE_${board_core}_PATH}" core_sources)
 
         add_library(${core_lib_target} STATIC "${core_sources}")
+
         # Include platform's core and variant directories
         target_include_directories(${core_lib_target} PUBLIC
                 "${ARDUINO_CMAKE_CORE_${board_core}_PATH}")
@@ -122,6 +122,9 @@ function(add_arduino_core_lib _target_name _board_id)
         # Link Core-Lib to executable target
         if (TARGET ${_target_name})
             target_link_libraries(${_target_name} PUBLIC "${core_lib_target}")
+            set(${_target_name}_CORE_LIB_TARGET "${core_lib_target}" CACHE STRING
+                    "Core library target linked to the ${_target_name} target")
+            mark_as_advanced(${_target_name}_CORE_LIB_TARGET)
         endif ()
     endif ()
 
