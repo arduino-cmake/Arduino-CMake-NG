@@ -1,12 +1,10 @@
-function(read_properties _properties_file_path)
+function(read_properties _properties_list)
 
-    file(STRINGS ${_properties_file_path} properties)  # Settings file split into lines
-    list(FILTER properties INCLUDE REGEX "^[^#]+=.*")
+    list(FILTER _properties_list INCLUDE REGEX "^[^#]+=.*")
 
     foreach (property ${properties})
         _get_property_name(${property} property_name)
-        string(REGEX MATCH "name" property_name_string_name "${property_name}")
-        if (NOT ${property_name_string_name} STREQUAL "") # Property contains 'name' string
+        if ("${property_name}" MATCHES "name") # Property contains 'name' string
             continue() # Don't process further - Unnecessary information
         endif ()
 
@@ -19,5 +17,12 @@ function(read_properties _properties_file_path)
         set(${property_cache_name} ${resolved_property_value} CACHE STRING "")
 
     endforeach ()
+
+endfunction()
+
+function(read_properties_from_file _properties_file_path)
+
+    file(STRINGS ${_properties_file_path} properties)
+    read_properties("${properties}")
 
 endfunction()

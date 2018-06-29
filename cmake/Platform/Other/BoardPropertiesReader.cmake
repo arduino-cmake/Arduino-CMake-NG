@@ -1,28 +1,14 @@
 function(read_boards_properties _boards_properties_file)
 
-    file(STRINGS ${_boards_properties_file} properties)  # Settings file split into lines
-    list(FILTER properties INCLUDE REGEX "^[^#]+=.*")
+    file(STRINGS ${_boards_properties_file} properties)
+    read_properties("${properties}")
 
-    foreach (property ${properties})
-        _get_property_name(${property} property_name)
-        string(REGEX MATCH "name" property_name_string_name "${property_name}")
-        if (NOT ${property_name_string_name} STREQUAL "") # Property contains 'name' string
-            string(REGEX MATCH "[^.]+" board_name "${property_name}")
-            if (board_list)
-                list(APPEND board_list ${board_name})
-            else ()
-                set(board_list ${board_name})
-            endif ()
-            continue() # Don't process further - Unnecessary information
-        endif ()
+    list(FILTER properties INCLUDE REGEX "name")
 
-        _get_property_value(${property} property_value)
-        # Create a list if values are separated by spaces
-        string(REPLACE " " ";" property_value "${property_value}")
-        _resolve_value("${property_value}" resolved_property_value)
-
-        string(REPLACE "." "_" property_cache_name ${property_name})
-        set(${property_cache_name} ${resolved_property_value} CACHE STRING "")
+    set(board_list)
+    foreach (name_property ${properties})
+        string(REGEX MATCH "[^.]+" board_name "${name_property}")
+        list(APPEND board_list "${board_name}")
     endforeach ()
 
     list(REMOVE_DUPLICATES board_list) # Remove possible duplicates

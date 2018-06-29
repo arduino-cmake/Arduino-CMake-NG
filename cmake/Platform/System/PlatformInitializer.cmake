@@ -20,8 +20,8 @@ endfunction()
 #=============================================================================#
 function(initialize_platform_properties)
 
-    read_properties(${ARDUINO_CMAKE_PLATFORM_PROPERTIES_FILE_PATH})
-    read_properties(${ARDUINO_CMAKE_PLATFORM_PROGRAMMERS_PATH})
+    read_properties_from_file(${ARDUINO_CMAKE_PLATFORM_PROPERTIES_FILE_PATH})
+    read_properties_from_file(${ARDUINO_CMAKE_PLATFORM_PROGRAMMERS_PATH})
     read_boards_properties(${ARDUINO_CMAKE_PLATFORM_BOARDS_PATH})
 
 endfunction()
