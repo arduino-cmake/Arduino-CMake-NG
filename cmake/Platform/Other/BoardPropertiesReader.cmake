@@ -40,7 +40,6 @@ function(_find_boards_cpus _properties _boards)
         string(REGEX MATCH "[^.]+=" cpu_entry "${cpu_property}")
         string(LENGTH ${cpu_entry} cpu_entry_length)
         decrement_integer(cpu_entry_length 1)
-        #math(EXPR cpu_entry_length ${cpu_entry_length}-1)
         string(SUBSTRING ${cpu_entry} 0 ${cpu_entry_length} cpu)
 
         if (DEFINED __${board_name}_cpu_list)
