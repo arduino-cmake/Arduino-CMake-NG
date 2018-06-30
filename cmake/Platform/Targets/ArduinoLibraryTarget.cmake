@@ -17,35 +17,34 @@ endfunction()
 
 function(find_arduino_library _target_name _library_name _board_id)
 
-    find_path(library_path
-            NAME library.properties
-            PATHS "${ARDUINO_SDK_LIBRARIES_PATH}"
-            PATH_SUFFIXES "${_library_name}"
-            NO_DEFAULT_PATH NO_CMAKE_PATH NO_CMAKE_FIND_ROOT_PATH)
+    set(library_path "${ARDUINO_SDK_LIBRARIES_PATH}/${_library_name}")
 
-    if (NOT library_path OR "${library_path}" MATCHES "NOTFOUND")
+    if (NOT EXISTS "${library_path}/library.properties")
         message(SEND_ERROR "Couldn't find library named ${_library_name}")
     else () # Library is found
-        find_file(library_main_header
-                NAME "${_library_name}.h" "${_library_name}.hpp"
-                PATHS "${library_path}"
-                PATH_SUFFIXES src
-                NO_DEFAULT_PATH NO_CMAKE_PATH NO_CMAKE_FIND_ROOT_PATH)
+        find_header_files("${library_path}/src" library_headers)
 
-        if (NOT library_main_header OR "${library_main_header}" MATCHES "NOTFOUND")
-            message(SEND_ERROR
-                    "${_library_name} doesn't have a header file under the 'src' directory")
+        if (NOT library_headers)
+            string(CONCAT error_message
+                    "${_library_name} "
+                    "doesn't have any header files under the 'src' directory")
+            message(SEND_ERROR "${error_message}")
         else ()
             # For now, assume the source file is located in the same directory
             # ToDo: Handle situations when source file don't exist or located under additional dirs
             find_source_files("${library_path}/src" library_sources)
 
             if (NOT library_sources)
-                message(SEND_ERROR
-                        "${_library_name} doesn't have a source file under the 'src' directory")
+                string(CONCAT error_message
+                        "${_library_name} "
+                        "doesn't have any source file under the 'src' directory")
+                message(SEND_ERROR "${error_message}")
             else ()
+                message(STATUS "Adding lib target ${_target_name}")
+                message(STATUS "Headers: ${library_headers}")
+                message(STATUS "Sources: ${library_sources}")
                 add_library(${_target_name} STATIC
-                        ${library_main_header} "${library_sources}")
+                        "${library_headers}" "${library_sources}")
                 target_include_directories(${_target_name} PUBLIC "${library_path}/src")
                 _set_library_flags(${_target_name} ${_board_id})
             endif ()
