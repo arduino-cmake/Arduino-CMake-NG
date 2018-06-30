@@ -15,13 +15,66 @@ function(_set_library_flags _library_target _board_id)
 
 endfunction()
 
+#=============================================================================#
+# Gets the library architecure if any, read from the given library properties file
+# which includes this information.
+#       _library_properties_file - Full path to a library's properties file.
+#       _return_var - Name of variable in parent-scope holding the return value.
+#       Returns - If library is architecure neutral, nothing is returned.
+#                 If library doesn't support the current platform's architecture,
+#                 "UNSUPPORTED" string is returned.
+#                 Otherwise, the platform's architecture is returned.
+#=============================================================================#
+function(_get_library_architecture _library_properties_file _return_var)
+
+    file(STRINGS ${_library_properties_file} library_properties)
+
+    list(FILTER library_properties INCLUDE REGEX "arch")
+    _get_property_value("${library_properties}" arch_list)
+    string(REPLACE "," ";" arch_list ${arch_list}) # Turn into a valid list
+
+    if ("${arch_list}" MATCHES "\\*")
+        return() # Any architecture is supported, return nothing
+    else ()
+        list(LENGTH arch_list num_of_supported_archs)
+        if (${num_of_supported_archs} GREATER 1) # Number of architectures is supported
+            list(FIND arch_list ${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE} platform_arch_index)
+            if (${platform_arch_index} LESS 0) # Our arch isn't supported
+                set(__arch "UNSUPPORTED")
+            else () # Our arch is indeed supported
+                set(__arch ${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE})
+            endif ()
+        else ()
+            list(GET arch_list 0 __arch)
+            if (NOT "${__arch}" STREQUAL "${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE}")
+                set(__arch "UNSUPPORTED") # Our arch isn't supported
+            endif ()
+        endif ()
+    endif ()
+
+    set(${_return_var} ${__arch} PARENT_SCOPE)
+
+endfunction()
+
 function(find_arduino_library _target_name _library_name _board_id)
 
     set(library_path "${ARDUINO_SDK_LIBRARIES_PATH}/${_library_name}")
+    set(library_properties_path "${library_path}/library.properties")
 
-    if (NOT EXISTS "${library_path}/library.properties")
+    if (NOT EXISTS "${library_properties_path}")
         message(SEND_ERROR "Couldn't find library named ${_library_name}")
     else () # Library is found
+        _get_library_architecture("${library_properties_path}" lib_arch)
+        if (lib_arch)
+            if ("${lib_arch}" MATCHES "UNSUPPORTED")
+                string(CONCAT error_message
+                        "${_library_name} "
+                        "library isn't supported on the platform's architecture "
+                        "${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE}")
+                message(SEND_ERROR ${error_message})
+            endif ()
+        endif ()
+
         find_header_files("${library_path}/src" library_headers RECURSE)
 
         if (NOT library_headers)
@@ -30,7 +83,6 @@ function(find_arduino_library _target_name _library_name _board_id)
                     "doesn't have any header files under the 'src' directory")
             message(SEND_ERROR "${error_message}")
         else ()
-            # ToDo: Handle situations when source file don't exist or located under additional dirs
             find_source_files("${library_path}/src" library_sources RECURSE)
 
             if (NOT library_sources)
@@ -39,9 +91,13 @@ function(find_arduino_library _target_name _library_name _board_id)
                         "doesn't have any source file under the 'src' directory")
                 message(SEND_ERROR "${error_message}")
             else ()
-                message(STATUS "Adding lib target ${_target_name}")
-                message(STATUS "Headers: ${library_headers}")
-                message(STATUS "Sources: ${library_sources}")
+                if (lib_arch) # Treat architecture-specific libraries specially
+                    # Filter any sources that aren't supported by the platform's architecture
+                    set(arch_filter "src\\/[^/]+\\.|${lib_arch}")
+                    list(FILTER library_headers INCLUDE REGEX ${arch_filter})
+                    list(FILTER library_sources INCLUDE REGEX ${arch_filter})
+                endif ()
+
                 add_library(${_target_name} STATIC
                         "${library_headers}" "${library_sources}")
                 target_include_directories(${_target_name} PUBLIC "${library_path}/src")
@@ -52,6 +108,12 @@ function(find_arduino_library _target_name _library_name _board_id)
 
 endfunction()
 
+#=============================================================================#
+# Links the given library target to the given "executable" target, but first,
+# it adds core lib's include directories to the libraries include directories.
+#       _target_name - Name of the "executable" target.
+#       _library_target_name - Name of the library target.
+#=============================================================================#
 function(link_arduino_library _target_name _library_target_name)
 
     if (NOT TARGET ${_target_name})

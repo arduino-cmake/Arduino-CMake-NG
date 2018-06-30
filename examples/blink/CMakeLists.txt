@@ -6,8 +6,11 @@ get_board_id(board_id nano atmega328)
 
 add_arduino_executable(Blink ${board_id} blink.cpp)
 
-find_arduino_library(servo_lib Stepper ${board_id})
+find_arduino_library(servo_lib Servo ${board_id})
 link_arduino_library(Blink servo_lib)
+
+find_arduino_library(stepper_lib Stepper ${board_id})
+link_arduino_library(Blink stepper_lib)
 
 find_arduino_library(ethernet_lib Ethernet ${board_id})
 link_arduino_library(Blink ethernet_lib)
