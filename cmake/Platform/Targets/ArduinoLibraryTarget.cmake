@@ -22,7 +22,7 @@ function(find_arduino_library _target_name _library_name _board_id)
     if (NOT EXISTS "${library_path}/library.properties")
         message(SEND_ERROR "Couldn't find library named ${_library_name}")
     else () # Library is found
-        find_header_files("${library_path}/src" library_headers)
+        find_header_files("${library_path}/src" library_headers RECURSE)
 
         if (NOT library_headers)
             string(CONCAT error_message
@@ -30,9 +30,8 @@ function(find_arduino_library _target_name _library_name _board_id)
                     "doesn't have any header files under the 'src' directory")
             message(SEND_ERROR "${error_message}")
         else ()
-            # For now, assume the source file is located in the same directory
             # ToDo: Handle situations when source file don't exist or located under additional dirs
-            find_source_files("${library_path}/src" library_sources)
+            find_source_files("${library_path}/src" library_sources RECURSE)
 
             if (NOT library_sources)
                 string(CONCAT error_message
