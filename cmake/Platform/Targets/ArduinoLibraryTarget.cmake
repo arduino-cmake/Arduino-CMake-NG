@@ -42,7 +42,7 @@ function(_get_library_architecture _library_properties_file _return_var)
             if (${platform_arch_index} LESS 0) # Our arch isn't supported
                 set(__arch "UNSUPPORTED")
             else () # Our arch is indeed supported
-                set(__arch ${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE})
+                set(__arch ${arch_list})
             endif ()
         else ()
             list(GET arch_list 0 __arch)
@@ -53,6 +53,36 @@ function(_get_library_architecture _library_properties_file _return_var)
     endif ()
 
     set(${_return_var} ${__arch} PARENT_SCOPE)
+
+endfunction()
+
+#=============================================================================#
+# Gets a filtered list of architectures that aren't compliant with the platform's architecture.
+# For example: If a list contains 'avr' and 'nrf52', while our arch is 'avr', 'nrf52' will be returned.
+#       _arch_list - List of all architectures probably read from a library's properties file
+#       _return_var - Name of variable in parent-scope holding the return value.
+#       Returns - Filtered list of architectures.
+#=============================================================================#
+function(_get_unsupported_architectures _arch_list _return_var)
+
+    cmake_parse_arguments(unsupported_archs "REGEX" "" "" ${ARGN})
+
+    list(FILTER _arch_list EXCLUDE REGEX
+            "${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE}")
+    if (unsupported_archs_REGEX) # Return in regex format
+        list(LENGTH _arch_list num_of_unsupported_archs)
+        set(unsupported_arch_list "")
+        set(arch_index 1)
+        foreach (unsupported_arch ${_arch_list})
+            string(APPEND unsupported_arch_list "${unsupported_arch}")
+            if (${arch_index} LESS ${num_of_unsupported_archs})
+                string(APPEND unsupported_arch_list "|")
+            endif ()
+            increment_integer(arch_index 1)
+        endforeach ()
+    endif ()
+
+    set(${_return_var} ${unsupported_arch_list} PARENT_SCOPE)
 
 endfunction()
 
@@ -91,11 +121,19 @@ function(find_arduino_library _target_name _library_name _board_id)
                         "doesn't have any source file under the 'src' directory")
                 message(SEND_ERROR "${error_message}")
             else ()
-                if (lib_arch) # Treat architecture-specific libraries specially
+                if (lib_arch) # Treat architecture-specific libraries differently
                     # Filter any sources that aren't supported by the platform's architecture
-                    set(arch_filter "src\\/[^/]+\\.|${lib_arch}")
-                    list(FILTER library_headers INCLUDE REGEX ${arch_filter})
-                    list(FILTER library_sources INCLUDE REGEX ${arch_filter})
+                    list(LENGTH lib_arch num_of_libs_archs)
+                    if (${num_of_libs_archs} GREATER 1)
+                        # Exclude all unsupported architectures, request filter in regex mode
+                        _get_unsupported_architectures("${lib_arch}" arch_filter REGEX)
+                        list(FILTER library_headers EXCLUDE REGEX ${arch_filter})
+                        list(FILTER library_sources EXCLUDE REGEX ${arch_filter})
+                    else ()
+                        set(arch_filter "src\\/[^/]+\\.|${lib_arch}")
+                        list(FILTER library_headers INCLUDE REGEX ${arch_filter})
+                        list(FILTER library_sources INCLUDE REGEX ${arch_filter})
+                    endif ()
                 endif ()
 
                 add_library(${_target_name} STATIC
