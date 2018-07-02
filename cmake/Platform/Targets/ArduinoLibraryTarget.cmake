@@ -127,13 +127,13 @@ function(find_arduino_library _target_name _library_name _board_id)
                     if (${num_of_libs_archs} GREATER 1)
                         # Exclude all unsupported architectures, request filter in regex mode
                         _get_unsupported_architectures("${lib_arch}" arch_filter REGEX)
-                        list(FILTER library_headers EXCLUDE REGEX ${arch_filter})
-                        list(FILTER library_sources EXCLUDE REGEX ${arch_filter})
+                        set(filter_type EXCLUDE)
                     else ()
                         set(arch_filter "src\\/[^/]+\\.|${lib_arch}")
-                        list(FILTER library_headers INCLUDE REGEX ${arch_filter})
-                        list(FILTER library_sources INCLUDE REGEX ${arch_filter})
+                        set(filter_type INCLUDE)
                     endif ()
+                    list(FILTER library_headers ${filter_type} REGEX ${arch_filter})
+                    list(FILTER library_sources ${filter_type} REGEX ${arch_filter})
                 endif ()
 
                 add_library(${_target_name} STATIC
