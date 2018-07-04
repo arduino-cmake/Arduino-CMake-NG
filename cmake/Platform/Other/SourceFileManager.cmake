@@ -66,3 +66,16 @@ function(set_source_files_pattern)
             "Header Files Pattern")
 
 endfunction()
+
+function(get_source_file_includes _source_file _return_var)
+
+    if (NOT EXISTS "${_source_file}")
+        message(SEND_ERROR "Can't find includs, source file doesn't exist: ${_source_file}")
+    endif ()
+
+    file(STRINGS ${_source_file} locs)
+    list(FILTER locs INCLUDE REGEX "^#.+[\">]$")
+
+    set(${_return_var} ${locs} PARENT_SCOPE)
+
+endfunction()
