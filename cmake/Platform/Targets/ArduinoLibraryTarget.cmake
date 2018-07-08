@@ -88,14 +88,11 @@ endfunction()
 
 function(_add_arduino_library _target_name _board_id _sources)
 
-    cmake_parse_arguments(library "" "ARCH" "" ${ARGN})
-
-    add_library(${_target_name} STATIC "${_sources}")
-
-    get_include_directories("${_sources}" include_dirs)
-    target_include_directories(${_target_name} PUBLIC ${include_dirs})
-
-    _set_library_flags(${_target_name} ${_board_id})
+    _add_arduino_cmake_library(${_target_name} ${_board_id} "${_sources}" "${ARGN}")
+    find_dependent_platform_libraries("${_sources}" lib_platform_libs)
+    foreach (platform_lib ${lib_platform_libs})
+        link_platform_library(${_target_name} ${platform_lib} ${_board_id})
+    endforeach ()
 
 endfunction()
 
@@ -133,23 +130,7 @@ function(find_arduino_library _target_name _library_name _board_id)
                 message(SEND_ERROR "${error_message}")
             else ()
                 set(sources ${library_headers} ${library_sources})
-
-                if (lib_arch) # Treat architecture-specific libraries differently
-                    # Filter any sources that aren't supported by the platform's architecture
-                    list(LENGTH lib_arch num_of_libs_archs)
-                    if (${num_of_libs_archs} GREATER 1)
-                        # Exclude all unsupported architectures, request filter in regex mode
-                        _get_unsupported_architectures("${lib_arch}" arch_filter REGEX)
-                        set(filter_type EXCLUDE)
-                    else ()
-                        set(arch_filter "src\\/[^/]+\\.|${lib_arch}")
-                        set(filter_type INCLUDE)
-                    endif ()
-                    list(FILTER sources ${filter_type} REGEX ${arch_filter})
-                endif ()
-
-                _add_arduino_library(${_target_name} ${_board_id} "${sources}")
-
+                _add_arduino_library(${_target_name} ${_board_id} "${sources}" ARCH ${lib_arch})
             endif ()
         endif ()
     endif ()
@@ -172,11 +153,6 @@ function(link_arduino_library _target_name _library_target_name)
         message(FATAL_ERROR "Core Library target doesn't exist. This is bad and should be reported")
     endif ()
 
-    # First, include core lib's directories in library as well
-    get_target_property(core_lib_includes ${${_target_name}_CORE_LIB_TARGET} INCLUDE_DIRECTORIES)
-    target_include_directories(${_library_target_name} PRIVATE "${core_lib_includes}")
-
-    # Now, link library to executable
-    target_link_libraries(${_target_name} PRIVATE ${_library_target_name})
+    _link_arduino_cmake_library(${_target_name} ${_library_target_name})
 
 endfunction()
