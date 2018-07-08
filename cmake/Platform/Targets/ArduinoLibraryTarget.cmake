@@ -86,6 +86,19 @@ function(_get_unsupported_architectures _arch_list _return_var)
 
 endfunction()
 
+function(_add_arduino_library _target_name _board_id _sources)
+
+    cmake_parse_arguments(library "" "ARCH" "" ${ARGN})
+
+    add_library(${_target_name} STATIC "${_sources}")
+
+    get_include_directories("${_sources}" include_dirs)
+    target_include_directories(${_target_name} PUBLIC ${include_dirs})
+
+    _set_library_flags(${_target_name} ${_board_id})
+
+endfunction()
+
 function(find_arduino_library _target_name _library_name _board_id)
 
     set(library_path "${ARDUINO_SDK_LIBRARIES_PATH}/${_library_name}")
@@ -108,19 +121,19 @@ function(find_arduino_library _target_name _library_name _board_id)
         find_header_files("${library_path}/src" library_headers RECURSE)
 
         if (NOT library_headers)
-            string(CONCAT error_message
-                    "${_library_name} "
-                    "doesn't have any header files under the 'src' directory")
+            set(error_message
+                    "${_library_name} doesn't have any header files under the 'src' directory")
             message(SEND_ERROR "${error_message}")
         else ()
             find_source_files("${library_path}/src" library_sources RECURSE)
 
             if (NOT library_sources)
-                string(CONCAT error_message
-                        "${_library_name} "
-                        "doesn't have any source file under the 'src' directory")
+                set(error_message
+                        "${_library_name} doesn't have any source file under the 'src' directory")
                 message(SEND_ERROR "${error_message}")
             else ()
+                set(sources ${library_headers} ${library_sources})
+
                 if (lib_arch) # Treat architecture-specific libraries differently
                     # Filter any sources that aren't supported by the platform's architecture
                     list(LENGTH lib_arch num_of_libs_archs)
@@ -132,14 +145,11 @@ function(find_arduino_library _target_name _library_name _board_id)
                         set(arch_filter "src\\/[^/]+\\.|${lib_arch}")
                         set(filter_type INCLUDE)
                     endif ()
-                    list(FILTER library_headers ${filter_type} REGEX ${arch_filter})
-                    list(FILTER library_sources ${filter_type} REGEX ${arch_filter})
+                    list(FILTER sources ${filter_type} REGEX ${arch_filter})
                 endif ()
 
-                add_library(${_target_name} STATIC
-                        "${library_headers}" "${library_sources}")
-                target_include_directories(${_target_name} PUBLIC "${library_path}/src")
-                _set_library_flags(${_target_name} ${_board_id})
+                _add_arduino_library(${_target_name} ${_board_id} "${sources}")
+
             endif ()
         endif ()
     endif ()

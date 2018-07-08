@@ -79,3 +79,24 @@ function(get_source_file_includes _source_file _return_var)
     set(${_return_var} ${locs} PARENT_SCOPE)
 
 endfunction()
+
+#=============================================================================#
+# Gets parent directories paths of all header files amongst the given sources.
+# The list of paths is unique and doesn't have duplicates, and represents a target's include dir.
+#        _sources - List of sources to get include directories from.
+#        _return_var - Name of variable in parent-scope holding the return value.
+#        Returns - List of directories representing a target's include dir, from given headers.
+#=============================================================================#
+function(get_include_directories _sources _return_var)
+
+    set(include_dirs)
+    list(FILTER _sources INCLUDE REGEX ".+\\.h.*$") # Extract header files
+    foreach (header_source ${_sources})
+        get_filename_component(header_parent_dir ${header_source} DIRECTORY)
+        list(APPEND include_dirs ${header_parent_dir})
+    endforeach ()
+    list(REMOVE_DUPLICATES include_dirs)
+
+    set(${_return_var} ${include_dirs} PARENT_SCOPE)
+
+endfunction()

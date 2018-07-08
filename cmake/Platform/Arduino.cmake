@@ -22,5 +22,6 @@ include(ExecutableTarget)
 include(UploadTarget)
 include(CoreLibTarget)
 include(ArduinoLibraryTarget)
+include(PlatformLibraryTarget)
 
 initialize_build_system()
