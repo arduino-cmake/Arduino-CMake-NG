@@ -86,6 +86,13 @@ function(_get_unsupported_architectures _arch_list _return_var)
 
 endfunction()
 
+#=============================================================================#
+# Creates a library target for the given name and sources.
+# As it's an Arduino library, it also finds and links all dependent platform libraries (if any).
+#       _target_name - Name of the library target to be created. Usually library's real name.
+#       _board_id - Board ID associated with the linked Core Lib.
+#       _sources - Source and header files to create target from.
+#=============================================================================#
 function(_add_arduino_library _target_name _board_id _sources)
 
     _add_arduino_cmake_library(${_target_name} ${_board_id} "${_sources}" "${ARGN}")
@@ -96,6 +103,15 @@ function(_add_arduino_library _target_name _board_id _sources)
 
 endfunction()
 
+#=============================================================================#
+# Finds an Arduino library with the given library name and creates a library target from it
+# with the given target name.
+# The search process also resolves library's architecture to check if it even can be built
+# using the current platform architecture.
+#       _target_name - Name of the library target to be created. Usually library's real name.
+#       _library_name - Name of the Arduino library to find.
+#       _board_id - Board ID associated with the linked Core Lib.
+#=============================================================================#
 function(find_arduino_library _target_name _library_name _board_id)
 
     set(library_path "${ARDUINO_SDK_LIBRARIES_PATH}/${_library_name}")

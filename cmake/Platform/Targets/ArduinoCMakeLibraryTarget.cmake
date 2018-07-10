@@ -1,3 +1,12 @@
+#=============================================================================#
+# Creates a library target compliant with the Arduino library standard.
+# One can also specify an architecture for the library, which will result in a special parsing
+# of the sources, ommiting non-compliant sources.
+#       _target_name - Name of the library target to be created. Usually library's real name.
+#       _board_id - Board ID associated with the linked Core Lib.
+#       _sources - Source and header files to create library target from.
+#       [ARCH] - Optional library architecture (Such as 'avr', 'nrf52', etc.)
+#=============================================================================#
 function(_add_arduino_cmake_library _target_name _board_id _sources)
 
     cmake_parse_arguments(library "" "ARCH" "" ${ARGN})
@@ -25,6 +34,15 @@ function(_add_arduino_cmake_library _target_name _board_id _sources)
 
 endfunction()
 
+#=============================================================================#
+# Links the given library target to the given target, be it an executable or another library.
+# The function first adds the includes of the Core Lib to the given library.
+#       _target_name - Name of the target to link against.
+#       _library_name - Name of the library target to link.
+#       [PRIVATE|PUBLIC|INTERFACE] - Optional link scope.
+#       [BOARD_CORE_TARGET] - Optional target name of the Core Lib to use.
+#                             Use when the target is a library.
+#=============================================================================#
 function(_link_arduino_cmake_library _target_name _library_name)
 
     if (NOT TARGET ${_target_name})

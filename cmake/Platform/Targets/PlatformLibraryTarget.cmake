@@ -1,5 +1,12 @@
 include(ArduinoLibraryParser)
 
+#=============================================================================#
+# Looks for any platform libraries (Resolved earlier when platform has been initialized)
+# within the given sources and returns them in a list.
+#       _sources - Source and header files to search dependent platform libraries in.
+#       _return_var - Name of variable in parent-scope holding the return value.
+#       Returns - List of found dependent platform libraries.
+#=============================================================================#
 function(find_dependent_platform_libraries _sources _return_var)
 
     set(includes)
@@ -15,6 +22,11 @@ function(find_dependent_platform_libraries _sources _return_var)
 
 endfunction()
 
+#=============================================================================#
+# Creates a platform library target with the given name.
+#       _library_name - Name of the library target to create, usually the platform library name.
+#       _board_id - Board ID associated with the linked Core Lib.
+#=============================================================================#
 function(_add_platform_library _library_name _board_id)
 
     find_header_files("${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/${_library_name}/src" lib_headers)
@@ -25,6 +37,12 @@ function(_add_platform_library _library_name _board_id)
 
 endfunction()
 
+#=============================================================================#
+# Links the given platform library target to the given target, be it an executable or another library.
+#       _target_name - Name of the target to link against.
+#       _library_name - Name of the library target to create, usually the platform library name.
+#       _board_id - Board ID associated with the linked Core Lib.
+#=============================================================================#
 function(link_platform_library _target_name _library_name _board_id)
 
     if (NOT TARGET ${_target_name})
