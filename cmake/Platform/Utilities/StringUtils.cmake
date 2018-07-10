@@ -49,3 +49,20 @@ function(get_arduino_compliant_language_name _language _return_var)
     set(${_return_var} ${language} PARENT_SCOPE)
 
 endfunction()
+
+#=============================================================================#
+# Creates a name valid for Core libraries using the given board ID.
+# The created name is lower-case 'Board-ID_core_lib'.
+#       _board_id - Board ID to create core library target for.
+#       _return_var - Name of variable in parent-scope holding the return value.
+#       Returns - Name of the core library target for the given board.
+#=============================================================================#
+function(get_core_lib_target_name _board_id _return_var)
+
+    string(REPLACE "." "_" board_id "${_board_id}")
+    set(core_lib_target_name "${board_id}_core_lib")
+    string(TOLOWER "${core_lib_target_name}" core_lib_target_name)
+
+    set(${_return_var} ${core_lib_target_name} PARENT_SCOPE)
+
+endfunction()

@@ -21,5 +21,8 @@ include(BuildSystemInitializer)
 include(ExecutableTarget)
 include(UploadTarget)
 include(CoreLibTarget)
+include(ArduinoCMakeLibraryTarget)
+include(ArduinoLibraryTarget)
+include(PlatformLibraryTarget)
 
 initialize_build_system()

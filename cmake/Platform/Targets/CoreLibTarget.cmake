@@ -60,8 +60,9 @@ endfunction()
 # Sets compiler and linker flags on the given Core-Lib target.
 # Changes are kept even outside the scope of the function since they apply on a target.
 #       _core_target_name - Name of the Core-Lib target.
+#       _board_id - Board ID associated with the library. Some flags require it.
 #=============================================================================#
-function(_set_core_lib_flags _core_target_name)
+function(_set_core_lib_flags _core_target_name _board_id)
 
     # Set Assembly compiler flags
     get_cmake_compliant_language_name(asm flags_language)
@@ -92,36 +93,35 @@ endfunction()
 #=============================================================================#
 function(add_arduino_core_lib _target_name _board_id)
 
-    string(REPLACE "." "_" board_id "${_board_id}")
-    set(core_lib_target "${board_id}_core_lib")
-    string(TOLOWER "${core_lib_target}" core_lib_target)
+    get_core_lib_target_name(${_board_id} core_lib_target)
 
     if (TARGET ${core_lib_target}) # Core-lib target already created for the given board
         if (TARGET ${_target_name}) # Executable/Firmware target also exists
             # Link Core-Lib to executable
             target_link_libraries(${_target_name} ${core_lib_target})
         endif ()
-        return()
     else () # Core-Lib target needs to be created
-        # Get board's core
-        _get_board_core(${_board_id} board_core)
-        # Get board's variant
-        _get_board_variant(${_board_id} board_variant)
+        _get_board_core(${_board_id} board_core) # Get board's core
+        _get_board_variant(${_board_id} board_variant) # Get board's variant
 
+        # Find sources in core directory and add the library target
         find_source_files("${ARDUINO_CMAKE_CORE_${board_core}_PATH}" core_sources)
-
         add_library(${core_lib_target} STATIC "${core_sources}")
+
         # Include platform's core and variant directories
         target_include_directories(${core_lib_target} PUBLIC
                 "${ARDUINO_CMAKE_CORE_${board_core}_PATH}")
         target_include_directories(${core_lib_target} PUBLIC
                 "${ARDUINO_CMAKE_VARIANT_${board_variant}_PATH}")
 
-        _set_core_lib_flags(${core_lib_target})
+        _set_core_lib_flags(${core_lib_target} ${_board_id})
 
         # Link Core-Lib to executable target
         if (TARGET ${_target_name})
             target_link_libraries(${_target_name} PUBLIC "${core_lib_target}")
+            set(${_target_name}_CORE_LIB_TARGET "${core_lib_target}" CACHE STRING
+                    "Core library target linked to the ${_target_name} target")
+            mark_as_advanced(${_target_name}_CORE_LIB_TARGET)
         endif ()
     endif ()
 

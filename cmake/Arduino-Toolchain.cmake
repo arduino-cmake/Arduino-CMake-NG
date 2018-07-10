@@ -1,4 +1,4 @@
-function(find_required_programs)
+function(_find_required_programs)
 
     # Find ASM compiler
     find_program(CMAKE_ASM_COMPILER avr-gcc
@@ -27,6 +27,13 @@ function(find_required_programs)
 
 endfunction()
 
+function(_setup_remaining_sdk_paths)
+
+    set(ARDUINO_SDK_LIBRARIES_PATH "${ARDUINO_SDK_PATH}/libraries" CACHE PATH
+            "Path to SDK's libraries directory")
+
+endfunction()
+
 include(${CMAKE_CURRENT_LIST_DIR}/Platform/Other/FindArduinoSDK.cmake)
 
 set(CMAKE_SYSTEM_NAME Arduino)
@@ -48,9 +55,10 @@ endif ()
 set(ARDUINO_SDK_BIN_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr/bin" CACHE PATH
         "Path to Arduino SDK's binaries folder")
 set(ARDUINO_SDK_ROOT_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr" CACHE PATH
-        "Path to Aduino SDK's sys-root folder")
+        "Path to Arduino SDK's sys-root folder")
 
-find_required_programs()
+_setup_remaining_sdk_paths()
+_find_required_programs()
 
 # where is the target environment
 set(CMAKE_FIND_ROOT_PATH "${ARDUINO_SDK_ROOT_PATH}")
