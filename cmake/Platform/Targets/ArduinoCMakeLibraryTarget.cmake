@@ -58,7 +58,8 @@ endfunction()
 
 #=============================================================================#
 # Links the given library target to the given target, be it an executable or another library.
-# The function first adds the includes of the Core Lib to the given library.
+# The function first adds the includes of the Core Lib to the given library,
+# then links it to the library.
 #       _target_name - Name of the target to link against.
 #       _library_name - Name of the library target to link.
 #       [PRIVATE|PUBLIC|INTERFACE] - Optional link scope.
@@ -82,7 +83,8 @@ function(_link_arduino_cmake_library _target_name _library_name)
     endif ()
 
     get_target_property(core_lib_includes ${core_target} INCLUDE_DIRECTORIES)
-    target_include_directories(${_library_name} PRIVATE "${core_lib_includes}")
+    target_include_directories(${_library_name} PUBLIC "${core_lib_includes}")
+    target_link_libraries(${_library_name} PUBLIC ${core_target})
 
     # Now, link library to executable
     if (link_library_PUBLIC)
