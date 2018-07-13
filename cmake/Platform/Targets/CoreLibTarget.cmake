@@ -98,7 +98,7 @@ function(add_arduino_core_lib _target_name _board_id)
     if (TARGET ${core_lib_target}) # Core-lib target already created for the given board
         if (TARGET ${_target_name}) # Executable/Firmware target also exists
             # Link Core-Lib to executable
-            target_link_libraries(${_target_name} ${core_lib_target})
+            target_link_libraries(${_target_name} PUBLIC ${core_lib_target})
         endif ()
     else () # Core-Lib target needs to be created
         _get_board_core(${_board_id} board_core) # Get board's core

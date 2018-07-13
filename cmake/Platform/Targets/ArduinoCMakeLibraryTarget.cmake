@@ -1,4 +1,21 @@
 #=============================================================================#
+# Sets compiler and linker flags on the given library target.
+# Changes are kept even outside the scope of the function since they apply on a target.
+#       _library_target - Name of the library target.
+#       _board_id - Board ID associated with the library. Some flags require it.
+#=============================================================================#
+function(_set_library_flags _library_target _board_id)
+
+    # Set C++ compiler flags
+    get_cmake_compliant_language_name(cpp flags_language)
+    set_compiler_target_flags(${_library_target} "${_board_id}" PUBLIC LANGUAGE ${flags_language})
+
+    # Set linker flags
+    set_linker_flags(${_library_target} "${_board_id}")
+
+endfunction()
+
+#=============================================================================#
 # Creates a library target compliant with the Arduino library standard.
 # One can also specify an architecture for the library, which will result in a special parsing
 # of the sources, ommiting non-compliant sources.
@@ -26,17 +43,23 @@ function(_add_arduino_cmake_library _target_name _board_id _sources)
     endif ()
 
     add_library(${_target_name} STATIC "${_sources}")
-
     get_include_directories("${_sources}" include_dirs)
     target_include_directories(${_target_name} PUBLIC ${include_dirs})
 
     _set_library_flags(${_target_name} ${_board_id})
 
+    if (library_ARCH)
+        string(TOUPPER ${library_ARCH} upper_arch)
+        set(arch_definition "ARDUINO_ARCH_${upper_arch}")
+        target_compile_definitions(${_target_name} PUBLIC ${arch_definition})
+    endif ()
+
 endfunction()
 
 #=============================================================================#
 # Links the given library target to the given target, be it an executable or another library.
-# The function first adds the includes of the Core Lib to the given library.
+# The function first adds the includes of the Core Lib to the given library,
+# then links it to the library.
 #       _target_name - Name of the target to link against.
 #       _library_name - Name of the library target to link.
 #       [PRIVATE|PUBLIC|INTERFACE] - Optional link scope.
@@ -60,7 +83,8 @@ function(_link_arduino_cmake_library _target_name _library_name)
     endif ()
 
     get_target_property(core_lib_includes ${core_target} INCLUDE_DIRECTORIES)
-    target_include_directories(${_library_name} PRIVATE "${core_lib_includes}")
+    target_include_directories(${_library_name} PUBLIC "${core_lib_includes}")
+    target_link_libraries(${_library_name} PUBLIC ${core_target})
 
     # Now, link library to executable
     if (link_library_PUBLIC)
