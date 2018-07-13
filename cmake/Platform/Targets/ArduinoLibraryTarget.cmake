@@ -1,21 +1,4 @@
 #=============================================================================#
-# Sets compiler and linker flags on the given library target.
-# Changes are kept even outside the scope of the function since they apply on a target.
-#       _library_target - Name of the library target.
-#       _board_id - Board ID associated with the library. Some flags require it.
-#=============================================================================#
-function(_set_library_flags _library_target _board_id)
-
-    # Set C++ compiler flags
-    get_cmake_compliant_language_name(cpp flags_language)
-    set_compiler_target_flags(${_library_target} "${_board_id}" PUBLIC LANGUAGE ${flags_language})
-
-    # Set linker flags
-    set_linker_flags(${_library_target} "${_board_id}")
-
-endfunction()
-
-#=============================================================================#
 # Gets the library architecure if any, read from the given library properties file
 # which includes this information.
 #       _library_properties_file - Full path to a library's properties file.

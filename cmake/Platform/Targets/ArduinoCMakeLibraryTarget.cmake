@@ -1,4 +1,21 @@
 #=============================================================================#
+# Sets compiler and linker flags on the given library target.
+# Changes are kept even outside the scope of the function since they apply on a target.
+#       _library_target - Name of the library target.
+#       _board_id - Board ID associated with the library. Some flags require it.
+#=============================================================================#
+function(_set_library_flags _library_target _board_id)
+
+    # Set C++ compiler flags
+    get_cmake_compliant_language_name(cpp flags_language)
+    set_compiler_target_flags(${_library_target} "${_board_id}" PUBLIC LANGUAGE ${flags_language})
+
+    # Set linker flags
+    set_linker_flags(${_library_target} "${_board_id}")
+
+endfunction()
+
+#=============================================================================#
 # Creates a library target compliant with the Arduino library standard.
 # One can also specify an architecture for the library, which will result in a special parsing
 # of the sources, ommiting non-compliant sources.
@@ -26,11 +43,16 @@ function(_add_arduino_cmake_library _target_name _board_id _sources)
     endif ()
 
     add_library(${_target_name} STATIC "${_sources}")
-
     get_include_directories("${_sources}" include_dirs)
     target_include_directories(${_target_name} PUBLIC ${include_dirs})
 
     _set_library_flags(${_target_name} ${_board_id})
+
+    if (library_ARCH)
+        string(TOUPPER ${library_ARCH} upper_arch)
+        set(arch_definition "ARDUINO_ARCH_${upper_arch}")
+        target_compile_definitions(${_target_name} PUBLIC ${arch_definition})
+    endif ()
 
 endfunction()
 
