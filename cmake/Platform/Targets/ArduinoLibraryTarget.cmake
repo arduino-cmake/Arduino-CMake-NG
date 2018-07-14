@@ -141,17 +141,22 @@ endfunction()
 # it adds core lib's include directories to the libraries include directories.
 #       _target_name - Name of the "executable" target.
 #       _library_target_name - Name of the library target.
+#       _board_id - Board ID associated with the linked Core Lib.
 #=============================================================================#
-function(link_arduino_library _target_name _library_target_name)
+function(link_arduino_library _target_name _library_target_name _board_id)
+
+    get_core_lib_target_name(${_board_id} core_lib_target)
 
     if (NOT TARGET ${_target_name})
         message(FATAL_ERROR "Target doesn't exist - It must be created first!")
     elseif (NOT TARGET ${_library_target_name})
         message(FATAL_ERROR "Library target doesn't exist - It must be created first!")
-    elseif (NOT TARGET ${${_target_name}_CORE_LIB_TARGET})
+    elseif (NOT TARGET ${core_lib_target})
         message(FATAL_ERROR "Core Library target doesn't exist. This is bad and should be reported")
     endif ()
 
-    _link_arduino_cmake_library(${_target_name} ${_library_target_name})
+    _link_arduino_cmake_library(${_target_name} ${_library_target_name}
+            PUBLIC
+            BOARD_CORE_TARGET ${core_lib_target})
 
 endfunction()
