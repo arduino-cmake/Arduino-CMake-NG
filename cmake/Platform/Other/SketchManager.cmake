@@ -1,3 +1,59 @@
+#=============================================================================#
+# Finds the best line to insert an '#include' of the platform's main header to.
+# The function assumes that the initial state of the given 'active index' is set to the line that
+# best fitted the insertion, however, it might need a bit more optimization. Why?
+# Because above those lines there might be a comment, or over many comment-lines,
+# all of which should be taken into account in order to minimize the effect on code's readability.
+#        _sketch_loc - List of lines-of-code belonging to the sketch.
+#        _active_index - Index that indicates the best-not-optimized loc to insert header to.
+#        _return_var - Name of variable in parent-scope holding the return value.
+#        Returns - Best fitted index to insert platform's main header '#include' to.
+#=============================================================================#
+function(_get_matching_header_insertion_index _sketch_loc _active_index _return_var)
+
+    decrement_integer(_active_index 1)
+    list(GET _sketch_loc ${_active_index} previous_loc)
+
+    if ("${previous_loc}" MATCHES "^\\/\\/") # Simple one-line comment
+        set(matching_index ${_active_index})
+    elseif ("${previous_loc}" MATCHES "\\*\\/$") # End of multi-line comment
+        foreach (index RANGE ${_active_index} 0)
+            list(GET _sketch_loc ${index} multi_comment_line)
+            if ("${multi_comment_line}" MATCHES "^\\/\\*") # Start of multi-line comment
+                set(matching_index ${index})
+                break()
+            endif ()
+        endforeach ()
+    endif ()
+
+    set(${_return_var} ${matching_index} PARENT_SCOPE)
+
+endfunction()
+
+#=============================================================================#
+# Writes the given lines of code belonging to the sketch to the given file path.
+#        _sketch_loc - List of lines-of-code belonging to the sketch.
+#        _file_path - Full path to the written source file.
+#=============================================================================#
+function(_write_source_file _sketch_loc _file_path)
+
+    file(WRITE "${_file_path}" "") # Clear previous file's contents
+    foreach (loc ${_sketch_loc})
+        string(REGEX REPLACE "^(.+)${ARDUINO_CMAKE_SEMICOLON_REPLACEMENT}(.*)$" "\\1;\\2"
+                original_loc "${loc}")
+        file(APPEND "${_file_path}" "${original_loc}")
+    endforeach ()
+
+endfunction()
+
+#=============================================================================#
+# Converts the given sketch file into a valid 'cpp' source file under the project's working dir.
+# During the conversion process the platform's main header file is inserted to the source file
+# since it's critical for it to include it - Something that doesn't happen in "Standard" sketches.
+#        _sketch_file - Full path to the original sketch file.
+#        _return_var - Name of variable in parent-scope holding the return value.
+#        Returns - List of found include lines, if any.
+#=============================================================================#
 function(convert_sketch_to_source_file _sketch_file)
 
     get_filename_component(sketch_file_name "${_sketch_file}" NAME_WE)
@@ -15,10 +71,9 @@ function(convert_sketch_to_source_file _sketch_file)
         list(GET sketch_loc ${loc_index} loc)
         if (NOT ${header_inserted})
             if ("${loc}" MATCHES "${header_insert_pattern}")
+                _get_matching_header_insertion_index("${sketch_loc}" ${loc_index} header_index)
                 # ToDo: Insert platform's main header file, found earlier when initializing platform
-                decrement_integer(loc_index 1)
-                list(INSERT refined_sketch ${loc_index} "#include <Arduino.h>\n\n")
-                increment_integer(loc_index 1)
+                list(INSERT refined_sketch ${header_index} "#include <Arduino.h>\n\n")
                 set(header_inserted TRUE)
             endif ()
         endif ()
@@ -31,11 +86,6 @@ function(convert_sketch_to_source_file _sketch_file)
         endif ()
     endforeach ()
 
-    file(WRITE ${target_source_path} "") # Clear previous file's contents
-    foreach (refined_loc ${refined_sketch})
-        string(REGEX REPLACE "^(.+)${ARDUINO_CMAKE_SEMICOLON_REPLACEMENT}(.*)$" "\\1;\\2"
-                original_loc "${refined_loc}")
-        file(APPEND ${target_source_path} "${original_loc}")
-    endforeach ()
+    _write_source_file("${refined_sketch}" "${target_source_path}")
 
 endfunction()

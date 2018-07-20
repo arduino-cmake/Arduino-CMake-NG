@@ -86,6 +86,12 @@ function(set_source_files_pattern)
 
 endfunction()
 
+#=============================================================================#
+# Gets all '#include' lines of the given source file.
+#        _source_file - Source file to get its' includes.
+#        _return_var - Name of variable in parent-scope holding the return value.
+#        Returns - List of found include lines, if any.
+#=============================================================================#
 function(get_source_file_includes _source_file _return_var)
 
     if (NOT EXISTS "${_source_file}")
