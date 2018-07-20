@@ -1,3 +1,5 @@
+include(SketchManager)
+
 #=============================================================================#
 # Finds source files matching the given pattern under the given path.
 # Search could also be recursive (With sub-directories) if the optional 'RECURSE' option is passed.
@@ -56,6 +58,21 @@ function(find_header_files _base_path _return_var)
 endfunction()
 
 #=============================================================================#
+# Finds sketch files matching the pre-defined sketch-file pattern under the given path.
+# This functions searchs explicitly for sketch-files such as '*.ino'.
+# Search could also be recursive (With sub-directories) if the optional 'RECURSE' option is passed.
+#        _base_path - Top-Directory path to search source files in.
+#        _return_var - Name of variable in parent-scope holding the return value.
+#        Returns - List of header files in the given path
+#=============================================================================#
+function(find_sketch_files _base_path _return_var)
+
+    _find_sources("${_base_path}" "${ARDUINO_CMAKE_SKETCH_FILES_PATTERN}" sketches ${ARGN})
+    set(${_return_var} "${sketches}" PARENT_SCOPE)
+
+endfunction()
+
+#=============================================================================#
 # Sets a pre-defined source and header file patterns to use when searching for sources.
 #=============================================================================#
 function(set_source_files_pattern)
@@ -64,6 +81,8 @@ function(set_source_files_pattern)
             "Source Files Pattern")
     set(ARDUINO_CMAKE_HEADER_FILES_PATTERN *.h *.hh *.hpp *.hxx CACHE STRING
             "Header Files Pattern")
+    set(ARDUINO_CMAKE_SKETCH_FILES_PATTERN *.ino *.pde CACHE STRING
+            "Sketch Files Pattern")
 
 endfunction()
 
@@ -81,7 +100,7 @@ function(get_source_file_includes _source_file _return_var)
 endfunction()
 
 #=============================================================================#
-# Gets parent directories paths of all header files amongst the given sources.
+# Gets paths of parent directories from all header files amongst the given sources.
 # The list of paths is unique and doesn't have duplicates, and represents a target's include dir.
 #        _sources - List of sources to get include directories from.
 #        _return_var - Name of variable in parent-scope holding the return value.
