@@ -31,6 +31,8 @@ function(_setup_remaining_sdk_paths)
 
     set(ARDUINO_SDK_LIBRARIES_PATH "${ARDUINO_SDK_PATH}/libraries" CACHE PATH
             "Path to SDK's libraries directory")
+    set(ARDUINO_SDK_EXAMPLES_PATH "${ARDUINO_SDK_PATH}/examples" CACHE PATH
+            "Path to SDK's examples directory")
 
 endfunction()
 
