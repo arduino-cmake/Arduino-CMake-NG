@@ -50,14 +50,10 @@ endfunction()
 # Converts the given sketch file into a valid 'cpp' source file under the project's working dir.
 # During the conversion process the platform's main header file is inserted to the source file
 # since it's critical for it to include it - Something that doesn't happen in "Standard" sketches.
-#        _sketch_file - Full path to the original sketch file.
-#        _return_var - Name of variable in parent-scope holding the return value.
-#        Returns - List of found include lines, if any.
+#        _sketch_file - Full path to the original sketch file (Read from).
+#        _target_file - Full path to the converted target source file (Written to).
 #=============================================================================#
-function(convert_sketch_to_source_file _sketch_file)
-
-    get_filename_component(sketch_file_name "${_sketch_file}" NAME_WE)
-    set(target_source_path "${CMAKE_CURRENT_SOURCE_DIR}/${sketch_file_name}.cpp")
+function(convert_sketch_to_source_file _sketch_file _target_file)
 
     file(STRINGS "${_sketch_file}" sketch_loc)
     list(LENGTH sketch_loc num_of_loc)
