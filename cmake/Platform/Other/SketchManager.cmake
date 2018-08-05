@@ -63,16 +63,14 @@ function(convert_sketch_to_source_file _sketch_file _target_file)
     decrement_integer(num_of_loc 1)
 
     set(refined_sketch)
-    set(header_insert_pattern "#include|^.+\\(.*\\).*{") # ToDo: Optimize regex
+    set(header_insert_pattern "#include|^([a-z]|[A-Z])+.*\(([a-z]|[A-Z])*\)")
     set(header_inserted FALSE)
 
     foreach (loc_index RANGE 0 ${num_of_loc})
         list(GET sketch_loc ${loc_index} loc)
         if (NOT ${header_inserted})
             if ("${loc}" MATCHES "${header_insert_pattern}")
-                message("Insertion index: ${loc_index}, Line: ${loc}")
                 _get_matching_header_insertion_index("${sketch_loc}" ${loc_index} header_index)
-                message("Header index: ${header_index}")
                 # ToDo: Insert platform's main header file, found earlier when initializing platform
                 if (${header_index} GREATER_EQUAL ${loc_index})
                     decrement_integer(header_index 1)
