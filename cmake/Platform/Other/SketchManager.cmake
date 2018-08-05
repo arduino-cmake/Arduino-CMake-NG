@@ -1,36 +1,4 @@
 #=============================================================================#
-# Finds the best line to insert an '#include' of the platform's main header to.
-# The function assumes that the initial state of the given 'active index' is set to the line that
-# best fitted the insertion, however, it might need a bit more optimization. Why?
-# Because above those lines there might be a comment, or over many comment-lines,
-# all of which should be taken into account in order to minimize the effect on code's readability.
-#        _sketch_loc - List of lines-of-code belonging to the sketch.
-#        _active_index - Index that indicates the best-not-optimized loc to insert header to.
-#        _return_var - Name of variable in parent-scope holding the return value.
-#        Returns - Best fitted index to insert platform's main header '#include' to.
-#=============================================================================#
-function(_get_matching_header_insertion_index _sketch_loc _active_index _return_var)
-
-    decrement_integer(_active_index 1)
-    list(GET _sketch_loc ${_active_index} previous_loc)
-
-    if ("${previous_loc}" MATCHES "^\\/\\/") # Simple one-line comment
-        set(matching_index ${_active_index})
-    elseif ("${previous_loc}" MATCHES "\\*\\/$") # End of multi-line comment
-        foreach (index RANGE ${_active_index} 0)
-            list(GET _sketch_loc ${index} multi_comment_line)
-            if ("${multi_comment_line}" MATCHES "^\\/\\*") # Start of multi-line comment
-                set(matching_index ${index})
-                break()
-            endif ()
-        endforeach ()
-    endif ()
-
-    set(${_return_var} ${matching_index} PARENT_SCOPE)
-
-endfunction()
-
-#=============================================================================#
 # Writes the given lines of code belonging to the sketch to the given file path.
 #        _sketch_loc - List of lines-of-code belonging to the sketch.
 #        _file_path - Full path to the written source file.
@@ -43,6 +11,41 @@ function(_write_source_file _sketch_loc _file_path)
                 original_loc "${loc}")
         file(APPEND "${_file_path}" "${original_loc}")
     endforeach ()
+
+endfunction()
+
+#=============================================================================#
+# Finds the best line to insert an '#include' of the platform's main header to.
+# The function assumes that the initial state of the given 'active index' is set to the line that
+# best fitted the insertion, however, it might need a bit more optimization. Why?
+# Because above those lines there might be a comment, or a comment block,
+# all of which should be taken into account in order to minimize the effect on code's readability.
+#        _sketch_loc - List of lines-of-code belonging to the sketch.
+#        _active_index - Index that indicates the best-not-optimized loc to insert header to.
+#        _return_var - Name of variable in parent-scope holding the return value.
+#        Returns - Best fitted index to insert platform's main header '#include' to.
+#=============================================================================#
+function(_get_matching_header_insertion_index _sketch_loc _active_index _return_var)
+
+    decrement_integer(_active_index 1)
+    list(GET _sketch_loc ${_active_index} previous_loc)
+
+    if ("${previous_loc}" MATCHES "^//") # Simple one-line comment
+        set(matching_index ${_active_index})
+    elseif ("${previous_loc}" MATCHES "\\*/$") # End of multi-line comment
+        foreach (index RANGE ${_active_index} 0)
+            list(GET _sketch_loc ${index} multi_comment_line)
+            if ("${multi_comment_line}" MATCHES "^\\/\\*") # Start of multi-line comment
+                set(matching_index ${index})
+                break()
+            endif ()
+        endforeach ()
+    else () # Previous line isn't a comment - Return original index
+        increment_integer(_active_index 1)
+        set(matching_index ${_active_index})
+    endif ()
+
+    set(${_return_var} ${matching_index} PARENT_SCOPE)
 
 endfunction()
 
@@ -60,16 +63,24 @@ function(convert_sketch_to_source_file _sketch_file _target_file)
     decrement_integer(num_of_loc 1)
 
     set(refined_sketch)
-    set(header_insert_pattern "^.+\\(.*\\)")
+    set(header_insert_pattern "#include|^.+\\(.*\\).*{") # ToDo: Optimize regex
     set(header_inserted FALSE)
 
     foreach (loc_index RANGE 0 ${num_of_loc})
         list(GET sketch_loc ${loc_index} loc)
         if (NOT ${header_inserted})
             if ("${loc}" MATCHES "${header_insert_pattern}")
+                message("Insertion index: ${loc_index}, Line: ${loc}")
                 _get_matching_header_insertion_index("${sketch_loc}" ${loc_index} header_index)
+                message("Header index: ${header_index}")
                 # ToDo: Insert platform's main header file, found earlier when initializing platform
-                list(INSERT refined_sketch ${header_index} "#include <Arduino.h>\n\n")
+                if (${header_index} GREATER_EQUAL ${loc_index})
+                    decrement_integer(header_index 1)
+                    set(include_line "\n#include <Arduino.h>")
+                else ()
+                    set(include_line "#include <Arduino.h>\n\n")
+                endif ()
+                list(INSERT refined_sketch ${header_index} ${include_line})
                 set(header_inserted TRUE)
             endif ()
         endif ()
