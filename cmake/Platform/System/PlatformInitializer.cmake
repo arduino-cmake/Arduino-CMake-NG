@@ -57,9 +57,7 @@ function(initialize_arduino_platform)
 
     # Find all platform elements
     find_required_platform_elements()
-
     initialize_platform_properties()
-
     setup_remaining_platform_flags()
 
 endfunction()
