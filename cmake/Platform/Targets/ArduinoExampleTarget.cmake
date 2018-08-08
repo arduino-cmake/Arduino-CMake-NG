@@ -1,3 +1,14 @@
+#=============================================================================#
+# Adds/Creates an Arduino-Example executable target with the given name,
+# using the given board ID and example's sources.
+#       _target_name - Name of the target (Executable) to create.
+#       _board_id - ID of the board to bind to the target (Each target can have a single board).
+#       _example_name - Full name of the example to use, such as 'Blink'.
+#                       This argument is case-sensitive.
+#       [CATEGORY cat] - Optional argument representing the category of the Example to use.
+#                        e.g The 'Blink' example is under the '01.Basics' category.
+#                        Generally, all this does is improving search performance by narrowing.
+#=============================================================================#
 function(add_arduino_example _target_name _board_id _example_name)
 
     find_arduino_example_sources("${ARDUINO_SDK_EXAMPLES_PATH}"
@@ -8,6 +19,19 @@ function(add_arduino_example _target_name _board_id _example_name)
 
 endfunction()
 
+#=============================================================================#
+# Adds/Creates an Arduino-Library-Example executable target with the given name,
+# using the given board ID and library example's sources.
+#       _target_name - Name of the target (Executable) to create.
+#       _library_target_name - Name of an already-existing library target.
+#                              This means the library should first be found by the user.
+#       _board_id - ID of the board to bind to the target (Each target can have a single board).
+#       _example_name - Full name of the example to use, such as 'Blink'.
+#                       This argument is case-sensitive.
+#       [CATEGORY cat] - Optional argument representing the category of the Example to use.
+#                        e.g The 'Blink' example is under the '01.Basics' category.
+#                        Generally, all this does is improving search performance by narrowing.
+#=============================================================================#
 function(add_arduino_library_example _target_name _library_target_name _library_name
         _board_id _example_name)
 

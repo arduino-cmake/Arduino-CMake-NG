@@ -95,6 +95,12 @@ function(convert_sketch_to_source_file _sketch_file _target_file)
 
 endfunction()
 
+#=============================================================================#
+# Converts all the given sketch file into valid 'cpp' source files and returns their paths.
+#        _sketch_files - List of paths to original sketch files.
+#        _return_var - Name of variable in parent-scope holding the return value.
+#        Returns - List of paths representing post-conversion sources.
+#=============================================================================#
 function(get_sources_from_sketches _sketch_files _return_var)
 
     set(sources)
