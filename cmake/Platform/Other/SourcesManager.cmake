@@ -1,4 +1,5 @@
 include(SketchManager)
+include(ExampleSourcesSeeker)
 
 #=============================================================================#
 # Finds source files matching the given pattern under the given path.
