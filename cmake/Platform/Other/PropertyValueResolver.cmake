@@ -53,7 +53,7 @@ function(_resolve_list_value _value _return_var)
                     decrement_integer(index 1)
                 else ()
                     # Replace old value with new resolved value
-                    list_replace("${temp_list}" ${index} "${resolved_entry}" temp_list)
+                    list_replace(temp_list ${index} "${resolved_entry}")
                     # Also enlrage the index incrementation if resolved entry is a list
                     list(LENGTH resolved_entry num_of_inner_resolved_entries)
                     if (${num_of_inner_resolved_entries} GREATER 1)
