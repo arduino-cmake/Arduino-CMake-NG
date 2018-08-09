@@ -118,3 +118,5 @@ fabric.properties
 
 ### User-Defined
 [Aa]ssets/*
+/examples/blink-example/Blink.cpp
+/examples/servo-knob-example/Knob.cpp
