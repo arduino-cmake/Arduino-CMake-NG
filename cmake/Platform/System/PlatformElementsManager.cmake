@@ -113,6 +113,13 @@ function(find_platform_libraries)
 
 endfunction()
 
+#=============================================================================#
+# Finds platform's main header file by iterating over all headers under all core directories,
+# looking for the one with the most '#include' lines as it can be presumed as the main header.
+# The header is stored in cache in 2 variants:
+#       1. ARDUINO_CMAKE_PLATFORM_HEADER_NAME - Header's name with its' file extension
+#       2. ARDUINO_CMAKE_PLATFORM_HEADER_PATH - Full path to the header file
+#=============================================================================#
 function(find_platform_main_header)
 
     set(max_includes 0) # Track the biggest number of include lines to perform quick swap
