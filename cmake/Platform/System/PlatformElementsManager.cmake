@@ -102,7 +102,7 @@ function(find_platform_libraries)
         if (IS_DIRECTORY ${dir})
             get_filename_component(platform_lib ${dir} NAME)
             string(TOLOWER ${platform_lib} platform_lib)
-            set(ARDUINO_CMAKE_VARIANT_${platform_lib}_PATH ${dir} CACHE INTERNAL
+            set(ARDUINO_CMAKE_LIBRARY_${platform_lib}_PATH ${dir} CACHE INTERNAL
                     "Path to ${platform_lib} platform library")
             list(APPEND platform_lib_list ${platform_lib})
         endif ()
@@ -110,5 +110,42 @@ function(find_platform_libraries)
 
     set(ARDUINO_CMAKE_PLATFORM_LIBRARIES "${platform_lib_list}" CACHE STRING
             "List of existing platform libraries")
+
+endfunction()
+
+#=============================================================================#
+# Finds platform's main header file by iterating over all headers under all core directories,
+# looking for the one with the most '#include' lines as it can be presumed as the main header.
+# The header is stored in cache in 2 variants:
+#       1. ARDUINO_CMAKE_PLATFORM_HEADER_NAME - Header's name with its' file extension
+#       2. ARDUINO_CMAKE_PLATFORM_HEADER_PATH - Full path to the header file
+#=============================================================================#
+function(find_platform_main_header)
+
+    set(max_includes 0) # Track the biggest number of include lines to perform quick swap
+
+    foreach (core ${ARDUINO_CMAKE_PLATFORM_CORES})
+        find_header_files("${ARDUINO_CMAKE_CORE_${core}_PATH}" core_headers)
+        foreach (header ${core_headers})
+            file(STRINGS "${header}" header_content)
+            list(FILTER header_content INCLUDE REGEX "^#include")
+            # Count the number of includes
+            list(LENGTH header_content num_of_includes)
+            # Check if current number is bigger than the known maximum, swap if it is
+            if (${num_of_includes} GREATER ${max_includes})
+                set(biggest_header ${header})
+                set(max_includes ${num_of_includes})
+            endif ()
+        endforeach ()
+    endforeach ()
+
+    # Platform's header is probably the one with the biggest number of include lines
+    message(STATUS "Determined Platform Header: ${biggest_header}")
+    # Store both header's name (with extension) and path
+    get_filename_component(platform_header_name "${biggest_header}" NAME)
+    set(ARDUINO_CMAKE_PLATFORM_HEADER_NAME "${platform_header_name}" CACHE STRING
+            "Platform's main header name (With extension)")
+    set(ARDUINO_CMAKE_PLATFORM_HEADER_PATH "${biggest_header}" CACHE PATH
+            "Path to platform's main header file")
 
 endfunction()

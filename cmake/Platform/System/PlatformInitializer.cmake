@@ -1,4 +1,4 @@
-include(PlatformElementsFinder)
+include(PlatformElementsManager)
 include(PropertiesReader)
 include(BoardPropertiesReader)
 include(PlatformFlagsSetter)
@@ -12,6 +12,7 @@ function(find_required_platform_elements)
     find_platform_properties_file()
     find_platform_boards()
     find_platform_libraries()
+    find_platform_main_header()
 
 endfunction()
 
