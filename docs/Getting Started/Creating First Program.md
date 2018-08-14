@@ -40,8 +40,10 @@ Next step is to run cmake, passing it the following argument: `-DCMAKE_TOOLCHAIN
 More information on CMake and how to run it is available in the [[Using CMake Tools]] section.
 
 Running CMake has generated build-ready output, so the only thing's left is to actually build it.
-For this you'll use a tool compliant with the generator you've ran CMake with, like **make** if your generator was **Unix Makefiles**.
+For this you'll use a build tool matching the generator you've ran CMake with, such as **make** if your generator was **Unix Makefiles**.
 Building the project can be as simple as calling **make** from the project's binary directory using a cmd, clicking a 'Build' button in the IDE, or something more complicated - depending on your tool of choice.
+
+More information on the build process is available in [[TODO]].
 
 Once built, the program might also be uploaded to the connected hardware board - Depending on whether a call to the `upload_arduino_target` function exists.
 If it doesn't, the program will simply be built, creating the appropriate `.hex` file.
