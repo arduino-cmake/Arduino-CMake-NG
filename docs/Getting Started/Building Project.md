@@ -1,12 +1,17 @@
-It's important to understand that running CMake and build the project's binaries are 2 different things.
+As detailed in [[Generating CMake]], the project binaries are built using a **build tool** correspondent to the CMake generator used.
 
-* Running CMake means to parse the project's CMake code to generate build files of some type.
-  For example, one could use the **Unix Makefiles** generator and it would generate make-files.
-* Building project's binaries means to build those generated files using the appropriate build tool, such as **make** if the files are make-files.
+Each tool has its own usage so to fully utilize the tool at your hand please refer to its' documentation.
+However, since **make** is the most popular tool at the moment (**ninja** is extremely recommended to use instead), our docs include a section dedicated to **make** - [[Building With Make]].
 
-Every change in CMake code (which mostly happens in `CMakeLists.txt`) must be reloaded so that the latest code will be built. 
-Some IDEs immediately inform you when there's a change in CMake so that you'll reload it.
+Although different, most of the tools can be executed from the command-line by simply executing their binary in the appropriate *working directory*. Where is that directory? Generally it's the build directory used by CMake to output generated files to.
 
-A project depending on **Arduino-CMake** can be built by using either **make** or your IDE's **build tools**.
-To see how it builds with **make**, please head to the [[appropriate page|Building-With-Make]].
+### Uploading Program
 
+Building the project is an important step but probably not the one with the most impact.
+
+Unlike desktop applications, Arduino programs can't be run directly on the host PC, but intend to run on specific hardware boards instead.
+To make that happen, an **"Upload"** process should occur, where the built program binary is uploaded/transferred to the hardware board, usually through a USB.
+
+**Arduino-CMake** takes care of that by exposing an API for uploading the program.
+It should be **<u>the last CMake instruction</u>** in the `CMakeLists.txt` file, **after** the instruction to create the program's executable. This instruction will initiate an upload process at the end of each build.
+The complete docs on how to use the API can be found in [[Uploading Program]].
