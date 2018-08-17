@@ -12,7 +12,9 @@ function(find_required_platform_elements)
     find_platform_properties_file()
     find_platform_boards()
     find_platform_libraries()
-    find_platform_main_header()
+    if (NOT USE_CUSTOM_PLATFORM_HEADER)
+        find_platform_main_header()
+    endif ()
 
 endfunction()
 

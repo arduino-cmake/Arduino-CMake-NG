@@ -5,6 +5,9 @@ function(set_arduino_cmake_defaults)
 
     option(USE_DEFAULT_PLATFORM_IF_NONE_EXISTING
             "Whether to use Arduino as default platform if none is supplied" ON)
+    option(USE_CUSTOM_PLATFORM_HEADER
+            "Whether to expect and use a custom-supplied platform header, \
+            skipping the selection algorithm" OFF)
     option(USE_ARCHLINUX_BUILTIN_SUPPORT
             "Whether to use Arduino CMake's built-in support for the archlinux distribution" ON)
     set(ARDUINO_CMAKE_SEMICOLON_REPLACEMENT "!@&#%" CACHE STRING
