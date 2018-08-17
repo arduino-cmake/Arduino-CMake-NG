@@ -120,3 +120,4 @@ fabric.properties
 [Aa]ssets/*
 /examples/blink-example/Blink.cpp
 /examples/servo-knob-example/Knob.cpp
+/examples/sketch/sketch.cpp
