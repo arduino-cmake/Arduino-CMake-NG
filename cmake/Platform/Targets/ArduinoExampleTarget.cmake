@@ -14,7 +14,6 @@ function(add_arduino_example _target_name _board_id _example_name)
     find_arduino_example_sources("${ARDUINO_SDK_EXAMPLES_PATH}"
             ${_example_name} example_sketches ${ARGN})
     get_sources_from_sketches("${example_sketches}" example_sources)
-    message("Example sources: ${example_sources}")
     add_arduino_executable(${_target_name} ${_board_id} ${example_sources})
 
 endfunction()
