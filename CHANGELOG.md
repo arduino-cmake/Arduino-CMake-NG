@@ -1,5 +1,15 @@
 # Change Log
 
+## Version 0.4.1
+
+This version adds minor feature improvements as well as complete sketch support.
+
+### New Features
+
+* Full sketch support in the API
+  * Sketch targets can be created by calling the `add_sketch_target` function.
+* Ability to provide a custom main platform header by setting the `USE_CUSTOM_PLATFORM_HEADER` option on.
+
 ## Version 0.4
 
 This version mostly added support for examples and sketches.
