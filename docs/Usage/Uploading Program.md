@@ -1,38 +1,40 @@
-As opposed to standard applications, Arduino "executables" can't just run on the host OS, and must be uploaded to a connected board.
+After creating the program/executable, one would probably upload it to a specific hardware board.
+To upload a program in **Arduino-CMake** you should do several things:
 
-To upload your program to the board, you should do several things:
+1. Find the port where the system thinks your board is connected to, such as `COMx` on Microsoft Windows or `/dev/ttyACMx` on Linux.
 
-1. Specify a port to upload to - That's where your board is connected to the system.
-   The following examples show how to do it on **Linux** and **Windows**.
+2. Call the `upload_arduino_target` function. 
 
-   **Linux:**
+   > Although the target is always an executable, theoretically the function supports every CMake target.
 
-   ```cmake
-   generate_arduino_firmware(${CMAKE_PROJECT_NAME}
-           SRCS main.cpp
-           BOARD uno
-           PORT /dev/ttyACM0)
-   ```
+   The function accepts the following parameters:
 
-   **Windows:**
+   | Order | Name         | Description                                                  | Required? |
+   | ----- | ------------ | ------------------------------------------------------------ | --------- |
+   | 1st   | _target_name | Name of the executable target to upload                      | Yes       |
+   | 2nd   | _board_id    | Hardware Board's ID as retrieved by the `get_board_id` function. | Yes       |
+   | 3rd   | _port        | Hardware board's port as identified in step 1                | Yes       |
 
-   ```cmake
-   generate_arduino_firmware(${CMAKE_PROJECT_NAME}
-           SRCS main.cpp
-           BOARD uno
-           PORT COM3)
-   ```
+Now let's see some examples of how to use it on different OSs, using the info above:
 
-2. Build the `${CMAKE_PROJECT_NAME}-upload` target created by executing `cmake`.
-   **CMake** creates several targets that could be built, with the `Build-All` target as the default target.
-   Building this target is sufficient for uploading, however, sometimes it's better to do this explicitly.
+**Linux:**
 
-   Building the `upload` target on a valid port will result in the firmware being uploaded to the connected board, and will immediately run, just as it does with **Arduino IDE**.
+```cmake
+upload_arduino_target(my_target_name "${board_id}" /dev/ttyACM0)
+```
+
+**Windows:**
+
+```cmake
+upload_arduino_target(my_target_name "${board_id}" COM3)
+```
+Assume that the board ID has been retrieved earlier and the executable target has already been created.
 
 ### Uploading Multiple Targets
 
-Users of **Arduino-CMake** can define several different firmware images for uploading in a single project, each defined to a different port connected to the PC.
-To upload them all at once, you should build the `upload` target, or simply the default `Build-All`target as it builds all targets for all defined images. 
+**Arduino-CMake** allows uploading multiple targets simultaneously from a single project due to the scripted nature of CMake.
+This can be done by creating multiple executable targets, then uploading each to a different port.
+It can be useful for example to upload both **Client** and **Server** programs to separate boards in one go.
 
 ### Serial Ports on Different OSs
 
@@ -41,7 +43,7 @@ Below is the list of known serial terminals on each supported OS:
 
 #### Linux
 
-On **Linux** the serial device/port is named as follows:
+On Linux the serial device/port is named as follows:
 
 * `/dev/ttyUSBX`
 * `/dev/ttyACMX`
@@ -52,7 +54,7 @@ Where `X` is the device number.
 
 #### Mac OS X
 
-Similar to **Linux**, there are 2 names for device/ports in **Mac**:
+Similar to Linux, there are 2 names for device/ports in Mac:
 
 * `/dev/tty.usbmodemXXX`
 * `/dev/tty.usbserialXXX`
@@ -61,6 +63,6 @@ Where `XXX` is the device ID.
 
 `tty.usbmodemXXX` is used for new **Uno** and **Mega** Arduinos, while `tty.usbserialXXX` for the old ones.
 
-#### Windows
+#### Microsoft Windows
 
-**Windows** names all of its serial devices/ports as `COMx`, where `x` is the device number.
+Microsoft Windows names all of its serial devices/ports as `COMx`, where `x` is the device number.
