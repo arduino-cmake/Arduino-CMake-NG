@@ -1,21 +1,11 @@
-While programs/executables and libraries are sufficient in most cases, **Arduino** introduced the concept of **Sketches** which combines both into a single structure, usually even a single file.
+**Arduino** has introduced a concept named **Sketches** - Meta-Projects that combine both the source file(s) and any info about used libraries or platform headers into a single structure, usually even a single file (Having the `.pde` or `.ino` extension).
 
-For **Arduino-CMake**, **Sketches** are indeed a single file having the `.ino` or `.pde` extension.
-Sketches are popular among **Arduino IDE** users especially since **Arduino-CMake** doesn't have the ability to create those - It treats all source files as standard **C++** files, usually having the `.cpp` extension.
-In other words, sketch support exists mostly for compatibility issues, so that users of **Arduino IDE** won't have a hard time switching platforms.
+**Arduino-CMake** treats all source files as standard **C++** files (usually having the `.cpp` extension), as this is the nature of CMake. 
+It means of course that Sketches can't be supported out-of-the-box in their natural form.
+Nevertheless, **Arduino-CMake** does support sketches by converting them into `.cpp` source files, along with some extra missing information embedded in them.
+The converted source files are created within the project's source directory as detected by CMake (If required, further info can be found at CMake docs), and are automatically added to the target that required them.
+From the above, we can also infer that sketches can only be *used*, not *created*.
 
-From the above, we can infer that **Arduino Sketches** can only be *used*, not *created*.
-Thus, we can only accept them as parameters to various **generation** functions, mostly the `generate_arduino_firmware` function.
+### Using Sketches
 
-So to include a sketch in your program, you should pass the sketch's parent directory path to the `SKETCH` parameter of the **generation** function.
-
-For example, if you would like to include the built-in **Blink** sketch, you would do the following:
-
-```cmake
-set(blink_SKETCH  ${ARDUINO_SDK_PATH}/examples/1.Basics/Blink) # Path to sketch directory
-set(blink_BOARD uno)
-
-generate_arduino_firmware(blink)
-```
-
-This will create a perfectly valid target using either the `.ino` or `.pde` file existing inside the given directory.
+Sketches are used when creating [[Examples]], but can also be specified manually for a certain target.
