@@ -56,7 +56,7 @@ endfunction()
 #        _sketch_file - Full path to the original sketch file (Read from).
 #        _target_file - Full path to the converted target source file (Written to).
 #=============================================================================#
-function(insert_platform_header_to_sketch _sketch_file _target_file)
+function(convert_sketch_to_source _sketch_file _target_file)
 
     file(STRINGS "${_sketch_file}" sketch_loc)
     list(LENGTH sketch_loc num_of_loc)

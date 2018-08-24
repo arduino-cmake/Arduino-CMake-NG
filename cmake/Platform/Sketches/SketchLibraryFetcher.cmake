@@ -1,4 +1,4 @@
-function(fetch_sketch_libraries _sketch_file _return_var)
+function(get_sketch_libraries _sketch_file _return_var)
 
     file(STRINGS "${_sketch_file}" sketch_loc) # Loc = Lines of code
     list(FILTER sketch_loc INCLUDE REGEX ${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN})
