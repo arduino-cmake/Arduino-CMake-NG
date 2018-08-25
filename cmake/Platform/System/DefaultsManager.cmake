@@ -1,4 +1,7 @@
-function(set_internal_patterns)
+#=============================================================================#
+# Sets search patterns used internaly by the platform for searching purposes.
+#=============================================================================#
+function(set_internal_search_patterns)
 
     set(ARDUINO_CMAKE_SEMICOLON_REPLACEMENT "!@&#%" CACHE STRING
             "String replacement for the semicolon char, required when treating lists as code")
@@ -13,9 +16,23 @@ function(set_internal_patterns)
 endfunction()
 
 #=============================================================================#
-# Sets various defaults related directly to the Arduino-CMake platform.
+# Sets globb patterns for various types of source files, used mostly for searching purposes.
 #=============================================================================#
-function(set_arduino_cmake_defaults)
+function(set_source_files_patterns)
+
+    set(ARDUINO_CMAKE_SOURCE_FILES_PATTERN *.c *.cc *.cpp *.cxx *.[Ss] CACHE STRING
+            "Source Files Pattern")
+    set(ARDUINO_CMAKE_HEADER_FILES_PATTERN *.h *.hh *.hpp *.hxx CACHE STRING
+            "Header Files Pattern")
+    set(ARDUINO_CMAKE_SKETCH_FILES_PATTERN *.ino *.pde CACHE STRING
+            "Sketch Files Pattern")
+
+endfunction()
+
+#=============================================================================#
+# Sets various options specific for the Arduino-CMake platform.
+#=============================================================================#
+function(set_default_arduino_cmake_options)
 
     option(USE_DEFAULT_PLATFORM_IF_NONE_EXISTING
             "Whether to use Arduino as default platform if none is supplied" ON)
@@ -24,5 +41,16 @@ function(set_arduino_cmake_defaults)
             skipping the selection algorithm" OFF)
     option(USE_ARCHLINUX_BUILTIN_SUPPORT
             "Whether to use Arduino CMake's built-in support for the archlinux distribution" ON)
+
+endfunction()
+
+#=============================================================================#
+# Sets various defaults used throughout the platform.
+#=============================================================================#
+function(set_arduino_cmake_defaults)
+
+    set_internal_search_patterns()
+    set_source_files_patterns()
+    set_default_arduino_cmake_options()
 
 endfunction()

@@ -74,20 +74,6 @@ function(find_sketch_files _base_path _return_var)
 endfunction()
 
 #=============================================================================#
-# Sets a pre-defined source and header file patterns to use when searching for sources.
-#=============================================================================#
-function(set_source_files_pattern)
-
-    set(ARDUINO_CMAKE_SOURCE_FILES_PATTERN *.c *.cc *.cpp *.cxx *.[Ss] CACHE STRING
-            "Source Files Pattern")
-    set(ARDUINO_CMAKE_HEADER_FILES_PATTERN *.h *.hh *.hpp *.hxx CACHE STRING
-            "Header Files Pattern")
-    set(ARDUINO_CMAKE_SKETCH_FILES_PATTERN *.ino *.pde CACHE STRING
-            "Sketch Files Pattern")
-
-endfunction()
-
-#=============================================================================#
 # Gets all '#include' lines of the given source file.
 #        _source_file - Source file to get its' includes.
 #        _return_var - Name of variable in parent-scope holding the return value.

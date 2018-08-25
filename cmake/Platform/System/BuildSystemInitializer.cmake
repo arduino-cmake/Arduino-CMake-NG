@@ -17,7 +17,6 @@ endfunction()
 #=============================================================================#
 function(initialize_build_system)
 
-    set_source_files_pattern()
     set_arduino_cmake_defaults()
     find_required_platform_tools()
     detect_sdk_version()
