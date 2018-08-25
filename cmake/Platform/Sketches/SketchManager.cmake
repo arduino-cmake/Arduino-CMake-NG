@@ -1,5 +1,5 @@
 include(SketchSourceConverter)
-include(SketchLibraryFetcher)
+include(SketchHeadersManager)
 
 #=============================================================================#
 # Returns a desired path for sources converted from sketches.
@@ -27,18 +27,29 @@ endfunction()
 #=============================================================================#
 function(add_sketch_to_target _target_name _sketch_file _board_id)
 
-    get_sketch_libraries("${_sketch_file}" sketch_libraries)
-    foreach (lib ${sketch_libraries})
-        if (${lib} IN_LIST ARDUINO_CMAKE_PLATFORM_LIBRARIES)
-            link_platform_library(${_target_name} ${lib} ${_board_id})
+    get_sketch_headers("${_sketch_file}" sketch_headers)
+    foreach (header ${sketch_headers})
+        # Header name without extension (such as '.h') can represent an Arduino/Platform library
+        # So first we should check whether it's a library
+        string(REGEX MATCH "(.+)\\." "${header}" header_we_match)
+        set(header_we ${CMAKE_MATCH_1})
+
+        if (${header_we} IN_LIST ARDUINO_CMAKE_PLATFORM_LIBRARIES)
+            link_platform_library(${_target_name} ${header_we} ${_board_id})
         else ()
-            find_arduino_library(${lib}_sketch_lib ${lib} ${_board_id})
+            find_arduino_library(${header_we}_sketch_lib ${header_we} ${_board_id})
             # If library isn't found, display a wraning since it might be a user library
-            if (NOT ${lib}_sketch_lib OR "${${lib}_sketch_lib}" MATCHES "NOTFOUND")
-                message(WARNING "The header '${lib}' is used by the '${_sketch_file}' sketch \
-                                 but it isn't a known library - Target might not compile correctly!")
+            if (NOT ${header_we}_sketch_lib OR "${${header_we}_sketch_lib}" MATCHES "NOTFOUND")
+                validate_header_against_target(${_target_name} ${header} is_header_validated)
+                if (NOT is_header_validated)
+                    # Header hasn't been found in any of the target's include directories, Display warning
+                    message(WARNING "The header '${_header}' is used by the \
+                                     '${_sketch_file}' sketch \
+                                     but it isn't a Arduino/Platform library, nor it's linked \
+                                     to the target manually!")
+                endif ()
             else ()
-                link_arduino_library(${_target_name} ${lib}_sketch_lib ${_board_id})
+                link_arduino_library(${_target_name} ${header_we}_sketch_lib ${_board_id})
             endif ()
         endif ()
     endforeach ()
