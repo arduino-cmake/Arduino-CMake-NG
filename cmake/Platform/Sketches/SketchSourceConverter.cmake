@@ -54,9 +54,9 @@ endfunction()
 # During the conversion process the platform's main header file is inserted to the source file
 # since it's critical for it to include it - Something that doesn't happen in "Standard" sketches.
 #        _sketch_file - Full path to the original sketch file (Read from).
-#        _target_file - Full path to the converted target source file (Written to).
+#        _converted_source_path - Full path to the converted target source file (Written to).
 #=============================================================================#
-function(convert_sketch_to_source _sketch_file _target_file)
+function(convert_sketch_to_source _sketch_file _converted_source_path)
 
     file(STRINGS "${_sketch_file}" sketch_loc)
     list(LENGTH sketch_loc num_of_loc)
@@ -91,6 +91,6 @@ function(convert_sketch_to_source _sketch_file _target_file)
         endif ()
     endforeach ()
 
-    _write_source_file("${refined_sketch}" "${target_source_path}")
+    _write_source_file("${refined_sketch}" "${_converted_source_path}")
 
 endfunction()

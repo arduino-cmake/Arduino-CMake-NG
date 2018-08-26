@@ -22,12 +22,12 @@ endfunction()
 # Each sketch is converted to a valid '.cpp' source file under the project's source directory.
 # The function also finds and links any libraries the sketch uses to the target.
 #       _target_name - Name of the target to add the sketch file to.
-#       _sketch_file - Path to a sketch file to add to the target.
 #       _board_id - ID of the board to bind to the target (Each target can have a single board).
+#       _sketch_file - Path to a sketch file to add to the target.
 #=============================================================================#
-function(add_sketch_to_target _target_name _sketch_file _board_id)
+function(add_sketch_to_target _target_name _board_id _sketch_file)
 
-    resolve_sketch_headers(${_target_name} "${_sketch_file}")
+    resolve_sketch_headers(${_target_name} ${_board_id} "${_sketch_file}")
     _get_converted_source_desired_path("${_sketch_file}" sketch_converted_source_path)
     convert_sketch_to_source("${_sketch_file}" "${sketch_converted_source_path}")
     target_sources(${_target_name} PRIVATE "${sketch_converted_source_path}")
@@ -35,24 +35,15 @@ function(add_sketch_to_target _target_name _sketch_file _board_id)
 endfunction()
 
 #=============================================================================#
-# Converts all the given sketch file into valid 'cpp' source files and returns their paths.
-#        _sketch_files - List of paths to original sketch files.
-#        _return_var - Name of variable in parent-scope holding the return value.
-#        Returns - List of paths representing post-conversion sources.
+# Adds a list of sketch files as converted sources to the given target.
+#       _target_name - Name of the target to add the sketch file to.
+#       _board_id - ID of the board to bind to the target (Each target can have a single board).
+#       _sketch_files - List of paths to sketch files to add to the target.
 #=============================================================================#
-function(get_sources_from_sketches _sketch_files _return_var)
+function(target_sketches _target_name _board_id _sketch_files)
 
-    set(sources)
-    foreach (sketch ${_sketch_files})
-        get_filename_component(sketch_file_name "${sketch}" NAME_WE)
-        set(target_source_path "${CMAKE_CURRENT_SOURCE_DIR}/${sketch_file_name}.cpp")
-        # Only convert sketch if it hasn't been converted yet
-        if (NOT EXISTS "${target_source_path}")
-            convert_sketch_to_source("${sketch}" "${target_source_path}")
-        endif ()
-        list(APPEND sources "${target_source_path}")
+    foreach (sketch_file ${_sketch_files})
+        add_sketch_to_target(${_target_name} ${_board_id} "${sketch_file}")
     endforeach ()
-
-    set(${_return_var} ${sources} PARENT_SCOPE)
 
 endfunction()

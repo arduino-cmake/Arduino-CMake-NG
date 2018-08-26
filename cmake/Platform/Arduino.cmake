@@ -26,6 +26,5 @@ include(ArduinoCMakeLibraryTarget)
 include(ArduinoLibraryTarget)
 include(PlatformLibraryTarget)
 include(ArduinoExampleTarget)
-include(SketchTarget)
 
 initialize_build_system()

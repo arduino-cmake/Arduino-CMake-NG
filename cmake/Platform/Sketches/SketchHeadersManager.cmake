@@ -46,10 +46,10 @@ endfunction()
 # Resolves the header files included in a sketch by linking their appropriate library if necessary
 # or by validating they're included by the sketch target.
 #       _target_name - Name of the target to add the sketch file to.
-#       _sketch_file - Path to a sketch file to add to the target.
 #       _board_id - ID of the board to bind to the target (Each target can have a single board).
+#       _sketch_file - Path to a sketch file to add to the target.
 #=============================================================================#
-function(resolve_sketch_headers _target_name _sketch_file _board_id)
+function(resolve_sketch_headers _target_name _board_id _sketch_file)
 
     _get_sketch_headers("${_sketch_file}" sketch_headers)
     foreach (header ${sketch_headers})
