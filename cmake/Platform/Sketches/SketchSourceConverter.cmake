@@ -54,16 +54,17 @@ endfunction()
 # During the conversion process the platform's main header file is inserted to the source file
 # since it's critical for it to include it - Something that doesn't happen in "Standard" sketches.
 #        _sketch_file - Full path to the original sketch file (Read from).
-#        _target_file - Full path to the converted target source file (Written to).
+#        _converted_source_path - Full path to the converted target source file (Written to).
 #=============================================================================#
-function(convert_sketch_to_source_file _sketch_file _target_file)
+function(convert_sketch_to_source _sketch_file _converted_source_path)
 
     file(STRINGS "${_sketch_file}" sketch_loc)
     list(LENGTH sketch_loc num_of_loc)
     decrement_integer(num_of_loc 1)
 
     set(refined_sketch)
-    set(header_insert_pattern "#include|^([a-z]|[A-Z])+.*\(([a-z]|[A-Z])*\)")
+    set(header_insert_pattern
+            "${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN}|${ARDUINO_CMAKE_FUNCTION_REGEX_PATTERN}")
     set(header_inserted FALSE)
 
     foreach (loc_index RANGE 0 ${num_of_loc})
@@ -90,29 +91,6 @@ function(convert_sketch_to_source_file _sketch_file _target_file)
         endif ()
     endforeach ()
 
-    _write_source_file("${refined_sketch}" "${target_source_path}")
-
-endfunction()
-
-#=============================================================================#
-# Converts all the given sketch file into valid 'cpp' source files and returns their paths.
-#        _sketch_files - List of paths to original sketch files.
-#        _return_var - Name of variable in parent-scope holding the return value.
-#        Returns - List of paths representing post-conversion sources.
-#=============================================================================#
-function(get_sources_from_sketches _sketch_files _return_var)
-
-    set(sources)
-    foreach (sketch ${_sketch_files})
-        get_filename_component(sketch_file_name "${sketch}" NAME_WE)
-        set(target_source_path "${CMAKE_CURRENT_SOURCE_DIR}/${sketch_file_name}.cpp")
-        # Only convert sketch if it hasn't been converted yet
-        if (NOT EXISTS "${target_source_path}")
-            convert_sketch_to_source_file("${sketch}" "${target_source_path}")
-        endif ()
-        list(APPEND sources "${target_source_path}")
-    endforeach ()
-
-    set(${_return_var} ${sources} PARENT_SCOPE)
+    _write_source_file("${refined_sketch}" "${_converted_source_path}")
 
 endfunction()
