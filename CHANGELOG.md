@@ -1,5 +1,20 @@
 # Change Log
 
+## Version 0.5
+
+This version refactored the Sketch API entirely to enhance support for missing features from previous versions. It also organized "*globals*"  and default options in a single 'Defaults' module.
+
+### New Features
+
+- Headers included in a sketch file are now resolved to provide better insight
+  - Arduino/Platform libraries that are resolved from a sketch's headers are linked to the target
+- Option/Policy to "forcefully" convert a sketch to a source file when adding it to a target, even if the source file already exists (Usually means that sketch has already been converted). By default it's set to **OFF**.
+
+### Changes
+
+* New Sketch API which resembles CMake's target API - Use `target_sketches` as you would use `target_sources`
+* Various inline search patterns and defaults have been moved to the 'DefaultsManager' module.
+
 ## Version 0.4.1
 
 This version adds minor feature improvements as well as complete sketch support.
