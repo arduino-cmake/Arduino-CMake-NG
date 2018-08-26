@@ -41,6 +41,9 @@ function(set_default_arduino_cmake_options)
             skipping the selection algorithm" OFF)
     option(USE_ARCHLINUX_BUILTIN_SUPPORT
             "Whether to use Arduino CMake's built-in support for the archlinux distribution" ON)
+    option(CONVERT_SKETCHES_IF_CONVERTED_SOURCES_EXISTS
+            "Whether to convert sketches to source files even if converted sources already exist"
+            OFF)
 
 endfunction()
 
