@@ -6,11 +6,11 @@ Doing so in **Arduino-CMake** is quite easy, requiring just a call to a single f
 The function has the nature of CMake-target functions, such as `add_executable` (Which creates an executable runnable by the host OS), so for those familiar with the syntax - It's practically the same.
 It accepts the following parameters:
 
-| Order (1st, 2nd, etc.) | Name         | Description                                                  | Required? |
-| ---------------------- | ------------ | ------------------------------------------------------------ | --------- |
-| 1st                    | _target_name | Target's name as it will be registered by CMake.             | Yes       |
-| 2nd                    | _board_id    | Hardware Board's ID as retrieved by the `get_board_id` function. | Yes       |
-| 3rd                    | _srcs        | List of source files to include in the executable target.    | Yes       |
+| Order | Name         | Description                                                  | Required? |
+| ----- | ------------ | ------------------------------------------------------------ | --------- |
+| 1st   | _target_name | Target's name as it will be registered by CMake.             | Yes       |
+| 2nd   | _board_id    | Hardware Board's ID as retrieved by the `get_board_id` function. | Yes       |
+| 3rd   | _srcs        | List of source files to include in the executable target.    | Yes       |
 
 Let's look at an example which creates an executable/program consisting of 2 source files and a header:
 
