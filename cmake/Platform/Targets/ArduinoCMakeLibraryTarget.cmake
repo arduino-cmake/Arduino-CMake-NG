@@ -43,7 +43,8 @@ function(_add_arduino_cmake_library _target_name _board_id _sources)
     endif ()
 
     add_library(${_target_name} STATIC "${_sources}")
-    get_include_directories("${_sources}" include_dirs)
+    # Treat headers' parent directories as include directories of the target
+    get_headers_parent_directories("${_sources}" include_dirs)
     target_include_directories(${_target_name} PUBLIC ${include_dirs})
 
     _set_library_flags(${_target_name} ${_board_id})
