@@ -66,7 +66,7 @@ function(parse_upload_recipe_pattern _board_id _port _return_var)
     list(FILTER original_list EXCLUDE REGEX ":|cmd")
 
     # Upload recipe contains many elements which aren't named correctly
-    # Setting a local variable here will keep in the resolving function scope
+    # Setting a local variable here will keep it in the resolving function's scope
     # In other words, it makes the variable resolvable
     # So if a special elment is met, its' expected variable is locally set with correct value
     foreach (recipe_element ${original_list})
