@@ -66,3 +66,13 @@ function(get_core_lib_target_name _board_id _return_var)
     set(${_return_var} ${core_lib_target_name} PARENT_SCOPE)
 
 endfunction()
+
+#=============================================================================#
+# Extracts a name symbol without possible file extension (marked usually by a dot ('.').
+#       _input_string - String containing name symbol and possibly file extension.
+#       _output_string - Name of a CMake variable that will hold the extraction result.
+#=============================================================================#
+macro(get_name_without_file_extension _input_string _output_string)
+    string(REGEX MATCH "${ARDUINO_CMAKE_NAME_WE_REGEX_PATTERN}" "${_input_string}" match)
+    set(${_output_string} ${CMAKE_MATCH_1})
+endmacro()

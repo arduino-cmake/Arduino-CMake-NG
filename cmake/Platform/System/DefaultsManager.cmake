@@ -12,6 +12,8 @@ function(set_internal_search_patterns)
             "Regex pattern matching a header's name when wrapped in inclusion line")
     set(ARDUINO_CMAKE_HEADER_FILE_EXTENSION_REGEX_PATTERN ".+\\.h.*$" CACHE STRING
             "Regex pattern matching all header file extensions")
+    set(ARDUINO_CMAKE_NAME_WE_REGEX_PATTERN "(.+)\\." CACHE STRING
+            "Regex pattern matching name without file extension")
     set(ARDUINO_CMAKE_FUNCTION_REGEX_PATTERN "^([a-z]|[A-Z])+.*\(([a-z]|[A-Z])*\)" CACHE STRING
             "Regex pattern matching a function signature in a source file")
 

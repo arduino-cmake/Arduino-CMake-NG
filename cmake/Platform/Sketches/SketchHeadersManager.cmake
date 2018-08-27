@@ -33,8 +33,7 @@ function(resolve_sketch_headers _target_name _board_id _sketch_file)
     foreach (header ${sketch_headers})
         # Header name without extension (such as '.h') can represent an Arduino/Platform library
         # So first we should check whether it's a library
-        string(REGEX MATCH "(.+)\\." "${header}" header_we_match)
-        set(header_we ${CMAKE_MATCH_1})
+        get_name_without_file_extension("${header}" header_we)
 
         if (${header_we} IN_LIST ARDUINO_CMAKE_PLATFORM_LIBRARIES)
             link_platform_library(${_target_name} ${header_we} ${_board_id})

@@ -29,13 +29,20 @@ endfunction()
 #=============================================================================#
 function(get_source_file_included_headers _source_file _return_var)
 
+    cmake_parse_arguments(headers "WE" "" "" ${ARGN})
+
     file(STRINGS "${_source_file}" source_lines) # Loc = Lines of code
     list(FILTER source_lines INCLUDE REGEX ${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN})
 
     # Extract header names from inclusion
     foreach (loc ${source_lines})
         string(REGEX MATCH ${ARDUINO_CMAKE_HEADER_NAME_REGEX_PATTERN} ${loc} match)
-        list(APPEND headers ${CMAKE_MATCH_1})
+        if (headers_WE)
+            get_name_without_file_extension("${CMAKE_MATCH_1}" header_name)
+        else ()
+            set(header_name ${CMAKE_MATCH_1})
+        endif ()
+        list(APPEND headers ${header_name})
     endforeach ()
 
     set(${_return_var} ${headers} PARENT_SCOPE)
