@@ -51,7 +51,8 @@ endfunction()
 #=============================================================================#
 function(get_headers_parent_directories _sources _return_var)
 
-    list(FILTER _sources INCLUDE REGEX ".+\\.h.*$") # Extract header files
+    # Extract header files
+    list(FILTER _sources INCLUDE REGEX "${ARDUINO_CMAKE_HEADER_FILE_EXTENSION_REGEX_PATTERN}")
     foreach (header_source ${_sources})
         get_filename_component(header_parent_dir ${header_source} DIRECTORY)
         list(APPEND parent_dirs ${header_parent_dir})
