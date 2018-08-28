@@ -70,9 +70,9 @@ endfunction()
 #=============================================================================#
 # Extracts a name symbol without possible file extension (marked usually by a dot ('.').
 #       _input_string - String containing name symbol and possibly file extension.
-#       _output_string - Name of a CMake variable that will hold the extraction result.
+#       _return_var - Name of a CMake variable that will hold the extraction result.
 #=============================================================================#
-macro(get_name_without_file_extension _input_string _output_string)
-    string(REGEX MATCH "${ARDUINO_CMAKE_NAME_WE_REGEX_PATTERN}" "${_input_string}" match)
-    set(${_output_string} ${CMAKE_MATCH_1})
-endmacro()
+function(get_name_without_file_extension _input_string _return_var)
+    string(REGEX MATCH "${ARDUINO_CMAKE_NAME_WE_REGEX_PATTERN}" match "${_input_string}")
+    set(${_return_var} ${CMAKE_MATCH_1} PARENT_SCOPE)
+endfunction()

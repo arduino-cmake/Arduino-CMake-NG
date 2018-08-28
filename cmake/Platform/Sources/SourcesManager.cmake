@@ -36,7 +36,7 @@ function(get_source_file_included_headers _source_file _return_var)
 
     # Extract header names from inclusion
     foreach (loc ${source_lines})
-        string(REGEX MATCH ${ARDUINO_CMAKE_HEADER_NAME_REGEX_PATTERN} ${loc} match)
+        string(REGEX MATCH ${ARDUINO_CMAKE_HEADER_NAME_REGEX_PATTERN} match ${loc})
         if (headers_WE)
             get_name_without_file_extension("${CMAKE_MATCH_1}" header_name)
         else ()
