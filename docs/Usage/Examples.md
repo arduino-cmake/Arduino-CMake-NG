@@ -1,84 +1,69 @@
 ## Arduino Examples
 
-One of Arduino's most attractive features is its' great examples.
-In order to easily learn how to use Arduino properly, it provides a lot of built-in examples in the form of a valid program - One that could be uploaded to the board.
+One of Arduino SDK's most attractive features is examples.
+Examples provide an easy way to learn Arduino programming, having the form of a complete, valid Arduino executable that could be uploaded to a hardware board.
 
-**Arduino-CMake** acknowledges that and makes the process of using an example extremely easy to the user. But first, you should understand what *is* exactly an **Arduino Example**.
+### Overview
 
-### What is it?
+An Arduino Example consists of at least one source file, usually a sketch.
 
-An **Arduino Example** is a standard Arduino program consisting of at least one source file.
-Most common examples are the ones built-into Arduino, and also have a dedicated path.
+All SDK's built-in examples reside under the `${ARDUINO_SDK_PATH}/examples` directory.
+Built-in examples are also divided into **Categories**, each prefixed with an indexing-number. e.g `01.Basics`.
+The example itself is actually a directory named after the example, containing all other files required by an example. These directories reside under the matching **Category**.
 
-All built-in examples reside under the `${ARDUINO_SDK_PATH}\examples` directory.
-But this isn't sufficient, since there are **a lot** of examples out there.
-All examples are divided into *Categories*, named with a prefixed indexing-number such as `01.Basics`.
-Each *Category* lists all examples related to it in the form of directories - Where each directory contains the actual program's files.
+For example, the **Blink** example has the following path: `${ARDUINO_SDK_PATH}/examples/01.Basics/Blink`
+Inside this directory, there's `Blink.ino` - The example's sketch.
 
-For example, the most popular Arduino example of all times, **Blink**, has the following path:
+### Using Examples
 
-`${ARDUINO_SDK_PATH}\examples\01.Basics\Blink` where it defines an `.ino` file as its'source file.
+To use an example one should call the `add_arduino_example` function.
+It accepts the following parameters:
 
-### How to use it?
+| Order | Name          | Description                                                  | Required? |
+| ----- | ------------- | ------------------------------------------------------------ | --------- |
+| 1st   | _target_name  | Target's name as it will be registered by CMake.             | Yes       |
+| 2nd   | _board_id     | Hardware Board's ID as retrieved by the `get_board_id` function. | Yes       |
+| 3rd   | _example_name | Name of the Arduino Example to use. Name is expected to be a valid, existing example. | Yes       |
+| -     | CATEGORY _cat | Name of the category the example belongs to. It helps optimizing the search process to find the example in the SDK. <br />Use only if name is accurate. | No        |
 
-Now that you have a solid knowledge of what is an **Arduino Example**, you can easily use it in **Arduino-CMake**.
-
-To do so, you simply have to call the `generate_arduino_example` function, which accepts the following parameters:
-
-| **Name**   | **Description****Description**           | **Is Required?**                |
-| ---------- | ---------------------------------------- | ------------------------------- |
-| BOARD      | Board name (such as *uno, mega2560, ...*) | Yes                             |
-| BOARD_CPU  | Board CPU (such as *atmega328, atmega168, ...*) | Only if BOARD has multiple CPUs |
-| EXAMPLE    | Example's name (such as *Blink*)         | Yes                             |
-| CATEGORY   | Category name **without** prefixed index (such as *Basics*) | No                              |
-| PORT       | Serial port for image uploading and serial communication | No                              |
-| SERIAL     | Serial command for serial communication  | No                              |
-| PROGRAMMER | Programmer ID to be burned to the board  | No                              |
-| AFLAGS     | `avrdude` flags                          | No                              |
-
-The example below shows how to create the **Blink** example in **Arduino-CMake**:
+The example below shows how to use the **Blink** example:
 
 ```cmake
-generate_arduino_example(blink_example
-		CATEGORY Basics
-		EXAMPLE Blink
-		BOARD uno)
+add_arduino_example(my_example_target_name ${board_id} Blink)
 ```
 
-In the example above, the `Category` parameter could be omitted, though it would cause a small performance penalty. Omitting `Category` causes **Arduino-CMake** to recursively search for the example through all existing *Categories*, which might take some time.
+Assume that the board ID has been retrieved earlier and the executable target has already been created.
 
-## Library Examples
+### Arduino Library Examples
 
-As Arduino relies heavily on the use of libraries, it has also provided many examples on how to use them.
-However, as those examples are library-specific, they're not part of the standard built-in examples.
-In fact, each library has its own examples, nested under its containing directory.
+Arduino libraries usually also have examples bundled with them, which are the same as Arduino Examples.
+There are a few differences between the 2 though:
 
-The **Servo** library for example defines an example named **Knob**, which has the following path:
+1. Arduino Library examples reside under the library's directory, usually under a sub-directory named **examples**.
+2. A library example will have more than one source file most of the times.
 
-`${ARDUINO_SDK_PATH}\libraries\Servo\examples\Knob`
+Note that not all libraries have examples, and those that do can have more than one.
 
-### How to use them?
+The **Servo** library for example defines an example named **Knob**, which has the following path: `${ARDUINO_SDK_PATH}/libraries/Servo/examples/Knob`
 
-Though it would seem natural to simply call the `generate_arduino_example` function with matching parameters, library-example generation is a bit different, requiring a separate function.
-The `generate_arduino_library_example` has been defined for that, and accepts the following parameters:
+### Usage
 
-| **Name**   | **Description**                          | **Is Required?**                |
-| ---------- | ---------------------------------------- | ------------------------------- |
-| BOARD      | Board name (such as *uno, mega2560, ...*) | Yes                             |
-| BOARD_CPU  | Board CPU (such as *atmega328, atmega168, ...*) | Only if BOARD has multiple CPUs |
-| LIBRARY    | Library's name (such as *Servo*)         | Yes                             |
-| EXAMPLE    | Example's name (such as *Knob*)          | Yes                             |
-| PORT       | Serial port for image uploading and serial communication | No                              |
-| SERIAL     | Serial command for serial communication  | No                              |
-| PROGRAMMER | Programmer ID to be burned to the board  | No                              |
-| AFLAGS     | `avrdude` flags                          | No                              |
+Arduino library examples are used the same as "standard" examples, except they define a different function.
+To use a library example, one should call the `add_arduino_library_example`, passing it the name of the library which the example belongs to and the example name itself.
 
-The example below shows how to generate the **Knob** example of the **Servo** library:
+The function accepts following parameters:
+
+| Order | Name                  | Description                                                  |
+| ----- | --------------------- | ------------------------------------------------------------ |
+| 1st   | _target_name          | Target's name as it will be registered by CMake.             |
+| 2nd   | _library_name         | Name of the library the example belongs to. Name is expected to be a valid, existing example. |
+| 3rd   | _board_id             | Hardware Board's ID as retrieved by the `get_board_id` function. |
+| 4th   | _library_example_name | Name of the library example to use. Name is expected to be a valid, existing example. |
+
+The example below shows how to use the **Knob** example of the **Servo** library:
 
 ```cmake
-generate_arduino_library_example(servo_knob_example
-		LIBRARY Servo
-		EXAMPLE Knob
-		BOARD uno)
+add_arduino_library_example(my_library_example_target Servo ${board_id} Knob)
 ```
 
+Assume that the board ID has been retrieved earlier and the executable target has already been created.
