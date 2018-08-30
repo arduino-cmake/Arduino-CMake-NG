@@ -1,5 +1,3 @@
-include(ArduinoLibraryParser)
-
 #=============================================================================#
 # Looks for any platform libraries (Resolved earlier when platform has been initialized)
 # within the given sources and returns them in a list.
@@ -9,15 +7,13 @@ include(ArduinoLibraryParser)
 #=============================================================================#
 function(find_dependent_platform_libraries _sources _return_var)
 
-    set(includes)
     foreach (source ${_sources})
-        get_source_file_includes(${source} source_includes)
-        list(APPEND includes ${source_includes})
+        get_source_file_included_headers(${source} source_includes WE)
+        list(APPEND included_headers_names ${source_includes})
     endforeach ()
+    list(REMOVE_DUPLICATES included_headers_names)
 
-    list(REMOVE_DUPLICATES includes)
-
-    get_platform_libraries_from_includes("${includes}" dependent_libs)
+    get_platform_libraries_from_names("${included_headers_names}" dependent_libs)
     set(${_return_var} ${dependent_libs} PARENT_SCOPE)
 
 endfunction()

@@ -1,26 +1,4 @@
 #=============================================================================#
-# Retrieves all headers used by a sketch, which is much like extracting the headers included
-# by a source file. Headers are returned by their name, with extension (such as '.h').
-#       _sketch_file - Path to a sketch file to add to the target.
-#       _return_var - Name of variable in parent-scope holding the return value.
-#       Returns - List of headers names with extension that are included by the given sketch file.
-#=============================================================================#
-function(_get_sketch_headers _sketch_file _return_var)
-
-    file(STRINGS "${_sketch_file}" sketch_loc) # Loc = Lines of code
-    list(FILTER sketch_loc INCLUDE REGEX ${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN})
-
-    # Extract header names from inclusion
-    foreach (loc ${sketch_loc})
-        string(REGEX MATCH ${ARDUINO_CMAKE_HEADER_NAME_REGEX_PATTERN} ${loc} match)
-        list(APPEND headers ${CMAKE_MATCH_1})
-    endforeach ()
-
-    set(${_return_var} ${headers} PARENT_SCOPE)
-
-endfunction()
-
-#=============================================================================#
 # Validates a header file is included by the given target.
 # i.e The header is located under one of the target's include directories.
 #       _target_name - Name of the target to add the sketch file to.
@@ -51,23 +29,24 @@ endfunction()
 #=============================================================================#
 function(resolve_sketch_headers _target_name _board_id _sketch_file)
 
-    _get_sketch_headers("${_sketch_file}" sketch_headers)
+    get_source_file_included_headers("${_sketch_file}" sketch_headers)
     foreach (header ${sketch_headers})
         # Header name without extension (such as '.h') can represent an Arduino/Platform library
         # So first we should check whether it's a library
-        string(REGEX MATCH "(.+)\\." "${header}" header_we_match)
-        set(header_we ${CMAKE_MATCH_1})
+        get_name_without_file_extension("${header}" header_we)
 
-        if (${header_we} IN_LIST ARDUINO_CMAKE_PLATFORM_LIBRARIES)
-            link_platform_library(${_target_name} ${header_we} ${_board_id})
+        is_platform_library(${header_we} is_header_platform_lib)
+        if (is_header_platform_lib)
+            string(TOLOWER ${header_we} header_we_lower)
+            link_platform_library(${_target_name} ${header_we_lower} ${_board_id})
         else ()
             find_arduino_library(${header_we}_sketch_lib ${header_we} ${_board_id})
             # If library isn't found, display a wraning since it might be a user library
-            if (NOT ${header_we}_sketch_lib OR "${${header_we}_sketch_lib}" MATCHES "NOTFOUND")
+            if (NOT TARGET ${header_we}_sketch_lib OR "${${header_we}_sketch_lib}" MATCHES "NOTFOUND")
                 _validate_target_includes_header(${_target_name} ${header} is_header_validated)
                 if (NOT is_header_validated)
                     # Header hasn't been found in any of the target's include directories, Display warning
-                    message(WARNING "The header '${_header}' is used by the \
+                    message(WARNING "The header '${header_we}' is used by the \
                                      '${_sketch_file}' sketch \
                                      but it isn't a Arduino/Platform library, nor it's linked \
                                      to the target manually!")
