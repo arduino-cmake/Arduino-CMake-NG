@@ -1,5 +1,3 @@
-include(ArduinoLibraryParser)
-
 #=============================================================================#
 # Looks for any platform libraries (Resolved earlier when platform has been initialized)
 # within the given sources and returns them in a list.

@@ -12,6 +12,7 @@ include(MathUtils)
 include(ListUtils)
 include(StringUtils)
 include(PropertyUtils)
+include(PlatformLibraryUtils)
 
 include(BoardManager)
 include(RecipeParser)

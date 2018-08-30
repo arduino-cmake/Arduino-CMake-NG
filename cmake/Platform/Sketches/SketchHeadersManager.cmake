@@ -35,16 +35,18 @@ function(resolve_sketch_headers _target_name _board_id _sketch_file)
         # So first we should check whether it's a library
         get_name_without_file_extension("${header}" header_we)
 
-        if (${header_we} IN_LIST ARDUINO_CMAKE_PLATFORM_LIBRARIES)
-            link_platform_library(${_target_name} ${header_we} ${_board_id})
+        is_platform_library(${header_we} is_header_platform_lib)
+        if (is_header_platform_lib)
+            string(TOLOWER ${header_we} header_we_lower)
+            link_platform_library(${_target_name} ${header_we_lower} ${_board_id})
         else ()
             find_arduino_library(${header_we}_sketch_lib ${header_we} ${_board_id})
             # If library isn't found, display a wraning since it might be a user library
-            if (NOT ${header_we}_sketch_lib OR "${${header_we}_sketch_lib}" MATCHES "NOTFOUND")
+            if (NOT TARGET ${header_we}_sketch_lib OR "${${header_we}_sketch_lib}" MATCHES "NOTFOUND")
                 _validate_target_includes_header(${_target_name} ${header} is_header_validated)
                 if (NOT is_header_validated)
                     # Header hasn't been found in any of the target's include directories, Display warning
-                    message(WARNING "The header '${_header}' is used by the \
+                    message(WARNING "The header '${header_we}' is used by the \
                                      '${_sketch_file}' sketch \
                                      but it isn't a Arduino/Platform library, nor it's linked \
                                      to the target manually!")
