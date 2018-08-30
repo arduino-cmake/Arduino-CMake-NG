@@ -71,8 +71,34 @@ endfunction()
 # Extracts a name symbol without possible file extension (marked usually by a dot ('.').
 #       _input_string - String containing name symbol and possibly file extension.
 #       _return_var - Name of a CMake variable that will hold the extraction result.
+#       Returns - String containing input name without possible file extension.
 #=============================================================================#
 function(get_name_without_file_extension _input_string _return_var)
+
     string(REGEX MATCH "${ARDUINO_CMAKE_NAME_WE_REGEX_PATTERN}" match "${_input_string}")
     set(${_return_var} ${CMAKE_MATCH_1} PARENT_SCOPE)
+
+endfunction()
+
+#=============================================================================#
+# Converts a given string a PascalCase string, converting 1st letter to upper and remaining to lower.
+#       _input_string - String to convert.
+#       _return_var - Name of a CMake variable that will hold the extraction result.
+#       Returns - PascalCase converted string.
+#=============================================================================#
+function(convert_string_to_pascal_case _input_string _return_var)
+
+    # Convert 1st letter to upper case
+    string(SUBSTRING ${_input_string} 0 1 first_letter)
+    string(TOUPPER ${first_letter} first_letter_upper)
+
+    # Convert remaining letters to lower case
+    string(SUBSTRING ${_input_string} 1 -1 remaining_letters)
+    string(TOLOWER ${remaining_letters} remaining_letters_lower)
+
+    # Combine first letter with remaining letters
+    string(APPEND combined_string ${first_letter_upper} ${remaining_letters_lower})
+
+    set(${_return_var} ${combined_string} PARENT_SCOPE)
+
 endfunction()

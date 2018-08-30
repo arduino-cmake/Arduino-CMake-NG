@@ -6,7 +6,7 @@ get_board_id(board_id nano atmega328)
 add_arduino_executable(Arduino_Library ${board_id} test.cpp)
 
 # Find and link the Stepper library
-find_arduino_library(stepper_lib Stepper ${board_id})
+find_arduino_library(stepper_lib stePpEr ${board_id}) # Library name is case-insensitive to the user
 link_arduino_library(Arduino_Library stepper_lib ${board_id})
 
 # Find and link the Servo library - Custom implementation for many architectures, 
