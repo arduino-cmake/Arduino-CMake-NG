@@ -1,8 +1,25 @@
 # Change Log
 
+## Version 0.5.2
+
+This version adds case-insensitive support for examples, forgotten in the last version.
+It also fixes a bug in Core-Lib target creation on Debian/Ubuntu systems.
+
+### New Features
+
+* Example name parameter of the **Example API** functions is now case-insensitive
+
+### Changes
+
+* Parameter order in the `add_arduino_library_example` function - `_board_id` becomes 2nd
+
+### Bug Fixes
+
+* Potential bug in Debian/Ubuntu systems when creating Core Library targets
+
 ## Version 0.5.1
 
-This feature fixes some "invisible" bugs from previous versions, along with general design improvements.
+This version fixes some "invisible" bugs from previous versions, along with general design improvements.
 Moreover, there are even some new minor features.
 
 ### New Features

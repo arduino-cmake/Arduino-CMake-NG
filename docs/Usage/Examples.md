@@ -23,7 +23,7 @@ It accepts the following parameters:
 | ----- | ------------- | ------------------------------------------------------------ | --------- |
 | 1st   | _target_name  | Target's name as it will be registered by CMake.             | Yes       |
 | 2nd   | _board_id     | Hardware Board's ID as retrieved by the `get_board_id` function. | Yes       |
-| 3rd   | _example_name | Name of the Arduino Example to use. Name is expected to be a valid, existing example. | Yes       |
+| 3rd   | _example_name | Name of the Arduino Example to use, case-insensitive. Name is expected to be a valid, existing example. | Yes       |
 | -     | CATEGORY _cat | Name of the category the example belongs to. It helps optimizing the search process to find the example in the SDK. <br />Use only if name is accurate. | No        |
 
 The example below shows how to use the **Blink** example:
@@ -56,9 +56,10 @@ The function accepts following parameters:
 | Order | Name                  | Description                                                  |
 | ----- | --------------------- | ------------------------------------------------------------ |
 | 1st   | _target_name          | Target's name as it will be registered by CMake.             |
-| 2nd   | _library_name         | Name of the library the example belongs to. Name is expected to be a valid, existing example. |
-| 3rd   | _board_id             | Hardware Board's ID as retrieved by the `get_board_id` function. |
-| 4th   | _library_example_name | Name of the library example to use. Name is expected to be a valid, existing example. |
+| 2nd   | _board_id             | Hardware Board's ID as retrieved by the `get_board_id` function. |
+| 3rd   | _library_target_name  | Name of an existing target registered to the library the example belongs to. It means the library should first be found by calling `find_arduino_library`. |
+| 4th   | _library_name         | Name of the library the example belongs to, case-insensitive. Name is expected to be a valid, existing example. |
+| 5th   | _library_example_name | Name of the library example to use, case-insensitive. <br />Name is expected to be a valid, existing example. |
 
 The example below shows how to use the **Knob** example of the **Servo** library:
 
