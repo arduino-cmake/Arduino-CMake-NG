@@ -37,7 +37,7 @@ Where:
 Next step is to run cmake, passing it the following argument: `-DCMAKE_TOOLCHAIN_FILE=[ARDUINO_CMAKE_PATH]/Arduino-Toolchain.cmake`.
 `[ARDUINO_CMAKE_PATH]` is the path to the framework's directory (Absolute or Relative).
 
-More information on CMake and how to run it is available in the [[Using CMake Tools]] section.
+More information on CMake and how to use it is available in the [[Generating CMake]] section.
 
 Running CMake has generated build-ready output, so the only thing's left is to actually build it.
 For this you'll use a build tool matching the generator you've ran CMake with, such as **make** if your generator was **Unix Makefiles**.

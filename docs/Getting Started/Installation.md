@@ -46,3 +46,41 @@ So, for example, if your build tool is **make**, it will require you to install 
 If you're not familiar with these, they are ports of the **GNU Make** toolchain for the Windows OS (Cygwin is a lot more than that but it doesn't matter in this context).
 
 **Note:** Make sure to add **make** to the system's path, otherwise you'll have trouble building programs.
+
+### Preparing Environment
+
+After installing all required prerequisites as described in the sections above, you should ensure your environment is ready for **Arduino-CMake**.
+
+#### Arduino SDK Path
+
+Assuming you've already set required paths (such as **gcc** or **MinGW**) in the environmental variable `PATH`, the next thing you must do is to find the path of the Arduino SDK.
+By default, **Arduino-CMake** looks for the Arduino SDK in the following paths, divided by OSs:
+
+##### Linux
+
+* `/usr/share/arduino*`
+* `/opt/local/arduino*`
+* `/opt/arduino*`
+* `/usr/local/share/arduino*`
+
+##### OS X/MacOS
+
+* `~/Applications`
+* `/Applications`
+* `/Developer/Applications`
+* `/sw`
+* `/opt/local`
+
+##### Windows
+
+* `C:/Program Files (x86)/Arduino`
+* `C:/Program Files/Arduino`
+
+##### Setting Custom Path
+
+If your SDK isn't located in any of the above paths, you should pass it manually to the framework.
+The framework stores the path in a cache variable named `ARDUINO_SDK_PATH`.
+There are multiple ways to set this variable:
+
+1. Pass the variable when running CMake, like this: `cmake -DARDUINO_SDK_PATH=[PATH]` where `[PATH]` is the absolute path to the SDK. **This is the preferred way!**
+2. Set it manually in your main **CMakeLists.txt** file, like this: `set(ARDUINO_SDK_PATH "PATH")` where `PATH` is the absolute path to the SDK. Note that this line should appear **before** the line setting the project, which looks like `project(my_project)`.
