@@ -1,10 +1,10 @@
-language: c
+language: cpp
 os:
   - linux
   - osx
 env:
   matrix:
-    - ARDUINO_SDK_VERSION=1.6.13
+  - ARDUINO_SDK_VERSION=1.6.0
     - ARDUINO_SDK_VERSION=1.8.5
 addons:
   apt:
@@ -35,7 +35,7 @@ install:
   - rm -rf build/*
   - cd build/
 script:
-  - cmake -D ARDUINO_SDK_PATH="$ARDUINO_SDK_PATH" ..
+- cmake -D ARDUINO_SDK_PATH="$ARDUINO_SDK_PATH" -D CMAKE_TOOLCHAIN_FILE="../cmake/Arduino-Toolchain.cmake" ..
   - make
 after_script:
   - cat CMakeFiles/CMakeOutput.log
