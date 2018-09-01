@@ -2,7 +2,7 @@ This page lists all known issues regarding the `undefined references` issue whic
 
 ### undefined reference to '`__cxa_pure_virtual`'
 
-An easy fix is to add the following to your firmware source code:
+An easy fix is to add the following to your program's main source file:
 
 ```c
 extern "C" void __cxa_pure_virtual(void);

@@ -13,5 +13,5 @@ If you get the following error:
 
 ```
 
-You probably recently upgraded **avr-libc** to the latest version, which has deprecated the use of these symbols. There is an [Arduino Patch](http://arduino.googlecode.com/issues/attachment?aid=9550004000&name=sig-patch.diff&token=R2RWB0LZXQi8OpPLsyAdnMATDNU%3A1351021269609) which fixes these error.
+You've probably recently upgraded **avr-libc** to the latest version, which has deprecated the use of these symbols. There is an [Arduino Patch](http://arduino.googlecode.com/issues/attachment?aid=9550004000&name=sig-patch.diff&token=R2RWB0LZXQi8OpPLsyAdnMATDNU%3A1351021269609) which fixes these error.
 You can read more about this bug here: [Arduino Bug ISSUE 955](http://code.google.com/p/arduino/issues/detail?id=955).

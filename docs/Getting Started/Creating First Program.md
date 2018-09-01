@@ -43,7 +43,7 @@ Running CMake has generated build-ready output, so the only thing's left is to a
 For this you'll use a build tool matching the generator you've ran CMake with, such as **make** if your generator was **Unix Makefiles**.
 Building the project can be as simple as calling **make** from the project's binary directory using a cmd, clicking a 'Build' button in the IDE, or something more complicated - depending on your tool of choice.
 
-More information on the build process is available in [[TODO]].
+More information on the build process is available in [[Building Project]].
 
 Once built, the program might also be uploaded to the connected hardware board - Depending on whether a call to the `upload_arduino_target` function exists.
 If it doesn't, the program will simply be built, creating the appropriate `.hex` file.

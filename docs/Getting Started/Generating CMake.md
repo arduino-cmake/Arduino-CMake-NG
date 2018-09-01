@@ -1,8 +1,6 @@
 CMake generation is the process that generates build-ready files that could later be built by the build toolchain. It occurs on every CMake run.
 The process can be triggered directly by the user by running a cmake tool (such as cmake), or by the build toolchain when it detects changes in the source tree.
 
-To see how those tools can be used, please head to the [[Using CMake Tools]] page.
-
 ### Generators
 
 The input of a generation process is the generator to use.
