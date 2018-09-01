@@ -1,4 +1,4 @@
-# Arduino-CMake 3
+# Arduino-CMake NG
 
 [![Travis Build Status](https://img.shields.io/travis/arduino-cmake/arduino-cmake.svg?logo=travis&style=for-the-badge&label=Linux&branch=master)](https://travis-ci.org/arduino-cmake/arduino-cmake) [![AppVeyor Build Status](https://img.shields.io/appveyor/ci/arduino-cmake/arduino-cmake/master.svg?logo=appveyor&style=for-the-badge&label=Windows)](https://ci.appveyor.com/project/arduino-cmake/arduino-cmake) [![Latest Release Version](https://img.shields.io/github/release/arduino-cmake/arduino-cmake.svg?logo=github&style=for-the-badge)](https://github.com/arduino-cmake/arduino-cmake/releases)
 
@@ -39,9 +39,19 @@ Analyzing the SDK allows us to build a framework using this toolchain, and also 
 
 ## Features
 
-**Arduino-CMake** can do <u>anything</u> that the **Arduino IDE** can!
+**Arduino-CMake** should do <u>anything</u> that the **Arduino IDE** can!
+Why should? Because currently it's still WIP, meaning there are still some missing features.
+Here's a list of features **already supported** by **Arduino-CMake**:
 
-Moreover, it allows some things that **Arduino IDE** *doesn't*:
+* Creating Arduino "Executables"/Programs
+* Uploading programs to hardware boards
+* Linking/Using Arduino libraries to programs
+  * Linking/Using custom libraries to programs
+* Creating Arduino example programs
+  * Creating Arduino library example programs
+* Attaching Arduino sketches to programs
+
+Moreover, **Arduino-CMake** allows some things that **Arduino IDE** *doesn't*:
 
 - Developing Arduino programs in any IDE or text editor
 - Completely customizing the build process per user's requirements
