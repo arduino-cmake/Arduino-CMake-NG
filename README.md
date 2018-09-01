@@ -37,6 +37,12 @@ But what's really useful in CMake, at least regarding our Arduino world, is the 
 The Arduino SDK, which one usually downloads together with the Arduino IDE, is actually also a toolchain, as it includes the required compilation & linkage tools for cross-compiling.
 Analyzing the SDK allows us to build a framework using this toolchain, and also all of Arduino's other cool features such as *libraries, examples*, etc.
 
+### What is NG?
+
+NG stands for "New Generation".
+Inferred from the written above, it can easily be understood why the project has this name.
+However, if you don't think this name is good enough or it confuses you - Feel free to propose a name of your own, we're open for offers :)
+
 ## Features
 
 **Arduino-CMake** should do <u>anything</u> that the **Arduino IDE** can!
