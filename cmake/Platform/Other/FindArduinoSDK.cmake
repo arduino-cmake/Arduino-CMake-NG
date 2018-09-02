@@ -1,3 +1,5 @@
+include(${CMAKE_CURRENT_LIST_DIR}/../System/LinuxDistDetector.cmake)
+
 function(find_arduino_sdk _return_var)
 
     if (${CMAKE_HOST_UNIX})
