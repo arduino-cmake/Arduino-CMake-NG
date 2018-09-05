@@ -43,7 +43,7 @@ function(initialize_arduino_platform)
                 set(ARDUINO_CMAKE_PLATFORM_NAME "arduino" CACHE STRING "")
             endif ()
             set(ARDUINO_CMAKE_PLATFORM_ARCHITECTURE "avr" CACHE STRING "")
-            string(CONCAT platform_path "${ARDUINO_SDK_PATH}"
+            string(CONCAT platform_path "${ARDUINO_CMAKE_SDK_PATH}"
                     /hardware/
                     "${ARDUINO_CMAKE_PLATFORM_NAME}/"
                     "${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE}")
