@@ -32,7 +32,7 @@ deploy:
   description: 'ToDo'
   artifact: arduino-cmake-ng.zip
   auth_token:
-    secure:
+    secure: nTRyL3xmSCBVKQPd1wf/VoUSRIATFVSSCSlKm52esfQ=
   draft: true
   on:
     branch: master
