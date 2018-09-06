@@ -1,8 +1,5 @@
 version: '{build}'
 image: Visual Studio 2017
-notifications:
-- provider: Email
-  on_build_success: false
 environment:
   matrix:
   - ARDUINO_SDK_VERSION: 1.6.13

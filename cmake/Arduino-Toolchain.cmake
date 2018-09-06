@@ -31,13 +31,13 @@ endfunction()
 
 function(_setup_sdk_internal_paths)
 
-    set(ARDUINO_SDK_BIN_PATH "${ARDUINO_CMAKE_SDK_PATH}/hardware/tools/avr/bin" CACHE PATH
+    set(ARDUINO_SDK_BIN_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr/bin" CACHE PATH
             "Path to Arduino SDK's binaries folder")
-    set(ARDUINO_SDK_ROOT_PATH "${ARDUINO_CMAKE_SDK_PATH}/hardware/tools/avr" CACHE PATH
+    set(ARDUINO_SDK_ROOT_PATH "${ARDUINO_SDK_PATH}/hardware/tools/avr" CACHE PATH
             "Path to Arduino SDK's sys-root folder")
-    set(ARDUINO_SDK_LIBRARIES_PATH "${ARDUINO_CMAKE_SDK_PATH}/libraries" CACHE PATH
+    set(ARDUINO_SDK_LIBRARIES_PATH "${ARDUINO_SDK_PATH}/libraries" CACHE PATH
             "Path to SDK's libraries directory")
-    set(ARDUINO_SDK_EXAMPLES_PATH "${ARDUINO_CMAKE_SDK_PATH}/examples" CACHE PATH
+    set(ARDUINO_SDK_EXAMPLES_PATH "${ARDUINO_SDK_PATH}/examples" CACHE PATH
             "Path to SDK's examples directory")
 
 endfunction()
@@ -52,14 +52,14 @@ endif ()
 set(ARDUINO_CMAKE_TOOLCHAIN_DIR ${CMAKE_CURRENT_LIST_DIR} CACHE PATH
         "Path to Arduino-CMake's toolchain directory")
 
+message("SDK: $ENV{ARDUINO_SDK_PATH}")
+
 # Set default path if none is set
-if (ARDUINO_SDK_PATH)
-    set(ARDUINO_CMAKE_SDK_PATH "${ARDUINO_SDK_PATH}" CACHE PATH "Arduino SDK Path")
+if ($ENV{ARDUINO_SDK_PATH})
+    set(ARDUINO_SDK_PATH "${ARDUINO_SDK_PATH}" CACHE PATH "Arduino SDK Path")
 else ()
-    if (NOT DEFINED ARDUINO_CMAKE_SDK_PATH) # Custom path has already been set
-        find_arduino_sdk(arduino_sdk_path)
-        set(ARDUINO_CMAKE_SDK_PATH "${arduino_sdk_path}" CACHE PATH "Arduino SDK Path")
-    endif ()
+    find_arduino_sdk(arduino_sdk_path)
+    set(ARDUINO_SDK_PATH "${arduino_sdk_path}" CACHE PATH "Arduino SDK Path")
 endif ()
 
 _setup_sdk_internal_paths()

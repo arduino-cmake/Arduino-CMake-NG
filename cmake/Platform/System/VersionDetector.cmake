@@ -51,7 +51,7 @@ function(detect_sdk_version)
 
     find_file(ARDUINO_CMAKE_VERSION_FILE_PATH
             NAMES version.txt
-            PATHS "${ARDUINO_CMAKE_SDK_PATH}"
+            PATHS "${ARDUINO_SDK_PATH}"
             PATH_SUFFIXES lib
             DOC "Path to Arduino's version file"
             NO_CMAKE_FIND_ROOT_PATH)
@@ -86,6 +86,6 @@ function(detect_sdk_version)
     _get_normalized_sdk_version(normalized_sdk_version)
     set(runtime_ide_version "${normalized_sdk_version}" CACHE STRING "")
 
-    message(STATUS "Arduino SDK version ${ARDUINO_CMAKE_SDK_VERSION}: ${ARDUINO_CMAKE_SDK_PATH}")
+    message(STATUS "Arduino SDK version ${ARDUINO_CMAKE_SDK_VERSION}: ${ARDUINO_SDK_PATH}")
 
 endfunction()
