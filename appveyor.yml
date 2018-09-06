@@ -20,7 +20,6 @@ build_script:
 - ps: >-
     cmake -G "Unix Makefiles"
     -DCMAKE_TOOLCHAIN_FILE="..\cmake\Arduino-Toolchain.cmake"
-    -DARDUINO_SDK_PATH="$env:ARDUINO_SDK_PATH"
     -DCMAKE_SH="CMAKE_SH-NOTFOUND"
     ..\examples
 - ps: make
