@@ -1,11 +1,12 @@
 version: '{build}'
 image: Visual Studio 2017
 environment:
+  MINGW_PATH: C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin
   matrix:
-  - ARDUINO_SDK_VERSION: 1.6.13
+#  - ARDUINO_SDK_VERSION: 1.6.13
   - ARDUINO_SDK_VERSION: 1.8.6
 install:
-- ps: cinst make unzip
+- ps: cinst unzip
 - ps: $env:ARDUINO_SDK_FILE = "arduino-$env:ARDUINO_SDK_VERSION-windows.zip"
 - ps: $env:ARDUINO_SDK_URI = "https://downloads.arduino.cc/$env:ARDUINO_SDK_FILE"
 - ps: wget "$env:ARDUINO_SDK_URI" -O "$env:ARDUINO_SDK_FILE"
@@ -13,16 +14,21 @@ install:
 - ps: $env:ARDUINO_SDK_PATH = "$pwd\arduino-sdk\arduino-$env:ARDUINO_SDK_VERSION"
 # FIXME: Windows path separators (\) need to be changed to "/" for cmake to properly handle it
 - ps: $env:ARDUINO_SDK_PATH = ($env:ARDUINO_SDK_PATH -replace "\\","/")
+before_build:
+- ps: Copy-Item -Path $env:MINGW_PATH\mingw32-make.exe -Destination $env:MINGW_PATH\make.exe
 build_script:
+# Add the MinGW Path to the system PATH temporarily for this session
+- ps: $env:Path += ";$env:MINGW_PATH"
 - ps: mkdir build
 - ps: cd build
 - ps: echo "$env:ARDUINO_SDK_PATH"
 - ps: >-
-    cmake -G "Unix Makefiles"
-    -DCMAKE_TOOLCHAIN_FILE="..\cmake\Arduino-Toolchain.cmake"
-    -DCMAKE_SH="CMAKE_SH-NOTFOUND"
+    cmake -G "MinGW Makefiles"
+    -D CMAKE_TOOLCHAIN_FILE="..\cmake\Arduino-Toolchain.cmake"
+    -D CMAKE_SH="CMAKE_SH-NOTFOUND"
+    --no-warn-unused-cli
     ..\examples
-- ps: make
+- ps: make.exe
 after_build:
 - 7z a arduino-cmake-ng.zip %APPVEYOR_BUILD_FOLDER%\cmake
 artifacts:
