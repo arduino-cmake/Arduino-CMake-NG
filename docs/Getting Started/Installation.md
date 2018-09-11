@@ -78,9 +78,6 @@ By default, **Arduino-CMake** looks for the Arduino SDK in the following paths, 
 
 ##### Setting Custom Path
 
-If your SDK isn't located in any of the above paths, you should pass it manually to the framework.
-The framework stores the path in a cache variable named `ARDUINO_SDK_PATH`.
-There are multiple ways to set this variable:
+If your SDK isn't located in any of the above paths, you should set an environment variable with the name of `ARDUINO_SDK_PATH`, pointing to the desired custom location.
 
-1. Pass the variable when running CMake, like this: `cmake -DARDUINO_SDK_PATH=[PATH]` where `[PATH]` is the absolute path to the SDK. **This is the preferred way!**
-2. Set it manually in your main **CMakeLists.txt** file, like this: `set(ARDUINO_SDK_PATH "PATH")` where `PATH` is the absolute path to the SDK. Note that this line should appear **before** the line setting the project, which looks like `project(my_project)`.
+> Note that in order to persist your environmental variables you may have to perform some extra steps, depending on your OS.

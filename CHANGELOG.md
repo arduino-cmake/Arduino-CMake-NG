@@ -3,14 +3,18 @@
 ## Version 0.5.2
 
 This version adds case-insensitive support for examples, forgotten in the last version.
-It also fixes a bug in Core-Lib target creation on Debian/Ubuntu systems.
+Fixes a bug in Core-Lib target creation on Debian/Ubuntu systems, and adds support for **AppVeyor** CI.
+
+But most importantly - It changes the way users should supply a custom SDK location.
 
 ### New Features
 
 * Example name parameter of the **Example API** functions is now case-insensitive
+* Support for **AppVeyor** continuous integration/CI.
 
 ### Changes
 
+* Supplying custom **Arduino SDK** path - Should now set an environment variable in the system named `ARDUINO_SDK_PATH`, instead of passing it as a variable to CMake through `-D`
 * Parameter order in the `add_arduino_library_example` function - `_board_id` becomes 2nd
 
 ### Bug Fixes

@@ -1,6 +1,6 @@
 # Arduino-CMake NG
 
-[![Travis Build Status](https://img.shields.io/travis/arduino-cmake/arduino-cmake.svg?logo=travis&style=for-the-badge&label=Linux&branch=master)](https://travis-ci.org/arduino-cmake/arduino-cmake) [![AppVeyor Build Status](https://img.shields.io/appveyor/ci/arduino-cmake/arduino-cmake/master.svg?logo=appveyor&style=for-the-badge&label=Windows)](https://ci.appveyor.com/project/arduino-cmake/arduino-cmake) [![Latest Release Version](https://img.shields.io/github/release/arduino-cmake/arduino-cmake.svg?logo=github&style=for-the-badge)](https://github.com/arduino-cmake/arduino-cmake/releases)
+[![AppVeyor Build](https://ci.appveyor.com/api/projects/status/github/arduino-cmake/Arduino-CMake-NG?svg=true&passingText=Windows%20-%20Passing&failingText=Windows%20-%20Failing&pendingText=Windows%20-%20Pending)](https://ci.appveyor.com/project/arduino-cmake-ng/arduino-cmake-ng)
 
 **Arduino-CMake** is a framework which allows developers to write Arduino-based programs using any tool that supports cmake. *Arduino-based*? There are many other frameworks out there built upon Arduino's base, such as ESP32, and **we support that**.
 In other words, developers can use their favorite IDEs or text editors on their favorite OS to develop Arduino programs!
@@ -91,7 +91,7 @@ add_arduino_executable(Hello_World ${board_id} helloWorld.cpp)
 upload_arduino_target(Hello_World "${board_id}" COM3)
 ```
 
-You should then call **CMake** (either through the cmd, the cmake-gui or the IDE if it supports that) passing it the argument `-DCMAKE_TOOLCHAIN_FILE=[project_path]/cmake/Arduino-Toolchain.cmake` where `[project_path]` is substituted by the project's full path. This is what allows cmake to use our framework.
+You should then call **CMake** (either through cmd, cmake-gui or an IDE if it supports that) passing it the argument `-DCMAKE_TOOLCHAIN_FILE=[project_path]/cmake/Arduino-Toolchain.cmake` where `[project_path]` is substituted by the project's full path. This is what allows cmake to use our framework.
 
 That's it! It's super simple, yet super extensible :)
 
