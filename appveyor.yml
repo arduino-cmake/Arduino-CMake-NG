@@ -27,9 +27,9 @@ build_script:
     -D CMAKE_SH="CMAKE_SH-NOTFOUND"
     --no-warn-unused-cli
     ..\examples
-- ps: if ($LastExitCode -eq 0) { $host.SetShouldExit(0) }
-- ps: make.exe 2>&1 3>&1
-- ps: if ($LastExitCode -eq 0) { $host.SetShouldExit(0) }
+- ps: |
+    make.exe 2>&1 3>&1
+    if ($LastExitCode -eq 0) { $host.SetShouldExit(0) }
 artifacts:
 - path: cmake
   name: CMake-Framework
