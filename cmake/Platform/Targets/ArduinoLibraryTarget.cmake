@@ -98,7 +98,6 @@ endfunction()
 function(find_arduino_library _target_name _library_name _board_id)
 
     convert_string_to_pascal_case(${_library_name} arduino_compliant_library_name)
-    message("Name: ${arduino_compliant_library_name}")
     set(library_path "${ARDUINO_SDK_LIBRARIES_PATH}/${arduino_compliant_library_name}")
     set(library_properties_path "${library_path}/library.properties")
 

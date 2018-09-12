@@ -71,7 +71,6 @@ function(detect_sdk_version)
     list(GET split_version 1 split_version_minor)
     list(GET split_version 2 split_version_patch)
 
-
     set(ARDUINO_CMAKE_SDK_VERSION "${raw_version}" CACHE STRING "Arduino SDK Version")
     set(ARDUINO_CMAKE_SDK_VERSION_MAJOR ${split_version_major} CACHE STRING
             "Arduino SDK Major Version")
@@ -87,6 +86,6 @@ function(detect_sdk_version)
     _get_normalized_sdk_version(normalized_sdk_version)
     set(runtime_ide_version "${normalized_sdk_version}" CACHE STRING "")
 
-    message(STATUS "Arduino SDK version ${ARUDINO_CMAKE_SDK_VERSION}: ${ARDUINO_SDK_PATH}")
+    message(STATUS "Arduino SDK version ${ARDUINO_CMAKE_SDK_VERSION}: ${ARDUINO_SDK_PATH}")
 
 endfunction()

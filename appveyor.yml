@@ -1,23 +1,48 @@
 version: '{build}'
 image: Visual Studio 2017
 environment:
+  MINGW_PATH: C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin
   matrix:
-    - ARDUINO_SDK_VERSION: 1.6.13
-    - ARDUINO_SDK_VERSION: 1.8.5
+  #  - ARDUINO_SDK_VERSION: 1.6.13
+  - ARDUINO_SDK_VERSION: 1.8.6
 install:
-  - ps: choco install make unzip
-  - ps: $env:ARDUINO_SDK_FILE = "arduino-$env:ARDUINO_SDK_VERSION-windows.zip"
-  - ps: $env:ARDUINO_SDK_URI = "https://downloads.arduino.cc/$env:ARDUINO_SDK_FILE"
-  - ps: wget "$env:ARDUINO_SDK_URI" -O "$env:ARDUINO_SDK_FILE"
-  - ps: unzip "$env:ARDUINO_SDK_FILE" -d "arduino-sdk"
-  - ps: $env:ARDUINO_SDK_PATH = "$pwd\arduino-sdk\arduino-$env:ARDUINO_SDK_VERSION"
-  # FIXME: Windows path separators (\) need to be changed to "/" for cmake to properly handle it
-  - ps: $env:ARDUINO_SDK_PATH = ($env:ARDUINO_SDK_PATH -replace "\\","/")
+- ps: cinst unzip
+- ps: $env:ARDUINO_SDK_FILE = "arduino-$env:ARDUINO_SDK_VERSION-windows.zip"
+- ps: $env:ARDUINO_SDK_URI = "https://downloads.arduino.cc/$env:ARDUINO_SDK_FILE"
+- ps: wget "$env:ARDUINO_SDK_URI" -O "$env:ARDUINO_SDK_FILE"
+- ps: unzip "$env:ARDUINO_SDK_FILE" -d "arduino-sdk"
+- ps: $env:ARDUINO_SDK_PATH = "$pwd\arduino-sdk\arduino-$env:ARDUINO_SDK_VERSION"
+- ps: $env:ARDUINO_SDK_PATH = ($env:ARDUINO_SDK_PATH -replace "\\","/")
+before_build:
+- ps: Copy-Item -Path $env:MINGW_PATH\mingw32-make.exe -Destination $env:MINGW_PATH\make.exe
 build_script:
-  - ps: mkdir build
-  - ps: cd build
-  - ps: echo "$env:ARDUINO_SDK_PATH"
-  - ps: cmake -G "Unix Makefiles" -D ARDUINO_SDK_PATH="$env:ARDUINO_SDK_PATH" ..
-  - cmd: make
-on_finish:
-  - ps: cat CMakeFiles/CMakeOutput.log
+# Add the MinGW Path to the system PATH temporarily for this session
+- ps: $env:Path += ";$env:MINGW_PATH"
+- ps: mkdir build
+- ps: cd build
+- ps: echo "$env:ARDUINO_SDK_PATH"
+- ps: >-
+    cmake -G "MinGW Makefiles"
+    -D CMAKE_TOOLCHAIN_FILE="..\cmake\Arduino-Toolchain.cmake"
+    -D CMAKE_SH="CMAKE_SH-NOTFOUND"
+    --no-warn-unused-cli
+    ..\examples
+- ps: |
+    make.exe 2>&1 3>&1
+    if ($LastExitCode -eq 0) { $host.SetShouldExit(0) }
+artifacts:
+- path: cmake
+  name: CMake-Framework
+  type: zip
+deploy:
+- provider: GitHub
+  description: 'ToDo'
+  artifact: CMake-Framework
+  auth_token:
+    secure: rjEnIYWjd3X0jhsAbVKgIOJNpjPY0dBJvvHD3wNB+PbR/F7FvlWlsiwaiQ4EmLBV
+  draft: true
+  on:
+    branch: master
+    appveyor_repo_tag: true
+on_failure:
+- ps: cat CMakeFiles/CMakeOutput.log

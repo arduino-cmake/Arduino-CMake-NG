@@ -1,3 +1,5 @@
+include(${CMAKE_CURRENT_LIST_DIR}/../System/LinuxDistDetector.cmake)
+
 function(find_arduino_sdk _return_var)
 
     if (${CMAKE_HOST_UNIX})
@@ -15,7 +17,7 @@ function(find_arduino_sdk _return_var)
 
     find_program(arduino_program_path
             NAMES arduino
-            PATHS ${platform_search_paths}
+            HINTS ${platform_search_paths}
             NO_DEFAULT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
     get_filename_component(sdk_path "${arduino_program_path}" DIRECTORY)

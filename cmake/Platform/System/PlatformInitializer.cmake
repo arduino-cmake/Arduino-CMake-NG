@@ -55,9 +55,6 @@ function(initialize_arduino_platform)
         set(ARDUINO_CMAKE_PLATFORM_ARCHITECTURE "avr" CACHE STRING "")
     endif ()
 
-    # Required by compiler recipes
-    set(build_arch "${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE}" CACHE STRING "")
-
     # Find all platform elements
     find_required_platform_elements()
     initialize_platform_properties()

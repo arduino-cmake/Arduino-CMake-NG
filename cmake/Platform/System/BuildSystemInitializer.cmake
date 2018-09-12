@@ -1,6 +1,5 @@
 include(AvrToolsFinder)
 include(VersionDetector)
-include(LinuxDistDetector)
 include(PlatformInitializer)
 
 function(find_required_platform_tools)
