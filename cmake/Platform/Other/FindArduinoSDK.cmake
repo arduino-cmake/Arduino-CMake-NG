@@ -1,5 +1,3 @@
-include(${CMAKE_CURRENT_LIST_DIR}/../System/LinuxDistDetector.cmake)
-
 function(find_arduino_sdk _return_var)
 
     if (${CMAKE_HOST_UNIX})
@@ -9,7 +7,6 @@ function(find_arduino_sdk _return_var)
         else () # Probably Linux
             file(GLOB platform_search_paths /usr/share/arduino* /opt/local/arduino* /opt/arduino*
                     /usr/local/share/arduino*)
-            detect_host_linux_distribution()
         endif ()
     elseif (${CMAKE_HOST_WIN32})
         set(platform_search_paths "C:/Program Files (x86)/Arduino" "C:/Program Files/Arduino")
