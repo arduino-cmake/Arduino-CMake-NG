@@ -3,7 +3,7 @@ image: Visual Studio 2017
 environment:
   MINGW_PATH: C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin
   matrix:
-  #  - ARDUINO_SDK_VERSION: 1.6.13
+  - ARDUINO_SDK_VERSION: 1.8.2
   - ARDUINO_SDK_VERSION: 1.8.6
 install:
 - ps: cinst unzip
