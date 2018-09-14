@@ -8,7 +8,6 @@ env:
 addons:
   apt:
     packages:
-    - gcc-avr
     - binutils-avr
     - avr-libc
     - avrdude
@@ -19,7 +18,7 @@ before_install:
     export ARDUINO_SDK_FILE="arduino-$ARDUINO_SDK_VERSION-linux32.tar.xz"
   else
     export ARDUINO_SDK_FILE="arduino-$ARDUINO_SDK_VERSION-macosx.zip"
-    brew install cmake
+    brew upgrade cmake
   fi
 - wget "https://downloads.arduino.cc/$ARDUINO_SDK_FILE" -O "$ARDUINO_SDK_FILE"
 - mkdir arduino-sdk
@@ -38,5 +37,5 @@ install:
 script:
 - cmake -D CMAKE_TOOLCHAIN_FILE="../cmake/Arduino-Toolchain.cmake" ../examples
 - make
-after_success:
+after_failure:
 - cat CMakeFiles/CMakeOutput.log
