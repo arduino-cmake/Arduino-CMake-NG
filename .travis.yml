@@ -25,7 +25,7 @@ before_install:
 - |
   if [[ $TRAVIS_OS_NAME == linux ]]; then
     tar xf "$ARDUINO_SDK_FILE" -C arduino-sdk --strip-components 1
-    export ARDUINO_SDK_PATH="$(pwd)/arduino-sdk"
+    export ARDUINO_SDK_PATH="$PWD/arduino-sdk"
   else
     unzip "$ARDUINO_SDK_FILE" "Arduino.app/Contents/Java/*" -d arduino-sdk
     export ARDUINO_SDK_PATH="$(pwd)/arduino-sdk/Arduino.app/Contents/Java"
@@ -38,4 +38,5 @@ script:
 - cmake -D CMAKE_TOOLCHAIN_FILE="../cmake/Arduino-Toolchain.cmake" ../examples
 - make
 after_failure:
+- ls -lR $ARDUNIO_SDK_PATH
 - cat CMakeFiles/CMakeOutput.log
