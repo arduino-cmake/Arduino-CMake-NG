@@ -36,7 +36,7 @@ install:
 - rm -rf build/*
 - cd build/
 script:
-- cmake -D CMAKE_TOOLCHAIN_FILE="../cmake/Arduino-Toolchain.cmake" ..
+- cmake -D CMAKE_TOOLCHAIN_FILE="../cmake/Arduino-Toolchain.cmake" ../examples
 - make
-after_script:
+after_success:
 - cat CMakeFiles/CMakeOutput.log
