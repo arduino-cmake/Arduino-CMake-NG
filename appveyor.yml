@@ -21,11 +21,9 @@ install:
       unzip "$sdk_file" -d "arduino-sdk"
     }
 - ps: $env:ARDUINO_SDK_PATH = ($env:ARDUINO_SDK_PATH -replace "\\","/")
-before_build:
-- ps: Copy-Item -Path $env:MINGW_PATH\mingw32-make.exe -Destination $env:MINGW_PATH\make.exe
+- ps: $env:Path += ";$env:MINGW_PATH"
 build_script:
 # Add the MinGW Path to the system PATH temporarily for this session
-- ps: $env:Path += ";$env:MINGW_PATH"
 - ps: cd $env:APPVEYOR_BUILD_FOLDER
 - ps: mkdir build
 - ps: cd build
@@ -37,7 +35,7 @@ build_script:
     --no-warn-unused-cli
     ..\examples
 - ps: |
-    make.exe 2>&1 3>&1
+    mingw32-make.exe 2>&1 3>&1
     if ($LastExitCode -eq 0) { $host.SetShouldExit(0) }
 artifacts:
 - path: cmake
