@@ -5,18 +5,18 @@ environment:
   matrix:
   - ARDUINO_SDK_VERSION: 1.8.2
   - ARDUINO_SDK_VERSION: 1.8.6
+  ARDUINO_SDK_PATH: $pwd\arduino-sdk\arduino-$env:ARDUINO_SDK_VERSION
 cache:
-- '%ARDUINO_SDK_PATH% -> %ARDUINO_SDK_VERSION%'
+- '%ARDUINO_SDK_PATH%'
 install:
 - ps: cinst unzip
-- ps: $env:ARDUINO_SDK_PATH = "$pwd\arduino-sdk\arduino-$env:ARDUINO_SDK_VERSION"
-- ps: $env:ARDUINO_SDK_FILE = "arduino-$env:ARDUINO_SDK_VERSION-windows.zip"
+- ps: $sdk_file = "arduino-$env:ARDUINO_SDK_VERSION-windows.zip"
 - ps: |
     if ( -Not (Test-Path -Path $env:ARDUINO_SDK_PATH) )
     {
-      $env:ARDUINO_SDK_URI = "https://downloads.arduino.cc/$env:ARDUINO_SDK_FILE"
-      wget "$env:ARDUINO_SDK_URI" -O "$env:ARDUINO_SDK_FILE"
-      unzip "$env:ARDUINO_SDK_FILE" -d "arduino-sdk"
+      $arduino_sdk_uri = "https://downloads.arduino.cc/$sdk_file"
+      wget "$arduino_sdk_uri" -O "$sdk_file"
+      unzip "$sdk_file" -d "arduino-sdk"
     }
 - ps: $env:ARDUINO_SDK_PATH = ($env:ARDUINO_SDK_PATH -replace "\\","/")
 before_build:
