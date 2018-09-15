@@ -1,4 +1,7 @@
 version: '{build}'
+branches:
+  except:
+  - feature/travis-ci # Affects only 'Travis-CI' builds, shouldn't be built
 image: Visual Studio 2017
 environment:
   MINGW_PATH: C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin
