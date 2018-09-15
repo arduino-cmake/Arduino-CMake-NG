@@ -8,7 +8,6 @@ env:
 addons:
   apt:
     packages:
-    - gcc-avr
     - binutils-avr
     - avr-libc
     - avrdude
@@ -16,17 +15,16 @@ addons:
 before_install:
 - |
   if [[ $TRAVIS_OS_NAME == linux ]]; then
-    export ARDUINO_SDK_FILE="arduino-$ARDUINO_SDK_VERSION-linux32.tar.xz"
+    export ARDUINO_SDK_FILE="arduino-$ARDUINO_SDK_VERSION-linux64.tar.xz"
   else
     export ARDUINO_SDK_FILE="arduino-$ARDUINO_SDK_VERSION-macosx.zip"
-    brew install cmake
   fi
 - wget "https://downloads.arduino.cc/$ARDUINO_SDK_FILE" -O "$ARDUINO_SDK_FILE"
 - mkdir arduino-sdk
 - |
   if [[ $TRAVIS_OS_NAME == linux ]]; then
     tar xf "$ARDUINO_SDK_FILE" -C arduino-sdk --strip-components 1
-    export ARDUINO_SDK_PATH="$(pwd)/arduino-sdk"
+    export ARDUINO_SDK_PATH="$PWD/arduino-sdk"
   else
     unzip "$ARDUINO_SDK_FILE" "Arduino.app/Contents/Java/*" -d arduino-sdk
     export ARDUINO_SDK_PATH="$(pwd)/arduino-sdk/Arduino.app/Contents/Java"
@@ -36,7 +34,7 @@ install:
 - rm -rf build/*
 - cd build/
 script:
-- cmake -D CMAKE_TOOLCHAIN_FILE="../cmake/Arduino-Toolchain.cmake" ..
+- cmake -D CMAKE_TOOLCHAIN_FILE="../cmake/Arduino-Toolchain.cmake" ../examples
 - make
-after_script:
+after_failure:
 - cat CMakeFiles/CMakeOutput.log

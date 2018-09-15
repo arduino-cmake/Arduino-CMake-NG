@@ -1,6 +1,7 @@
 # Arduino-CMake NG
 
 [![AppVeyor Build](https://ci.appveyor.com/api/projects/status/github/arduino-cmake/Arduino-CMake-NG?svg=true&passingText=Windows%20-%20Passing&failingText=Windows%20-%20Failing&pendingText=Windows%20-%20Pending)](https://ci.appveyor.com/project/arduino-cmake/arduino-cmake-ng)
+[![Travis CI](https://img.shields.io/travis/arduino-cmake/Arduino-CMake-NG/branch=develop.svg?label=Linux and OS X &logo=travis)](https://travis-ci.org/arduino-cmake/Arduino-CMake-NG)
 
 **Arduino-CMake** is a framework which allows developers to write Arduino-based programs using any tool that supports cmake. *Arduino-based*? There are many other frameworks out there built upon Arduino's base, such as ESP32, and **we support that**.
 In other words, developers can use their favorite IDEs or text editors on their favorite OS to develop Arduino programs!
