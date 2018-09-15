@@ -18,8 +18,6 @@ before_install:
     export ARDUINO_SDK_FILE="arduino-$ARDUINO_SDK_VERSION-linux64.tar.xz"
   else
     export ARDUINO_SDK_FILE="arduino-$ARDUINO_SDK_VERSION-macosx.zip"
-    brew update
-    brew upgrade cmake
   fi
 - wget "https://downloads.arduino.cc/$ARDUINO_SDK_FILE" -O "$ARDUINO_SDK_FILE"
 - mkdir arduino-sdk
@@ -39,5 +37,4 @@ script:
 - cmake -D CMAKE_TOOLCHAIN_FILE="../cmake/Arduino-Toolchain.cmake" ../examples
 - make
 after_failure:
-- ls -lR $ARDUINO_SDK_PATH
 - cat CMakeFiles/CMakeOutput.log
