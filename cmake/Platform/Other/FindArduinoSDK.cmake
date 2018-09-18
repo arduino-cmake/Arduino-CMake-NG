@@ -19,17 +19,16 @@ function(find_arduino_sdk _return_var)
             NO_CMAKE_FIND_ROOT_PATH)
     get_filename_component(sdk_path "${arduino_program_path}" DIRECTORY)
 
-    if (${CMAKE_HOST_APPLE})
-        get_filename_component(sdk_path "${sdk_path}" DIRECTORY)
-        string(APPEND sdk_path "/Java")
-    endif()
-
     if (NOT sdk_path OR "${sdk_path}" MATCHES "NOTFOUND")
         string(CONCAT error_message
                 "Couldn't find Arduino SDK path - Is it in a non-standard location?" "\n"
                 "If so, please set the ARDUINO_SDK_PATH CMake-Variable")
         message(FATAL_ERROR ${error_message})
     else ()
+        if (${CMAKE_HOST_APPLE})
+            get_filename_component(sdk_path "${sdk_path}" DIRECTORY)
+            string(APPEND sdk_path "/Java")
+        endif()
         set(${_return_var} "${sdk_path}" PARENT_SCOPE)
     endif ()
 
