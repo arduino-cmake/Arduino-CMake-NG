@@ -97,18 +97,22 @@ endfunction()
 #=============================================================================#
 function(find_arduino_library _target_name _library_name _board_id)
 
-    convert_string_to_pascal_case(${_library_name} arduino_compliant_library_name)
-    set(library_path "${ARDUINO_SDK_LIBRARIES_PATH}/${arduino_compliant_library_name}")
+    cmake_parse_arguments(find_lib "3RD_PARTY" "" "" ${ARGN})
+
+    if (NOT find_lib_3RD_PARTY)
+        convert_string_to_pascal_case(${_library_name} _library_name)
+    endif ()
+    set(library_path "${ARDUINO_SDK_LIBRARIES_PATH}/${_library_name}")
     set(library_properties_path "${library_path}/library.properties")
 
     if (NOT EXISTS "${library_properties_path}")
-        message(SEND_ERROR "Couldn't find library named ${arduino_compliant_library_name}")
+        message(SEND_ERROR "Couldn't find library named ${_library_name}")
     else () # Library is found
         _get_library_architecture("${library_properties_path}" lib_arch)
         if (lib_arch)
             if ("${lib_arch}" MATCHES "UNSUPPORTED")
                 string(CONCAT error_message
-                        "${arduino_compliant_library_name} "
+                        "${_library_name} "
                         "library isn't supported on the platform's architecture "
                         "${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE}")
                 message(SEND_ERROR ${error_message})
@@ -126,7 +130,7 @@ function(find_arduino_library _target_name _library_name _board_id)
 
             if (NOT library_sources)
                 set(error_message
-                        "${arduino_compliant_library_name} doesn't have any source files \
+                        "${_library_name} doesn't have any source files \
                          under the 'src' directory")
                 message(SEND_ERROR "${error_message}")
             else ()
