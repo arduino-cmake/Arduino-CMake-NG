@@ -76,7 +76,7 @@ endfunction()
 #       _board_id - Board ID associated with the linked Core Lib.
 #       _sources - Source and header files to create target from.
 #=============================================================================#
-function(_add_arduino_library _target_name _board_id _sources)
+function(add_arduino_library _target_name _board_id _sources)
 
     _add_arduino_cmake_library(${_target_name} ${_board_id} "${_sources}" "${ARGN}")
     find_dependent_platform_libraries("${_sources}" lib_platform_libs)
@@ -131,7 +131,7 @@ function(find_arduino_library _target_name _library_name _board_id)
                 message(SEND_ERROR "${error_message}")
             else ()
                 set(sources ${library_headers} ${library_sources})
-                _add_arduino_library(${_target_name} ${_board_id} "${sources}" ARCH ${lib_arch})
+                add_arduino_library(${_target_name} ${_board_id} "${sources}" ARCH ${lib_arch})
             endif ()
         endif ()
     endif ()
