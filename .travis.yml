@@ -35,7 +35,8 @@ before_install:
     if [[ $TRAVIS_OS_NAME == linux ]]; then
       tar -xf "$sdk_file" -C arduino-sdk
     else
-      unzip "$sdk_file" 'Arduino.app/*' -d arduino-sdk
+      unzip -q "$sdk_file"
+      mv Arduino.app/* arduino-sdk/arduino-$ARDUINO_SDK_VERSION/*
     fi
   fi
 - export ARDUINO_SDK_PATH="$sdk_path"
