@@ -35,8 +35,7 @@ before_install:
     if [[ $TRAVIS_OS_NAME == linux ]]; then
       tar -xf "$sdk_file" -C arduino-sdk
     else
-      brew install gnu-tar
-      gtar -xf "$sdk_file" -C arduino-sdk --strip-components=1
+      unzip "$sdk_file" 'Arduino.app/*' -d arduino-sdk
     fi
   fi
 - export ARDUINO_SDK_PATH="$sdk_path"
