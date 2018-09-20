@@ -56,7 +56,7 @@ function(set_default_arduino_cmake_options)
             OFF)
     option(AUTO_SET_SKETCHBOOK_PATH
             "Whether Arduino IDE's Sketchbook Location should be automatically found"
-            ON)
+            OFF)
 
 endfunction()
 
