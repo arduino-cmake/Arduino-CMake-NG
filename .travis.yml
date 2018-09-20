@@ -5,13 +5,13 @@ os:
 - osx
 env:
   global:
-  - ARDUINO_SDK_BASE_PATH=/home/travis/arduino-sdk/arduino
+  - ARDUINO_SDK_BASE_PATH=arduino-sdk/arduino
   matrix:
   - ARDUINO_SDK_VERSION=1.6.10
   - ARDUINO_SDK_VERSION=1.8.7
 cache:
   directories:
-  - $ARDUINO_SDK_BASE_PATH-$ARDUINO_SDK_VERSION
+  - $HOME/$ARDUINO_SDK_BASE_PATH-$ARDUINO_SDK_VERSION
 addons:
   apt:
     packages:
@@ -20,9 +20,9 @@ addons:
     - avrdude
     - cmake
 before_install:
-- sdk_path="$ARDUINO_SDK_BASE_PATH-$ARDUINO_SDK_VERSION"
+- sdk_path="$HOME/$ARDUINO_SDK_BASE_PATH-$ARDUINO_SDK_VERSION"
 - mkdir -p "$sdk_path"
-- cd "$sdk_path/.." # Get to arduino-sdk
+- cd "$sdk_path/../.." # Get one level above 'arduino-sdk'
 - |
   if [[ $TRAVIS_OS_NAME == linux ]]; then
     sdk_file="arduino-$ARDUINO_SDK_VERSION-linux64.tar.xz"
@@ -32,10 +32,13 @@ before_install:
 - wget "https://downloads.arduino.cc/$sdk_file" -O "$sdk_file"
 - |
   if [[ $TRAVIS_OS_NAME == linux ]]; then
-    tar xf "$sdk_file" --strip-components 1
+    tar xf "$sdk_file" -C arduino-sdk --strip-components 1
   else
-    unzip "$sdk_file"
+    unzip "$sdk_file" -d arduino-sdk
   fi
+- ls -l "$sdk_path"
+- ls -l "$sdk_path/.."
+- ls -l "$sdk_path/../.."
 - export ARDUINO_SDK_PATH="$sdk_path"
 install:
 - cd "$TRAVIS_BUILD_DIR"
