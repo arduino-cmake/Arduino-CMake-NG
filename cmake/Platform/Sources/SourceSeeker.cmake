@@ -26,6 +26,21 @@ function(_find_sources _base_path _pattern _return_var)
 endfunction()
 
 #=============================================================================#
+# Finds header files matching the pre-defined header-file pattern under the given path.
+# This functions searchs explicitly for header-files such as '*.h'.
+# Search could also be recursive (With sub-directories) if the optional 'RECURSE' option is passed.
+#        _base_path - Top-Directory path to search source files in.
+#        _return_var - Name of variable in parent-scope holding the return value.
+#        Returns - List of header files in the given path
+#=============================================================================#
+function(find_header_files _base_path _return_var)
+
+    _find_sources("${_base_path}" "${ARDUINO_CMAKE_HEADER_FILES_PATTERN}" headers ${ARGN})
+    set(${_return_var} "${headers}" PARENT_SCOPE)
+
+endfunction()
+
+#=============================================================================#
 # Finds source files matching the pre-defined source-file pattern under the given path.
 # This functions searchs explicitly for source-files such as '*.c'.
 # Search could also be recursive (With sub-directories) if the optional 'RECURSE' option is passed.
@@ -41,17 +56,32 @@ function(find_source_files _base_path _return_var)
 endfunction()
 
 #=============================================================================#
-# Finds header files matching the pre-defined header-file pattern under the given path.
-# This functions searchs explicitly for header-files such as '*.h'.
-# Search could also be recursive (With sub-directories) if the optional 'RECURSE' option is passed.
+# Recursively finds header files under the given path, excluding those that don't belong to a library,
+# such as files under the 'exmaples' directory (In case sources reside under lib's root directory).
 #        _base_path - Top-Directory path to search source files in.
 #        _return_var - Name of variable in parent-scope holding the return value.
-#        Returns - List of header files in the given path
+#        Returns - List of source files in the given path
 #=============================================================================#
-function(find_header_files _base_path _return_var)
+function(find_library_header_files _base_path _return_var)
 
-    _find_sources("${_base_path}" "${ARDUINO_CMAKE_HEADER_FILES_PATTERN}" headers ${ARGN})
+    find_header_files(${_base_path} headers RECURSE) # Library headers are always searched recursively
+    list(FILTER headers EXCLUDE REGEX "${ARDUINO_CMAKE_EXCLUDED_LIBRARY_SOURCES_PATTERN}")
     set(${_return_var} "${headers}" PARENT_SCOPE)
+
+endfunction()
+
+#=============================================================================#
+# Recursively finds source files under the given path, excluding those that don't belong to a library,
+# such as files under the 'exmaples' directory (In case sources reside under lib's root directory).
+#        _base_path - Top-Directory path to search source files in.
+#        _return_var - Name of variable in parent-scope holding the return value.
+#        Returns - List of source files in the given path
+#=============================================================================#
+function(find_library_source_files _base_path _return_var)
+
+    find_source_files(${_base_path} sources RECURSE) # Library sources are always searched recursively
+    list(FILTER sources EXCLUDE REGEX "${ARDUINO_CMAKE_EXCLUDED_LIBRARY_SOURCES_PATTERN}")
+    set(${_return_var} "${sources}" PARENT_SCOPE)
 
 endfunction()
 
