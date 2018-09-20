@@ -64,7 +64,9 @@ function(get_headers_parent_directories _sources _return_var)
         get_filename_component(header_parent_dir ${header_source} DIRECTORY)
         list(APPEND parent_dirs ${header_parent_dir})
     endforeach ()
-    list(REMOVE_DUPLICATES parent_dirs)
+    if (parent_dirs) # Check parent dirs, could be none if there aren't any headers amongst sources
+        list(REMOVE_DUPLICATES parent_dirs)
+    endif ()
 
     set(${_return_var} ${parent_dirs} PARENT_SCOPE)
 
