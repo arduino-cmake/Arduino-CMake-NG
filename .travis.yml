@@ -24,20 +24,21 @@ before_install:
 - mkdir -p "$sdk_path"
 - cd "$sdk_path/../.." # Get one level above 'arduino-sdk'
 - |
-  if [[ $TRAVIS_OS_NAME == linux ]]; then
-    sdk_file="arduino-$ARDUINO_SDK_VERSION-linux64.tar.xz"
-  else
-    sdk_file="arduino-$ARDUINO_SDK_VERSION-macosx.zip"
+  if [[ -z "$(ls -A "$sdk_path")" ]];
+  then
+    if [[ $TRAVIS_OS_NAME == linux ]]; then
+      sdk_file="arduino-$ARDUINO_SDK_VERSION-linux64.tar.xz"
+    else
+      sdk_file="arduino-$ARDUINO_SDK_VERSION-macosx.zip"
+    fi
+    wget "https://downloads.arduino.cc/$sdk_file" -O "$sdk_file"
+    if [[ $TRAVIS_OS_NAME == linux ]]; then
+      tar -xf "$sdk_file" -C arduino-sdk
+    else
+      brew install gnu-tar
+      gtar -xf "$sdk_file" -C arduino-sdk --strip-components=1
+    fi
   fi
-- wget "https://downloads.arduino.cc/$sdk_file" -O "$sdk_file"
-- |
-  if [[ $TRAVIS_OS_NAME == linux ]]; then
-    tar xf "$sdk_file" -C arduino-sdk
-  else
-    unzip "$sdk_file" -d arduino-sdk
-  fi
-- ls -l "$sdk_path"
-- ls -l "$sdk_path/.."
 - export ARDUINO_SDK_PATH="$sdk_path"
 install:
 - cd "$TRAVIS_BUILD_DIR"
