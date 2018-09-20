@@ -124,19 +124,14 @@ function(find_arduino_library _target_name _library_name _board_id)
             endif ()
         endif ()
 
-        find_header_files("${library_path}/src" library_headers RECURSE)
-
+        find_library_header_files("${library_path}" library_headers)
         if (NOT library_headers)
-            set(error_message
-                    "${_library_name} doesn't have any header files under the 'src' directory")
+            set(error_message "Couldn't find any header files for the ${_library_name} library")
             message(SEND_ERROR "${error_message}")
         else ()
-            find_source_files("${library_path}/src" library_sources RECURSE)
-
+            find_library_source_files("${library_path}" library_sources)
             if (NOT library_sources)
-                set(error_message
-                        "${_library_name} doesn't have any source files \
-                         under the 'src' directory")
+                set(error_message "Couldn't find any source files for the ${_library_name} library")
                 message(SEND_ERROR "${error_message}")
             else ()
                 set(sources ${library_headers} ${library_sources})

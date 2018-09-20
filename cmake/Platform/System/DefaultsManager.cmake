@@ -30,6 +30,9 @@ function(set_source_files_patterns)
             "Header Files Pattern")
     set(ARDUINO_CMAKE_SKETCH_FILES_PATTERN *.ino *.pde CACHE STRING
             "Sketch Files Pattern")
+    set(ARDUINO_CMAKE_EXCLUDED_LIBRARY_SOURCES_PATTERN "examples?/.+" CACHE STRING
+            "Regex pattern matching all sources that should be excluded from search
+             when dealing with libraries")
 
 endfunction()
 
