@@ -2,6 +2,7 @@ include(AvrToolsFinder)
 include(VersionDetector)
 include(PlatformInitializer)
 include(LinuxDistDetector)
+include(SketchbookFinder)
 
 function(find_required_platform_tools)
 
@@ -22,6 +23,9 @@ function(initialize_build_system)
     detect_sdk_version()
     if (CMAKE_HOST_UNIX AND NOT CMAKE_HOST_APPLE) # Detect host's Linux distribution
         detect_host_linux_distribution()
+    endif ()
+    if (AUTO_SET_SKETCHBOOK_PATH)
+        find_sketchbook_path()
     endif ()
 
     initialize_arduino_platform()
