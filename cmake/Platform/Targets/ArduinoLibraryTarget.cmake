@@ -76,7 +76,7 @@ endfunction()
 #       _board_id - Board ID associated with the linked Core Lib.
 #       _sources - Source and header files to create target from.
 #=============================================================================#
-function(_add_arduino_library _target_name _board_id _sources)
+function(add_arduino_library _target_name _board_id _sources)
 
     _add_arduino_cmake_library(${_target_name} ${_board_id} "${_sources}" "${ARGN}")
     find_dependent_platform_libraries("${_sources}" lib_platform_libs)
@@ -94,21 +94,26 @@ endfunction()
 #       _target_name - Name of the library target to be created. Usually library's real name.
 #       _library_name - Name of the Arduino library to find.
 #       _board_id - Board ID associated with the linked Core Lib.
+#       [3RD_PARTY] - Whether library should be treated as a 3rd Party library.
 #=============================================================================#
 function(find_arduino_library _target_name _library_name _board_id)
 
-    convert_string_to_pascal_case(${_library_name} arduino_compliant_library_name)
-    set(library_path "${ARDUINO_SDK_LIBRARIES_PATH}/${arduino_compliant_library_name}")
+    cmake_parse_arguments(find_lib "3RD_PARTY" "" "" ${ARGN})
+
+    if (NOT find_lib_3RD_PARTY)
+        convert_string_to_pascal_case(${_library_name} _library_name)
+    endif ()
+    set(library_path "${ARDUINO_SDK_LIBRARIES_PATH}/${_library_name}")
     set(library_properties_path "${library_path}/library.properties")
 
     if (NOT EXISTS "${library_properties_path}")
-        message(SEND_ERROR "Couldn't find library named ${arduino_compliant_library_name}")
+        message(SEND_ERROR "Couldn't find library named ${_library_name}")
     else () # Library is found
         _get_library_architecture("${library_properties_path}" lib_arch)
         if (lib_arch)
             if ("${lib_arch}" MATCHES "UNSUPPORTED")
                 string(CONCAT error_message
-                        "${arduino_compliant_library_name} "
+                        "${_library_name} "
                         "library isn't supported on the platform's architecture "
                         "${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE}")
                 message(SEND_ERROR ${error_message})
@@ -126,12 +131,12 @@ function(find_arduino_library _target_name _library_name _board_id)
 
             if (NOT library_sources)
                 set(error_message
-                        "${arduino_compliant_library_name} doesn't have any source files \
+                        "${_library_name} doesn't have any source files \
                          under the 'src' directory")
                 message(SEND_ERROR "${error_message}")
             else ()
                 set(sources ${library_headers} ${library_sources})
-                _add_arduino_library(${_target_name} ${_board_id} "${sources}" ARCH ${lib_arch})
+                add_arduino_library(${_target_name} ${_board_id} "${sources}" ARCH ${lib_arch})
             endif ()
         endif ()
     endif ()
