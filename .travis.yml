@@ -32,13 +32,12 @@ before_install:
 - wget "https://downloads.arduino.cc/$sdk_file" -O "$sdk_file"
 - |
   if [[ $TRAVIS_OS_NAME == linux ]]; then
-    tar xf "$sdk_file" -C arduino-sdk --strip-components 1
+    tar xf "$sdk_file" -C arduino-sdk
   else
     unzip "$sdk_file" -d arduino-sdk
   fi
 - ls -l "$sdk_path"
 - ls -l "$sdk_path/.."
-- ls -l "$sdk_path/../.."
 - export ARDUINO_SDK_PATH="$sdk_path"
 install:
 - cd "$TRAVIS_BUILD_DIR"
