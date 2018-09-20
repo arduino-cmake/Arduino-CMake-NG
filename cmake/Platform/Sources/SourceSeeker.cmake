@@ -64,8 +64,13 @@ endfunction()
 #=============================================================================#
 function(find_library_header_files _base_path _return_var)
 
-    find_header_files(${_base_path} headers RECURSE) # Library headers are always searched recursively
-    list(FILTER headers EXCLUDE REGEX "${ARDUINO_CMAKE_EXCLUDED_LIBRARY_SOURCES_PATTERN}")
+    if (EXISTS ${_base_path}/src) # 'src' sub-dir exists and should contain sources
+        # Headers are always searched recursively under the 'src' sub-dir
+        find_header_files(${_base_path}/src headers RECURSE)
+    else ()
+        find_header_files(${_base_path} headers)
+    endif ()
+
     set(${_return_var} "${headers}" PARENT_SCOPE)
 
 endfunction()
@@ -79,8 +84,13 @@ endfunction()
 #=============================================================================#
 function(find_library_source_files _base_path _return_var)
 
-    find_source_files(${_base_path} sources RECURSE) # Library sources are always searched recursively
-    list(FILTER sources EXCLUDE REGEX "${ARDUINO_CMAKE_EXCLUDED_LIBRARY_SOURCES_PATTERN}")
+    if (EXISTS ${_base_path}/src)
+        # Sources are always searched recursively under the 'src' sub-dir
+        find_source_files(${_base_path}/src sources RECURSE)
+    else ()
+        find_source_files(${_base_path} sources)
+    endif ()
+
     set(${_return_var} "${sources}" PARENT_SCOPE)
 
 endfunction()
