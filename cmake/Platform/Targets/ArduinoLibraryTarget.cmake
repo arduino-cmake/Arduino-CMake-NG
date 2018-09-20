@@ -94,6 +94,7 @@ endfunction()
 #       _target_name - Name of the library target to be created. Usually library's real name.
 #       _library_name - Name of the Arduino library to find.
 #       _board_id - Board ID associated with the linked Core Lib.
+#       [3RD_PARTY] - Whether library should be treated as a 3rd Party library.
 #=============================================================================#
 function(find_arduino_library _target_name _library_name _board_id)
 
