@@ -1,4 +1,4 @@
-include(${CMAKE_CURRENT_LIST_DIR}/Platform/Other/FindArduinoSDK.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/Platform/Other/ArduinoSDKSeeker.cmake)
 
 function(_find_required_programs)
 
