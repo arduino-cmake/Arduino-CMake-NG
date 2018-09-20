@@ -73,7 +73,7 @@ function(_link_arduino_cmake_library _target_name _library_name)
         message(FATAL_ERROR "Target doesn't exist - It must be created first!")
     endif ()
 
-    set(scope_options "PRIVATE" "PUBLIC" "INTERFACE" "PLATFORM_LIB")
+    set(scope_options "PRIVATE" "PUBLIC" "INTERFACE")
     cmake_parse_arguments(link_library "${scope_options}" "BOARD_CORE_TARGET" "" ${ARGN})
 
     # First, include core lib's directories in library as well
@@ -85,9 +85,7 @@ function(_link_arduino_cmake_library _target_name _library_name)
 
     get_target_property(core_lib_includes ${core_target} INCLUDE_DIRECTORIES)
     target_include_directories(${_library_name} PUBLIC "${core_lib_includes}")
-    if (NOT link_library_PLATFORM_LIB)
-        target_link_libraries(${_library_name} PUBLIC ${core_target})
-    endif ()
+    target_link_libraries(${_library_name} PUBLIC ${core_target})
 
     # Now, link library to executable
     if (link_library_PUBLIC)
