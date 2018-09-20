@@ -102,13 +102,18 @@ function(find_arduino_library _target_name _library_name _board_id)
     if (NOT find_lib_3RD_PARTY)
         convert_string_to_pascal_case(${_library_name} _library_name)
     endif ()
-    set(library_path "${ARDUINO_SDK_LIBRARIES_PATH}/${_library_name}")
-    set(library_properties_path "${library_path}/library.properties")
 
-    if (NOT EXISTS "${library_properties_path}")
+    find_file(library_properties_file library.properties
+            PATHS ${ARDUINO_SDK_LIBRARIES_PATH} ${ARDUINO_CMAKE_SKETCHBOOK_PATH}/libraries
+            PATH_SUFFIXES ${_library_name}
+            NO_DEFAULT_PATH
+            NO_CMAKE_FIND_ROOT_PATH)
+
+    if (${library_properties_file} MATCHES "NOTFOUND")
         message(SEND_ERROR "Couldn't find library named ${_library_name}")
     else () # Library is found
-        _get_library_architecture("${library_properties_path}" lib_arch)
+        get_filename_component(library_path ${library_properties_file} DIRECTORY)
+        _get_library_architecture("${library_properties_file}" lib_arch)
         if (lib_arch)
             if ("${lib_arch}" MATCHES "UNSUPPORTED")
                 string(CONCAT error_message
@@ -139,6 +144,8 @@ function(find_arduino_library _target_name _library_name _board_id)
             endif ()
         endif ()
     endif ()
+
+    unset(library_properties_file CACHE)
 
 endfunction()
 
