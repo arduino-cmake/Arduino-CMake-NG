@@ -37,8 +37,11 @@ before_install:
     else
       unzip -q "$sdk_file"
       mv Arduino.app/* arduino-sdk/arduino-$ARDUINO_SDK_VERSION
-      sdk_path="$sdk_path/Contents/Java"
     fi
+  fi
+- |
+  if [[ $TRAVIS_OS_NAME == osx ]]; then
+    sdk_path="$sdk_path/Contents/Java"
   fi
 - export ARDUINO_SDK_PATH="$sdk_path"
 install:
