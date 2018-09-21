@@ -3,8 +3,15 @@ os:
 - linux
 - osx
 env:
-- ARDUINO_SDK_VERSION=1.6.10
-- ARDUINO_SDK_VERSION=1.8.7
+  global:
+  - ARDUINO_SDK_BASE_PATH=arduino-sdk/arduino
+  matrix:
+  - ARDUINO_SDK_VERSION=1.6.10
+  - ARDUINO_SDK_VERSION=1.8.7
+cache:
+  directories:
+  - $HOME/$ARDUINO_SDK_BASE_PATH-$ARDUINO_SDK_VERSION
+if: branch != feature/appveyor-ci
 addons:
   apt:
     packages:
@@ -13,23 +20,32 @@ addons:
     - avrdude
     - cmake
 before_install:
+- sdk_path="$HOME/$ARDUINO_SDK_BASE_PATH-$ARDUINO_SDK_VERSION"
+- mkdir -p "$sdk_path"
+- cd "$sdk_path/../.." # Get one level above 'arduino-sdk'
 - |
-  if [[ $TRAVIS_OS_NAME == linux ]]; then
-    export ARDUINO_SDK_FILE="arduino-$ARDUINO_SDK_VERSION-linux64.tar.xz"
-  else
-    export ARDUINO_SDK_FILE="arduino-$ARDUINO_SDK_VERSION-macosx.zip"
+  if [[ -z "$(ls -A "$sdk_path")" ]];
+  then
+    if [[ $TRAVIS_OS_NAME == linux ]]; then
+      sdk_file="arduino-$ARDUINO_SDK_VERSION-linux64.tar.xz"
+    else
+      sdk_file="arduino-$ARDUINO_SDK_VERSION-macosx.zip"
+    fi
+    wget "https://downloads.arduino.cc/$sdk_file" -O "$sdk_file"
+    if [[ $TRAVIS_OS_NAME == linux ]]; then
+      tar -xf "$sdk_file" -C arduino-sdk
+    else
+      unzip -q "$sdk_file"
+      mv Arduino.app/* arduino-sdk/arduino-$ARDUINO_SDK_VERSION
+    fi
   fi
-- wget "https://downloads.arduino.cc/$ARDUINO_SDK_FILE" -O "$ARDUINO_SDK_FILE"
-- mkdir arduino-sdk
 - |
-  if [[ $TRAVIS_OS_NAME == linux ]]; then
-    tar xf "$ARDUINO_SDK_FILE" -C arduino-sdk --strip-components 1
-    export ARDUINO_SDK_PATH="$PWD/arduino-sdk"
-  else
-    unzip "$ARDUINO_SDK_FILE" "Arduino.app/Contents/Java/*" -d arduino-sdk
-    export ARDUINO_SDK_PATH="$(pwd)/arduino-sdk/Arduino.app/Contents/Java"
+  if [[ $TRAVIS_OS_NAME == osx ]]; then
+    sdk_path="$sdk_path/Contents/Java"
   fi
+- export ARDUINO_SDK_PATH="$sdk_path"
 install:
+- cd "$TRAVIS_BUILD_DIR"
 - mkdir build
 - rm -rf build/*
 - cd build/
