@@ -22,7 +22,7 @@ install:
     {
     $arduino_sdk_uri = "https://downloads.arduino.cc/$sdk_file"
     wget "$arduino_sdk_uri" -O "$sdk_file"
-    unzip "$sdk_file" -d "arduino-sdk"
+    unzip -q "$sdk_file" -d "arduino-sdk"
     }
 - ps: $env:ARDUINO_SDK_PATH = ($env:ARDUINO_SDK_PATH -replace "\\","/")
 - ps: $env:Path += ";$env:MINGW_PATH"
