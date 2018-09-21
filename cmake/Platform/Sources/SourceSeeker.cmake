@@ -1,9 +1,10 @@
 #=============================================================================#
 # Finds source files matching the given pattern under the given path.
 # Search could also be recursive (With sub-directories) if the optional 'RECURSE' option is passed.
-#        _base_path - Top-Directory path to search source files in.
-#        _return_var - Name of variable in parent-scope holding the return value.
-#        Returns - List of sources in the given path
+#       _base_path - Top-Directory path to search source files in.
+#       [RECURSE] - Whether search should be done recursively or not.
+#       _return_var - Name of variable in parent-scope holding the return value.
+#       Returns - List of sources in the given path
 #=============================================================================#
 function(_find_sources _base_path _pattern _return_var)
 
@@ -29,9 +30,10 @@ endfunction()
 # Finds header files matching the pre-defined header-file pattern under the given path.
 # This functions searchs explicitly for header-files such as '*.h'.
 # Search could also be recursive (With sub-directories) if the optional 'RECURSE' option is passed.
-#        _base_path - Top-Directory path to search source files in.
-#        _return_var - Name of variable in parent-scope holding the return value.
-#        Returns - List of header files in the given path
+#       _base_path - Top-Directory path to search source files in.
+#       [RECURSE] - Whether search should be done recursively or not.
+#       _return_var - Name of variable in parent-scope holding the return value.
+#       Returns - List of header files in the given path
 #=============================================================================#
 function(find_header_files _base_path _return_var)
 
@@ -44,9 +46,10 @@ endfunction()
 # Finds source files matching the pre-defined source-file pattern under the given path.
 # This functions searchs explicitly for source-files such as '*.c'.
 # Search could also be recursive (With sub-directories) if the optional 'RECURSE' option is passed.
-#        _base_path - Top-Directory path to search source files in.
-#        _return_var - Name of variable in parent-scope holding the return value.
-#        Returns - List of source files in the given path
+#       _base_path - Top-Directory path to search source files in.
+#       [RECURSE] - Whether search should be done recursively or not.
+#       _return_var - Name of variable in parent-scope holding the return value.
+#       Returns - List of source files in the given path
 #=============================================================================#
 function(find_source_files _base_path _return_var)
 
@@ -59,9 +62,10 @@ endfunction()
 # Finds sketch files matching the pre-defined sketch-file pattern under the given path.
 # This functions searchs explicitly for sketch-files such as '*.ino'.
 # Search could also be recursive (With sub-directories) if the optional 'RECURSE' option is passed.
-#        _base_path - Top-Directory path to search source files in.
-#        _return_var - Name of variable in parent-scope holding the return value.
-#        Returns - List of header files in the given path
+#       _base_path - Top-Directory path to search source files in.
+#       [RECURSE] - Whether search should be done recursively or not.
+#       _return_var - Name of variable in parent-scope holding the return value.
+#       Returns - List of header files in the given path
 #=============================================================================#
 function(find_sketch_files _base_path _return_var)
 
