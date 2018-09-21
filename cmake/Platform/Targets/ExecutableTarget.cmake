@@ -3,12 +3,14 @@
 # using the given board ID and source files.
 #       _target_name - Name of the target (Executable) to create.
 #       _board_id - ID of the board to bind to the target (Each target can have a single board).
-#       _src_files - List of source file (Could also be headers for code-inspection in some IDEs)
-#                    to create the executable from, just like it's done with a standard executable.
+#       [Sources] - List of source files (Could also be headers for code-inspection in some IDEs)
+#                   to create the executable from, similar to CMake's built-in add_executable.
 #=============================================================================#
-function(add_arduino_executable _target_name _board_id _src_files)
+function(add_arduino_executable _target_name _board_id)
 
-    add_executable(${_target_name} "${_src_files}")
+    list(APPEND sources "${ARGN}") # Treat all remaining arguments as sources
+
+    add_executable(${_target_name} "${sources}")
     # Always add board's core lib
     add_arduino_core_lib(${_target_name} "${_board_id}")
     # Add compiler and linker flags
