@@ -7,10 +7,13 @@
 #=============================================================================#
 function(find_arduino_sdk _return_var)
 
+    set(path_suffixes "")
+
     if (${CMAKE_HOST_UNIX})
         if (${CMAKE_HOST_APPLE})
             set(platform_search_paths ~/Applications /Applications /Developer/Applications
                     /sw /opt/local)
+            set(path_suffixes Arduino.app/Contents/Java/ Arduino.app/Contents/Resources/Java/)
         else () # Probably Linux
             file(GLOB platform_search_paths /usr/share/arduino* /opt/local/arduino* /opt/arduino*
                     /usr/local/share/arduino*)
@@ -21,6 +24,7 @@ function(find_arduino_sdk _return_var)
 
     find_path(ARDUINO_SDK_PATH
             NAMES lib/version.txt
+            PATH_SUFFIXES ${path_suffixes}
             HINTS ${platform_search_paths}
             NO_DEFAULT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
@@ -35,3 +39,4 @@ function(find_arduino_sdk _return_var)
     endif ()
 
 endfunction()
+
