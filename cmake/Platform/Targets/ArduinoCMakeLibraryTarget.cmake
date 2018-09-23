@@ -95,17 +95,6 @@ function(_link_arduino_cmake_library _target_name _library_name)
     set(scope_options "PRIVATE" "PUBLIC" "INTERFACE")
     cmake_parse_arguments(link_library "${scope_options}" "BOARD_CORE_TARGET" "" ${ARGN})
 
-    # First, include core lib's directories in library as well
-    if (link_library_BOARD_CORE_TARGET)
-        set(core_target ${link_library_BOARD_CORE_TARGET})
-    else ()
-        set(core_target ${${_target_name}_CORE_LIB_TARGET})
-    endif ()
-
-    get_target_property(core_lib_includes ${core_target} INCLUDE_DIRECTORIES)
-    target_include_directories(${_library_name} PUBLIC "${core_lib_includes}")
-    target_link_libraries(${_library_name} PUBLIC ${core_target})
-
     # Now, link library to executable
     if (link_library_PUBLIC)
         set(scope PUBLIC)
@@ -114,6 +103,18 @@ function(_link_arduino_cmake_library _target_name _library_name)
     else ()
         set(scope PRIVATE)
     endif ()
+
+    # First, include core lib's directories in library as well
+    if (link_library_BOARD_CORE_TARGET)
+        set(core_target ${link_library_BOARD_CORE_TARGET})
+    else ()
+        set(core_target ${${_target_name}_CORE_LIB_TARGET})
+    endif ()
+
+    get_target_property(core_lib_includes ${core_target} INCLUDE_DIRECTORIES)
+    target_include_directories(${_library_name} ${scope} "${core_lib_includes}")
+    target_link_libraries(${_library_name} ${scope} ${core_target})
+
     target_link_libraries(${_target_name} ${scope} ${_library_name})
 
 endfunction()

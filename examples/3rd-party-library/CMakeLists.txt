@@ -26,4 +26,4 @@ find_arduino_library(EnableInterrupt EnableInterrupt ${board_id} 3RD_PARTY HEADE
 # Link all libraries to our previously created target
 link_arduino_library(3rd_Party_Arduino_Library Adafruit_NeoPixel ${board_id})
 link_arduino_library(3rd_Party_Arduino_Library Adafruit_GFX ${board_id})
-link_arduino_library(3rd_Party_Arduino_Library EnableInterrupt ${board_id})
+link_arduino_library(3rd_Party_Arduino_Library EnableInterrupt ${board_id} HEADER_ONLY)
