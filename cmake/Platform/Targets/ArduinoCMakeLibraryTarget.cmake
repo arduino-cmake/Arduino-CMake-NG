@@ -6,9 +6,20 @@
 #=============================================================================#
 function(_set_library_flags _library_target _board_id)
 
+    set(scope_options "PRIVATE" "PUBLIC" "INTERFACE")
+    cmake_parse_arguments(parsed_args "${scope_options}" "" "" ${ARGN})
+
+    if (parsed_args_PRIVATE)
+        set(scope PRIVATE)
+    elseif (parsed_args_INTERFACE)
+        set(scope INTERFACE)
+    else ()
+        set(scope PUBLIC)
+    endif ()
+
     # Set C++ compiler flags
     get_cmake_compliant_language_name(cpp flags_language)
-    set_compiler_target_flags(${_library_target} "${_board_id}" PUBLIC LANGUAGE ${flags_language})
+    set_compiler_target_flags(${_library_target} "${_board_id}" ${scope} LANGUAGE ${flags_language})
 
     # Set linker flags
     set_linker_flags(${_library_target} "${_board_id}")
@@ -22,13 +33,14 @@ endfunction()
 #       _target_name - Name of the library target to be created. Usually library's real name.
 #       _board_id - Board ID associated with the linked Core Lib.
 #       _sources - Source and header files to create library target from.
-#       [ARCH] - Optional library architecture (Such as 'avr', 'nrf52', etc.)
+#       [ARCH] - Optional library architecture (Such as 'avr', 'nrf52', etc.).
+#       [INTERFACE] - Whether the library should be created as an interface library (header-only).
 #=============================================================================#
 function(_add_arduino_cmake_library _target_name _board_id _sources)
 
-    cmake_parse_arguments(library "" "ARCH" "" ${ARGN})
+    cmake_parse_arguments(parsed_args "INTERFACE" "ARCH" "" ${ARGN})
 
-    if (library_ARCH) # Treat architecture-specific libraries differently
+    if (parsed_args_ARCH) # Treat architecture-specific libraries differently
         # Filter any sources that aren't supported by the platform's architecture
         list(LENGTH library_ARCH num_of_libs_archs)
         if (${num_of_libs_archs} GREATER 1)
@@ -42,17 +54,24 @@ function(_add_arduino_cmake_library _target_name _board_id _sources)
         list(FILTER _sources ${filter_type} REGEX ${arch_filter})
     endif ()
 
-    add_library(${_target_name} STATIC "${_sources}")
+    if (parsed_args_INTERFACE)
+        add_library(${_target_name} INTERFACE)
+        set(scope INTERFACE)
+    else ()
+        add_library(${_target_name} STATIC "${_sources}")
+        set(scope PUBLIC)
+    endif ()
+
     # Treat headers' parent directories as include directories of the target
     get_headers_parent_directories("${_sources}" include_dirs)
-    target_include_directories(${_target_name} PUBLIC ${include_dirs})
+    target_include_directories(${_target_name} ${scope} ${include_dirs})
 
-    _set_library_flags(${_target_name} ${_board_id})
+    _set_library_flags(${_target_name} ${_board_id} ${scope})
 
-    if (library_ARCH)
-        string(TOUPPER ${library_ARCH} upper_arch)
+    if (parsed_args_ARCH)
+        string(TOUPPER ${parsed_args_ARCH} upper_arch)
         set(arch_definition "ARDUINO_ARCH_${upper_arch}")
-        target_compile_definitions(${_target_name} PUBLIC ${arch_definition})
+        target_compile_definitions(${_target_name} ${scope} ${arch_definition})
     endif ()
 
 endfunction()

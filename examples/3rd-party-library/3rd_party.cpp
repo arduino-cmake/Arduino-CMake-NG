@@ -7,6 +7,7 @@ void setup()
 {
     testNeoPixel();
     testGFX();
+    testEnableInterrupt();
 }
 
 void loop()

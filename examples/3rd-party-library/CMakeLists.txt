@@ -21,9 +21,9 @@ find_arduino_library(Adafruit_GFX Adafruit-GFX-Library ${board_id} 3RD_PARTY)
 target_source_directories(Adafruit_GFX DIRS libraries/Adafruit-GFX-Library/Fonts)
 
 # Find the "EnableInterrupt" a header-only library
-#find_arduino_library(enableInterrupt EnableInterrupt ${board_id} 3RD_PARTY)
+find_arduino_library(EnableInterrupt EnableInterrupt ${board_id} 3RD_PARTY HEADER_ONLY)
 
 # Link all libraries to our previously created target
 link_arduino_library(3rd_Party_Arduino_Library Adafruit_NeoPixel ${board_id})
 link_arduino_library(3rd_Party_Arduino_Library Adafruit_GFX ${board_id})
-#link_arduino_library(3rd_Party_Arduino_Library enableInterrupt ${board_id})
+link_arduino_library(3rd_Party_Arduino_Library EnableInterrupt ${board_id})
