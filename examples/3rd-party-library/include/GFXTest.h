@@ -3,6 +3,6 @@
 
 #include <Adafruit_GFX.h>
 
-void doSomething();
+void testGFX();
 
 #endif //EXAMPLES_GFXTEST_HPP

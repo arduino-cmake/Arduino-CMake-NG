@@ -1,15 +1,11 @@
-#include <Adafruit_NeoPixel.h>
-#include "GFXTest.h"
+
+#include <NeoPixelTest.hpp>
+
+#include "include/NeoPixelTest.hpp"
 
 Adafruit_NeoPixel neoPixel;
 
-void setup()
+void testNeoPixel()
 {
     neoPixel.clear();
-    doSomething();
-}
-
-void loop()
-{
-
 }
