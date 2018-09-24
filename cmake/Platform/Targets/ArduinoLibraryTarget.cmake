@@ -69,12 +69,6 @@ function(_get_unsupported_architectures _arch_list _return_var)
 
 endfunction()
 
-function(add_arduino_header_only_library _target_name _board_id)
-
-    _add_arduino_cmake_library(${_target_name} ${_board_id} "${_sources}" INTERFACE "${ARGN}")
-
-endfunction()
-
 #=============================================================================#
 # Creates a library target for the given name and sources.
 # As it's an Arduino library, it also finds and links all dependent platform libraries (if any).
@@ -89,6 +83,15 @@ function(add_arduino_library _target_name _board_id _sources)
     foreach (platform_lib ${lib_platform_libs})
         link_platform_library(${_target_name} ${platform_lib} ${_board_id})
     endforeach ()
+
+endfunction()
+
+function(add_arduino_header_only_library _target_name _board_id)
+
+    cmake_parse_arguments(parsed_args "ARCH" "" "HEADERS" ${ARGN})
+
+    _add_arduino_cmake_library(${_target_name} ${_board_id} "${parsed_args_HEADERS}"
+            INTERFACE ${parsed_args_ARCH})
 
 endfunction()
 
@@ -139,8 +142,9 @@ function(find_arduino_library _target_name _library_name _board_id)
             message(SEND_ERROR "${error_message}")
         else ()
             if (parsed_args_HEADER_ONLY)
-                add_arduino_header_only_library(${_target_name} ${_board_id} "${library_headers}"
-                        INTERFACE ARCH ${lib_arch})
+                add_arduino_header_only_library(${_target_name} ${_board_id}
+                        ARCH ${lib_arch}
+                        HEADERS ${library_headers})
             else ()
                 find_library_source_files("${library_path}" library_sources)
                 if (NOT library_sources)
@@ -151,7 +155,8 @@ function(find_arduino_library _target_name _library_name _board_id)
                     message(SEND_ERROR "${error_message}")
                 else ()
                     set(sources ${library_headers} ${library_sources})
-                    add_arduino_library(${_target_name} ${_board_id} "${sources}" ARCH ${lib_arch})
+                    add_arduino_library(${_target_name} ${_board_id} "${sources}"
+                            ARCH ${lib_arch})
                 endif ()
             endif ()
         endif ()
