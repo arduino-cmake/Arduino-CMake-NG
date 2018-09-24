@@ -5,7 +5,7 @@ get_board_id(board_id nano atmega328)
 
 # First, declare and create our executable - It'll use 4 sources
 add_arduino_executable(3rd_Party_Arduino_Library ${board_id} 3rd_party.cpp
-        NeoPixelTest.cpp GFXTest.cpp InterruptTest.cpp)
+        NeoPixelTest.cpp GFXTest.cpp)
 target_include_directories(3rd_Party_Arduino_Library PRIVATE include)
 
 # Add the "NeoPixel" library manually using the library addition API
@@ -20,10 +20,6 @@ find_arduino_library(Adafruit_GFX Adafruit-GFX-Library ${board_id} 3RD_PARTY)
 # as only root dir and 'src' sub-dir are added by default
 target_source_directories(Adafruit_GFX DIRS libraries/Adafruit-GFX-Library/Fonts)
 
-# Find the "EnableInterrupt" a header-only library
-find_arduino_library(EnableInterrupt EnableInterrupt ${board_id} 3RD_PARTY HEADER_ONLY)
-
 # Link all libraries to our previously created target
 link_arduino_library(3rd_Party_Arduino_Library Adafruit_NeoPixel ${board_id})
 link_arduino_library(3rd_Party_Arduino_Library Adafruit_GFX ${board_id})
-link_arduino_library(3rd_Party_Arduino_Library EnableInterrupt ${board_id} HEADER_ONLY)
