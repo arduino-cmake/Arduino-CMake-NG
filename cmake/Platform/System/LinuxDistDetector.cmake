@@ -6,6 +6,11 @@ function(detect_host_linux_distribution)
         message(AUTHOR_WARNING "Linux distribution detection called on Apple platform")
     else () # Linux host
         find_program(lsb_release_exec lsb_release)
+
+        if ("lsb_release_exec-NOTFOUND" STREQUAL "${lsb_release_exec}")
+            message(FATAL_ERROR "`lsb_release' not found")
+        endif()
+        
         execute_process(COMMAND ${lsb_release_exec} -is
                 OUTPUT_VARIABLE lsb_release_id_short
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
