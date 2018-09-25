@@ -11,7 +11,10 @@ function(find_dependent_platform_libraries _sources _return_var)
         get_source_file_included_headers(${source} source_includes WE)
         list(APPEND included_headers_names ${source_includes})
     endforeach ()
-    list(REMOVE_DUPLICATES included_headers_names)
+
+    if (included_headers_names)
+        list(REMOVE_DUPLICATES included_headers_names)
+    endif ()
 
     get_platform_libraries_from_names("${included_headers_names}" dependent_libs)
     set(${_return_var} ${dependent_libs} PARENT_SCOPE)
