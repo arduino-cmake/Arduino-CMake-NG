@@ -2,7 +2,7 @@
 
 static Adafruit_GFX_Button gfxButton;
 
-void doSomething()
+void testGFX()
 {
     gfxButton.isPressed();
 }

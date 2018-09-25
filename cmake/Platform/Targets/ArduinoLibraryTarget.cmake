@@ -86,6 +86,15 @@ function(add_arduino_library _target_name _board_id _sources)
 
 endfunction()
 
+function(add_arduino_header_only_library _target_name _board_id)
+
+    cmake_parse_arguments(parsed_args "ARCH" "" "HEADERS" ${ARGN})
+
+    _add_arduino_cmake_library(${_target_name} ${_board_id} "${parsed_args_HEADERS}"
+            INTERFACE ${parsed_args_ARCH})
+
+endfunction()
+
 #=============================================================================#
 # Finds an Arduino library with the given library name and creates a library target from it
 # with the given target name.
@@ -95,12 +104,14 @@ endfunction()
 #       _library_name - Name of the Arduino library to find.
 #       _board_id - Board ID associated with the linked Core Lib.
 #       [3RD_PARTY] - Whether library should be treated as a 3rd Party library.
+#       [HEADER_ONLY] - Whether library is a header-only library, i.e has no source files
 #=============================================================================#
 function(find_arduino_library _target_name _library_name _board_id)
 
-    cmake_parse_arguments(find_lib "3RD_PARTY" "" "" ${ARGN})
+    set(argument_options "3RD_PARTY" "HEADER_ONLY")
+    cmake_parse_arguments(parsed_args "${argument_options}" "" "" ${ARGN})
 
-    if (NOT find_lib_3RD_PARTY)
+    if (NOT parsed_args_3RD_PARTY)
         convert_string_to_pascal_case(${_library_name} _library_name)
     endif ()
 
@@ -130,13 +141,23 @@ function(find_arduino_library _target_name _library_name _board_id)
             set(error_message "Couldn't find any header files for the ${_library_name} library")
             message(SEND_ERROR "${error_message}")
         else ()
-            find_library_source_files("${library_path}" library_sources)
-            if (NOT library_sources)
-                set(error_message "Couldn't find any source files for the ${_library_name} library")
-                message(SEND_ERROR "${error_message}")
+            if (parsed_args_HEADER_ONLY)
+                add_arduino_header_only_library(${_target_name} ${_board_id}
+                        ARCH ${lib_arch}
+                        HEADERS ${library_headers})
             else ()
-                set(sources ${library_headers} ${library_sources})
-                add_arduino_library(${_target_name} ${_board_id} "${sources}" ARCH ${lib_arch})
+                find_library_source_files("${library_path}" library_sources)
+                if (NOT library_sources)
+                    string(CONCAT error_message
+                            "Couldn't find any source files for the ${_library_name} library - "
+                            "Is it a header-only library?\n"
+                            "If so, please pass the HEADER_ONLY option as an argument to the function")
+                    message(SEND_ERROR "${error_message}")
+                else ()
+                    set(sources ${library_headers} ${library_sources})
+                    add_arduino_library(${_target_name} ${_board_id} "${sources}"
+                            ARCH ${lib_arch})
+                endif ()
             endif ()
         endif ()
     endif ()
@@ -151,8 +172,11 @@ endfunction()
 #       _target_name - Name of the "executable" target.
 #       _library_target_name - Name of the library target.
 #       _board_id - Board ID associated with the linked Core Lib.
+#       [HEADER_ONLY] - Whether library is a header-only library, i.e has no source files
 #=============================================================================#
 function(link_arduino_library _target_name _library_target_name _board_id)
+
+    cmake_parse_arguments(parsed_args "HEADER_ONLY" "" "" ${ARGN})
 
     get_core_lib_target_name(${_board_id} core_lib_target)
 
@@ -164,8 +188,14 @@ function(link_arduino_library _target_name _library_target_name _board_id)
         message(FATAL_ERROR "Core Library target doesn't exist. This is bad and should be reported")
     endif ()
 
-    _link_arduino_cmake_library(${_target_name} ${_library_target_name}
-            PUBLIC
-            BOARD_CORE_TARGET ${core_lib_target})
+    if (parsed_args_HEADER_ONLY)
+        _link_arduino_cmake_library(${_target_name} ${_library_target_name}
+                INTERFACE
+                BOARD_CORE_TARGET ${core_lib_target})
+    else ()
+        _link_arduino_cmake_library(${_target_name} ${_library_target_name}
+                PUBLIC
+                BOARD_CORE_TARGET ${core_lib_target})
+    endif ()
 
 endfunction()
