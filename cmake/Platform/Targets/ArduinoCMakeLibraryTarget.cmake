@@ -1,58 +1,49 @@
 #=============================================================================#
-# Sets compiler and linker flags on the given library target.
-# Changes are kept even outside the scope of the function since they apply on a target.
-#       _library_target - Name of the library target.
-#       _board_id - Board ID associated with the library. Some flags require it.
-#=============================================================================#
-function(_set_library_flags _library_target _board_id)
-
-    # Set C++ compiler flags
-    get_cmake_compliant_language_name(cpp flags_language)
-    set_compiler_target_flags(${_library_target} "${_board_id}" PUBLIC LANGUAGE ${flags_language})
-
-    # Set linker flags
-    set_linker_flags(${_library_target} "${_board_id}")
-
-endfunction()
-
-#=============================================================================#
 # Creates a library target compliant with the Arduino library standard.
 # One can also specify an architecture for the library, which will result in a special parsing
 # of the sources, ommiting non-compliant sources.
 #       _target_name - Name of the library target to be created. Usually library's real name.
 #       _board_id - Board ID associated with the linked Core Lib.
 #       _sources - Source and header files to create library target from.
-#       [ARCH] - Optional library architecture (Such as 'avr', 'nrf52', etc.)
+#       [ARCH] - Optional library architecture (Such as 'avr', 'nrf52', etc.).
+#       [INTERFACE] - Whether the library should be created as an interface library (header-only).
 #=============================================================================#
 function(_add_arduino_cmake_library _target_name _board_id _sources)
 
-    cmake_parse_arguments(library "" "ARCH" "" ${ARGN})
+    cmake_parse_arguments(parsed_args "INTERFACE" "ARCH" "" ${ARGN})
 
-    if (library_ARCH) # Treat architecture-specific libraries differently
+    if (parsed_args_ARCH) # Treat architecture-specific libraries differently
         # Filter any sources that aren't supported by the platform's architecture
         list(LENGTH library_ARCH num_of_libs_archs)
         if (${num_of_libs_archs} GREATER 1)
             # Exclude all unsupported architectures, request filter in regex mode
-            _get_unsupported_architectures("${library_ARCH}" arch_filter REGEX)
+            get_unsupported_architectures("${parsed_args_ARCH}" arch_filter REGEX)
             set(filter_type EXCLUDE)
         else ()
-            set(arch_filter "src\\/[^/]+\\.|${library_ARCH}")
+            set(arch_filter "src\\/[^/]+\\.|${parsed_args_ARCH}")
             set(filter_type INCLUDE)
         endif ()
         list(FILTER _sources ${filter_type} REGEX ${arch_filter})
     endif ()
 
-    add_library(${_target_name} STATIC "${_sources}")
+    if (parsed_args_INTERFACE)
+        add_library(${_target_name} INTERFACE)
+        set(scope INTERFACE)
+    else ()
+        add_library(${_target_name} STATIC "${_sources}")
+        set(scope PUBLIC)
+    endif ()
+
     # Treat headers' parent directories as include directories of the target
     get_headers_parent_directories("${_sources}" include_dirs)
-    target_include_directories(${_target_name} PUBLIC ${include_dirs})
+    target_include_directories(${_target_name} ${scope} ${include_dirs})
 
-    _set_library_flags(${_target_name} ${_board_id})
+    set_library_flags(${_target_name} ${_board_id} ${scope})
 
-    if (library_ARCH)
-        string(TOUPPER ${library_ARCH} upper_arch)
+    if (parsed_args_ARCH)
+        string(TOUPPER ${parsed_args_ARCH} upper_arch)
         set(arch_definition "ARDUINO_ARCH_${upper_arch}")
-        target_compile_definitions(${_target_name} PUBLIC ${arch_definition})
+        target_compile_definitions(${_target_name} ${scope} ${arch_definition})
     endif ()
 
 endfunction()
@@ -76,17 +67,6 @@ function(_link_arduino_cmake_library _target_name _library_name)
     set(scope_options "PRIVATE" "PUBLIC" "INTERFACE")
     cmake_parse_arguments(link_library "${scope_options}" "BOARD_CORE_TARGET" "" ${ARGN})
 
-    # First, include core lib's directories in library as well
-    if (link_library_BOARD_CORE_TARGET)
-        set(core_target ${link_library_BOARD_CORE_TARGET})
-    else ()
-        set(core_target ${${_target_name}_CORE_LIB_TARGET})
-    endif ()
-
-    get_target_property(core_lib_includes ${core_target} INCLUDE_DIRECTORIES)
-    target_include_directories(${_library_name} PUBLIC "${core_lib_includes}")
-    target_link_libraries(${_library_name} PUBLIC ${core_target})
-
     # Now, link library to executable
     if (link_library_PUBLIC)
         set(scope PUBLIC)
@@ -95,6 +75,18 @@ function(_link_arduino_cmake_library _target_name _library_name)
     else ()
         set(scope PRIVATE)
     endif ()
-    target_link_libraries(${_target_name} ${scope} ${_library_name})
+
+    # First, include core lib's directories in library as well
+    if (link_library_BOARD_CORE_TARGET)
+        set(core_target ${link_library_BOARD_CORE_TARGET})
+    else ()
+        set(core_target ${${_target_name}_CORE_LIB_TARGET})
+    endif ()
+
+    get_target_property(core_lib_includes ${core_target} INCLUDE_DIRECTORIES)
+    target_include_directories(${_library_name} ${scope} "${core_lib_includes}")
+    target_link_libraries(${_library_name} ${scope} ${core_target})
+
+    target_link_libraries(${_target_name} PRIVATE ${_library_name})
 
 endfunction()

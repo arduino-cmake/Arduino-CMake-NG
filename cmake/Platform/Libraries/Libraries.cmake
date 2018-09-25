@@ -1,0 +1,3 @@
+include(LibraryArchitectureParser)
+include(LibraryFlagsManager)
+include(LibrariesFinder)
