@@ -21,7 +21,7 @@ include(TargetFlagsManager)
 include(SourcesManager)
 include(SketchManager)
 include(DefaultsManager)
-include(SupportedArchitecturesRetriever)
+include(ArchitectureSupportQuery)
 
 include(Libraries)
 

@@ -8,7 +8,7 @@
 #=============================================================================#
 function(add_arduino_library _target_name _board_id _library_root_dir _sources)
 
-    resolve_library_sources_by_architecture(${_library_root_dir} "${_sources}" arch_resolved_sources
+    resolve_library_architecture(${_library_root_dir} "${_sources}" arch_resolved_sources
             "${ARGN}")
 
     _add_arduino_cmake_library(${_target_name} ${_board_id} "${arch_resolved_sources}" "${ARGN}")
