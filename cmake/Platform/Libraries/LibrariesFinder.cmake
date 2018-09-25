@@ -7,11 +7,10 @@
 #       _library_name - Name of the Arduino library to find.
 #       _board_id - Board ID associated with the linked Core Lib.
 #       [3RD_PARTY] - Whether library should be treated as a 3rd Party library.
-#       [HEADER_ONLY] - Whether library is a header-only library, i.e has no source files
 #=============================================================================#
 function(find_arduino_library _target_name _library_name _board_id)
 
-    set(argument_options "3RD_PARTY" "HEADER_ONLY")
+    set(argument_options "3RD_PARTY")
     cmake_parse_arguments(parsed_args "${argument_options}" "" "" ${ARGN})
 
     if (NOT parsed_args_3RD_PARTY)
@@ -34,23 +33,17 @@ function(find_arduino_library _target_name _library_name _board_id)
             set(error_message "Couldn't find any header files for the ${_library_name} library")
             message(SEND_ERROR "${error_message}")
         else ()
-            if (parsed_args_HEADER_ONLY)
-                add_arduino_header_only_library(${_target_name} ${_board_id}
-                        ARCH ${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE}
-                        HEADERS ${library_headers})
+            find_library_source_files("${library_path}" library_sources)
+            if (NOT library_sources)
+                string(CONCAT error_message
+                        "Couldn't find any source files for the ${_library_name} library - "
+                        "Is it a header-only library?\n"
+                        "If so, please pass the HEADER_ONLY option as an argument to the function")
+                message(SEND_ERROR "${error_message}")
             else ()
-                find_library_source_files("${library_path}" library_sources)
-                if (NOT library_sources)
-                    string(CONCAT error_message
-                            "Couldn't find any source files for the ${_library_name} library - "
-                            "Is it a header-only library?\n"
-                            "If so, please pass the HEADER_ONLY option as an argument to the function")
-                    message(SEND_ERROR "${error_message}")
-                else ()
-                    set(sources ${library_headers} ${library_sources})
-                    add_arduino_library(${_target_name} ${_board_id} ${library_path} "${sources}"
-                            LIB_PROPS_FILE ${library_properties_file})
-                endif ()
+                set(sources ${library_headers} ${library_sources})
+                add_arduino_library(${_target_name} ${_board_id} ${library_path} "${sources}"
+                        LIB_PROPS_FILE ${library_properties_file})
             endif ()
         endif ()
     endif ()
