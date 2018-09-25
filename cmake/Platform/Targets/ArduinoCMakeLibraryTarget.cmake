@@ -10,21 +10,7 @@
 #=============================================================================#
 function(_add_arduino_cmake_library _target_name _board_id _sources)
 
-    cmake_parse_arguments(parsed_args "INTERFACE" "ARCH" "" ${ARGN})
-
-    if (parsed_args_ARCH) # Treat architecture-specific libraries differently
-        # Filter any sources that aren't supported by the platform's architecture
-        list(LENGTH library_ARCH num_of_libs_archs)
-        if (${num_of_libs_archs} GREATER 1)
-            # Exclude all unsupported architectures, request filter in regex mode
-            get_unsupported_architectures("${parsed_args_ARCH}" arch_filter REGEX)
-            set(filter_type EXCLUDE)
-        else ()
-            set(arch_filter "src\\/[^/]+\\.|${parsed_args_ARCH}")
-            set(filter_type INCLUDE)
-        endif ()
-        list(FILTER _sources ${filter_type} REGEX ${arch_filter})
-    endif ()
+    cmake_parse_arguments(parsed_args "INTERFACE" "" "" ${ARGN})
 
     if (parsed_args_INTERFACE)
         add_library(${_target_name} INTERFACE)
@@ -40,11 +26,9 @@ function(_add_arduino_cmake_library _target_name _board_id _sources)
 
     set_library_flags(${_target_name} ${_board_id} ${scope})
 
-    if (parsed_args_ARCH)
-        string(TOUPPER ${parsed_args_ARCH} upper_arch)
-        set(arch_definition "ARDUINO_ARCH_${upper_arch}")
-        target_compile_definitions(${_target_name} ${scope} ${arch_definition})
-    endif ()
+    string(TOUPPER ${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE} upper_arch)
+    set(arch_definition "ARDUINO_ARCH_${upper_arch}")
+    target_compile_definitions(${_target_name} ${scope} ${arch_definition})
 
 endfunction()
 

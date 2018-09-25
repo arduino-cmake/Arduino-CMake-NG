@@ -28,16 +28,6 @@ function(find_arduino_library _target_name _library_name _board_id)
         message(SEND_ERROR "Couldn't find library named ${_library_name}")
     else () # Library is found
         get_filename_component(library_path ${library_properties_file} DIRECTORY)
-        get_library_architecture("${library_properties_file}" lib_arch)
-        if (lib_arch)
-            if ("${lib_arch}" MATCHES "UNSUPPORTED")
-                string(CONCAT error_message
-                        "${_library_name} "
-                        "library isn't supported on the platform's architecture "
-                        "${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE}")
-                message(SEND_ERROR ${error_message})
-            endif ()
-        endif ()
 
         find_library_header_files("${library_path}" library_headers)
         if (NOT library_headers)
@@ -46,7 +36,7 @@ function(find_arduino_library _target_name _library_name _board_id)
         else ()
             if (parsed_args_HEADER_ONLY)
                 add_arduino_header_only_library(${_target_name} ${_board_id}
-                        ARCH ${lib_arch}
+                        ARCH ${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE}
                         HEADERS ${library_headers})
             else ()
                 find_library_source_files("${library_path}" library_sources)
@@ -58,8 +48,8 @@ function(find_arduino_library _target_name _library_name _board_id)
                     message(SEND_ERROR "${error_message}")
                 else ()
                     set(sources ${library_headers} ${library_sources})
-                    add_arduino_library(${_target_name} ${_board_id} "${sources}"
-                            ARCH ${lib_arch})
+                    add_arduino_library(${_target_name} ${_board_id} ${library_path} "${sources}"
+                            LIB_PROPS_FILE ${library_properties_file})
                 endif ()
             endif ()
         endif ()

@@ -4,11 +4,17 @@
 #       _target_name - Name of the library target to be created. Usually library's real name.
 #       _board_id - Board ID associated with the linked Core Lib.
 #       _sources - Source and header files to create target from.
+#       [LIB_PROPS_FILE] - Full path to the library's properties file. Optional.
 #=============================================================================#
-function(add_arduino_library _target_name _board_id _sources)
+function(add_arduino_library _target_name _board_id _library_root_dir _sources)
 
-    _add_arduino_cmake_library(${_target_name} ${_board_id} "${_sources}" "${ARGN}")
-    find_dependent_platform_libraries("${_sources}" lib_platform_libs)
+    resolve_library_sources_by_architecture(${_library_root_dir} "${_sources}" arch_resolved_sources
+            "${ARGN}")
+
+    _add_arduino_cmake_library(${_target_name} ${_board_id} "${arch_resolved_sources}" "${ARGN}")
+
+    find_dependent_platform_libraries("${arch_resolved_sources}" lib_platform_libs)
+
     foreach (platform_lib ${lib_platform_libs})
         link_platform_library(${_target_name} ${platform_lib} ${_board_id})
     endforeach ()
