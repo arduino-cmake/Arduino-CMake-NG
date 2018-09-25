@@ -14,6 +14,7 @@ include(ListUtils)
 include(StringUtils)
 include(PropertyUtils)
 include(PlatformLibraryUtils)
+include(CMakeArgumentsUtils)
 
 include(BoardManager)
 include(RecipeParser)

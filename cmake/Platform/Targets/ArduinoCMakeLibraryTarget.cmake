@@ -47,21 +47,12 @@ function(_link_arduino_cmake_library _target_name _library_name)
         message(FATAL_ERROR "Target doesn't exist - It must be created first!")
     endif ()
 
-    set(scope_options "PRIVATE" "PUBLIC" "INTERFACE")
-    cmake_parse_arguments(link_library "${scope_options}" "BOARD_CORE_TARGET" "" ${ARGN})
-
-    # Now, link library to executable
-    if (link_library_PRIVATE)
-        set(scope PRIVATE)
-    elseif (link_library_INTERFACE)
-        set(scope INTERFACE)
-    else ()
-        set(scope PUBLIC)
-    endif ()
+    cmake_parse_arguments(parsed_args "" "BOARD_CORE_TARGET" "" ${ARGN})
+    parse_scope_argument("${ARGN}" scope)
 
     # Resolve Core-Lib's target
-    if (link_library_BOARD_CORE_TARGET)
-        set(core_target ${link_library_BOARD_CORE_TARGET})
+    if (parsed_args_BOARD_CORE_TARGET)
+        set(core_target ${parsed_args_BOARD_CORE_TARGET})
     else ()
         set(core_target ${${_target_name}_CORE_LIB_TARGET})
     endif ()
@@ -73,7 +64,7 @@ function(_link_arduino_cmake_library _target_name _library_name)
     target_link_libraries(${_library_name} ${scope} ${core_target})
 
     # Link library target to linked-to target
-    if (link_library_PRIVATE)
+    if (parsed_args_PRIVATE)
         target_link_libraries(${_target_name} PRIVATE ${_library_name})
     else ()
         # Link 'INTERFACE' targets publicly, otherwise code won't compile
