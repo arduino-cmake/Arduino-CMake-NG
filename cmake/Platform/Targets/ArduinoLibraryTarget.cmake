@@ -20,12 +20,16 @@ function(add_arduino_library _target_name _board_id _library_root_dir _sources)
 
 endfunction()
 
+#=============================================================================#
+# Creates a header-only library target for the given name and sources.
+#       _target_name - Name of the "executable" target.
+#       _board_id - Board ID associated with the linked Core Lib.
+#=============================================================================#
 function(add_arduino_header_only_library _target_name _board_id)
 
-    cmake_parse_arguments(parsed_args "ARCH" "" "HEADERS" ${ARGN})
+    set(headers ${ARGN})
 
-    _add_arduino_cmake_library(${_target_name} ${_board_id} "${parsed_args_HEADERS}"
-            INTERFACE ${parsed_args_ARCH})
+    _add_arduino_cmake_library(${_target_name} ${_board_id} "${headers}" INTERFACE)
 
 endfunction()
 
