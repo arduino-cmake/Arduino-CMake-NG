@@ -81,3 +81,18 @@ function(set_upload_target_flags _target_name _board_id _upload_port _return_var
 
 endfunction()
 
+#=============================================================================#
+# Adds a compiler definition (#define) for the given architecture to the target.
+# The affecting scope of the definition is controlled by the _scope argument.
+#       _target - Name of the target (Executable) to set flags on.
+#       _scope - PUBLIC|INTERFACE|PRIVATE. Affects outer scope - How other targets see it.
+#       _architecture - Architecture to define, e.g. 'avr'
+#=============================================================================#
+function(set_target_architecture_definition _target _scope _architecture)
+
+    string(TOUPPER ${_architecture} upper_arch)
+    set(arch_definition "ARDUINO_ARCH_${upper_arch}")
+
+    target_compile_definitions(${_target} ${_scope} ${arch_definition})
+
+endfunction()

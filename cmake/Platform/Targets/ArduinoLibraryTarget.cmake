@@ -56,13 +56,13 @@ function(link_arduino_library _target_name _library_target_name _board_id)
     endif ()
 
     if (parsed_args_HEADER_ONLY)
-        _link_arduino_cmake_library(${_target_name} ${_library_target_name}
-                INTERFACE
-                BOARD_CORE_TARGET ${core_lib_target})
+        set(scope INTERFACE)
     else ()
-        _link_arduino_cmake_library(${_target_name} ${_library_target_name}
-                PUBLIC
-                BOARD_CORE_TARGET ${core_lib_target})
+        set(scope PUBLIC)
     endif ()
+
+    _link_arduino_cmake_library(${_target_name} ${_library_target_name}
+            ${scope}
+            BOARD_CORE_TARGET ${core_lib_target})
 
 endfunction()
