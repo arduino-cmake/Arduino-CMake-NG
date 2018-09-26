@@ -12,9 +12,7 @@ target_include_directories(3rd_Party_Arduino_Library PRIVATE include)
 add_arduino_library(adafruit_NeoPixel ${board_id} libraries/Adafruit_NeoPixel/Adafruit_NeoPixel.cpp)
 target_include_directories(adafruit_NeoPixel PUBLIC libraries/Adafruit_NeoPixel)
 
-# Find the "GFX" library by 'tricking' the framework to use current directory as the Sketchbook path,
-# allowing us to use the 'find' API
-set(ARDUINO_CMAKE_SKETCHBOOK_PATH "${CMAKE_CURRENT_LIST_DIR}")
+# Find the "GFX" library - It's located under the 'libraries' sub-dir, which is a valid search path
 find_arduino_library(adafruit_GFX Adafruit-GFX-Library ${board_id} 3RD_PARTY)
 # We can also explicitly add additional directories to the target,
 # as only root dir and 'src' and 'utility' sub-dirs are added by default

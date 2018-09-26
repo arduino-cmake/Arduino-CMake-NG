@@ -21,7 +21,8 @@ function(find_arduino_library _target_name _library_name _board_id)
     find_file(library_path
             NAMES ${_library_name}
             PATHS ${ARDUINO_SDK_LIBRARIES_PATH} ${ARDUINO_CMAKE_SKETCHBOOK_PATH}
-            PATH_SUFFIXES libraries
+            ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}
+            PATH_SUFFIXES libraries dependencies
             NO_DEFAULT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
 
@@ -34,6 +35,7 @@ function(find_arduino_library _target_name _library_name _board_id)
 
         if (NOT library_headers)
             message(SEND_ERROR "Couldn't find any header files for the ${_library_name} library")
+
         else ()
 
             if (parsed_args_HEADER_ONLY)
@@ -48,14 +50,19 @@ function(find_arduino_library _target_name _library_name _board_id)
                             "${_library_name} library - Is it a header-only library?"
                             "If so, please pass the HEADER_ONLY option "
                             "as an argument to the function")
+
                 else ()
+
                     set(sources ${library_headers} ${library_sources})
 
                     add_arduino_library(${_target_name} ${_board_id} ${sources})
+
                 endif ()
 
             endif ()
+
         endif ()
+
     endif ()
 
     unset(library_path CACHE)
