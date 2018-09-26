@@ -37,7 +37,9 @@ function(find_arduino_library _target_name _library_name _board_id)
 
             if (parsed_args_HEADER_ONLY)
                 add_arduino_header_only_library(${_target_name} ${_board_id} ${library_headers})
+
             else ()
+
                 find_library_source_files("${library_path}" library_sources)
 
                 if (NOT library_sources)
@@ -48,8 +50,9 @@ function(find_arduino_library _target_name _library_name _board_id)
                 else ()
                     set(sources ${library_headers} ${library_sources})
 
-                    add_arduino_library(${_target_name} ${_board_id} ${sources}
-                            LIB_PROPS_FILE ${library_properties_file})
+                    add_arduino_library(${_target_name} ${_board_id}
+                            LIB_PROPS_FILE ${library_properties_file}
+                            ${sources})
                 endif ()
 
             endif ()

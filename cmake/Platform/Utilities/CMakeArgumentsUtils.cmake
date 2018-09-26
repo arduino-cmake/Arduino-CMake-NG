@@ -1,4 +1,45 @@
 #=============================================================================#
+# Consumes given arguments for reserved options and single-value options,
+# returning a new argument-list without them, no matter where they are positioned.
+# It allows easy parsing of arguments which are considered "unlimited",
+# limited only by multi-value options.
+#       _args - Arguments to consume. Usually function's unparsed arguments - ${ARGN}.
+#       _reserved_options - Reserved option arguments.
+#       _reserved_single_values - Reserved single-value arguments.
+#       _return_var - Name of a CMake variable that will hold the extraction result.
+#       Returns - Original argument-list without reserved options and single-value options.
+#=============================================================================#
+function(_consume_reserved_arguments _args _reserved_options _reserved_single_values _return_var)
+
+    set(temp_arg_list ${_args})
+
+    list(LENGTH _args args_length)
+    decrement_integer(args_length 1) # We'll peform index iteration - It's always length-1
+
+    foreach (index RANGE ${args_length})
+
+        list(GET _args ${index} arg)
+
+        if (${arg} IN_LIST _reserved_options)
+            list(REMOVE_ITEM temp_arg_list ${arg})
+
+        elseif (${arg} IN_LIST _reserved_single_values)
+
+            # Get the next index to remove as well - It's the option's/key's value
+            set(next_index ${index})
+            increment_integer(next_index 1)
+
+            list(REMOVE_AT temp_arg_list ${index} ${next_index})
+
+        endif ()
+
+    endforeach ()
+
+    set(${_return_var} ${temp_arg_list} PARENT_SCOPE)
+
+endfunction()
+
+#=============================================================================#
 # Parses the given arguments for sources, stopping when all arguments have been read or
 # when at least one reserved argument/option has been encountered.
 #       _reserved_options - Reserved option arguments.
@@ -16,13 +57,15 @@ function(parse_sources_arguments _return_var _reserved_options _reserved_single_
     initialize_list(_reserved_single_values)
     initialize_list(_reserved_multi_values)
 
+    _consume_reserved_arguments("${_cmake_args}"
+            "${_reserved_options}" "${_reserved_single_values}"
+            consumed_args)
+
     set(sources "") # Clear list because cmake preserves scope in nested functions
 
-    foreach (arg ${_cmake_args})
+    foreach (arg ${consumed_args})
 
-        if (${arg} IN_LIST _reserved_options OR
-                ${arg} IN_LIST _reserved_single_values OR
-                ${arg} IN_LIST _reserved_multi_values)
+        if (${arg} IN_LIST _reserved_multi_values)
             break()
         else ()
             list(APPEND sources ${arg})
