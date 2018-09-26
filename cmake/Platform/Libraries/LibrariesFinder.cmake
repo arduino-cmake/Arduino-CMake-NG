@@ -7,6 +7,7 @@
 #       _library_name - Name of the Arduino library to find.
 #       _board_id - Board ID associated with the linked Core Lib.
 #       [3RD_PARTY] - Whether library should be treated as a 3rd Party library.
+#       [HEADER_ONLY] - Whether library should be treated as header-only library.
 #=============================================================================#
 function(find_arduino_library _target_name _library_name _board_id)
 
@@ -17,22 +18,24 @@ function(find_arduino_library _target_name _library_name _board_id)
         convert_string_to_pascal_case(${_library_name} _library_name)
     endif ()
 
-    find_file(library_properties_file library.properties
-            PATHS ${ARDUINO_SDK_LIBRARIES_PATH} ${ARDUINO_CMAKE_SKETCHBOOK_PATH}/libraries
-            PATH_SUFFIXES ${_library_name}
+    find_file(library_path
+            NAMES ${_library_name}
+            PATHS ${ARDUINO_SDK_LIBRARIES_PATH} ${ARDUINO_CMAKE_SKETCHBOOK_PATH}
+            ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}
+            PATH_SUFFIXES libraries dependencies
             NO_DEFAULT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
 
     if (${library_properties_file} MATCHES "NOTFOUND")
         message(SEND_ERROR "Couldn't find library named ${_library_name}")
-    else () # Library is found
 
-        get_filename_component(library_path ${library_properties_file} DIRECTORY)
+    else () # Library is found
 
         find_library_header_files("${library_path}" library_headers)
 
         if (NOT library_headers)
             message(SEND_ERROR "Couldn't find any header files for the ${_library_name} library")
+
         else ()
 
             if (parsed_args_HEADER_ONLY)
@@ -47,18 +50,21 @@ function(find_arduino_library _target_name _library_name _board_id)
                             "${_library_name} library - Is it a header-only library?"
                             "If so, please pass the HEADER_ONLY option "
                             "as an argument to the function")
+
                 else ()
+
                     set(sources ${library_headers} ${library_sources})
 
-                    add_arduino_library(${_target_name} ${_board_id}
-                            LIB_PROPS_FILE ${library_properties_file}
-                            ${sources})
+                    add_arduino_library(${_target_name} ${_board_id} ${sources})
+
                 endif ()
 
             endif ()
+
         endif ()
+
     endif ()
 
-    unset(library_properties_file CACHE)
+    unset(library_path CACHE)
 
 endfunction()

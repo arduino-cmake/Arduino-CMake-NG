@@ -8,10 +8,18 @@
 function(find_library_header_files _base_path _return_var)
 
     if (EXISTS ${_base_path}/src) # 'src' sub-dir exists and should contain sources
+
         # Headers are always searched recursively under the 'src' sub-dir
         find_header_files(${_base_path}/src headers RECURSE)
+
     else ()
-        find_header_files(${_base_path} headers)
+
+        # Both root-dir and 'utility' sub-dir are searched when 'src' doesn't exist
+        find_header_files(${_base_path} root_headers)
+        find_header_files(${_base_path}/utility utility_headers)
+
+        set(headers ${root_headers} ${utility_headers})
+
     endif ()
 
     set(${_return_var} "${headers}" PARENT_SCOPE)
@@ -28,10 +36,18 @@ endfunction()
 function(find_library_source_files _base_path _return_var)
 
     if (EXISTS ${_base_path}/src)
+
         # Sources are always searched recursively under the 'src' sub-dir
         find_source_files(${_base_path}/src sources RECURSE)
+
     else ()
-        find_source_files(${_base_path} sources)
+
+        # Both root-dir and 'utility' sub-dir are searched when 'src' doesn't exist
+        find_source_files(${_base_path} root_sources)
+        find_source_files(${_base_path}/utility utility_sources)
+
+        set(sources ${root_sources} ${utility_sources})
+
     endif ()
 
     set(${_return_var} "${sources}" PARENT_SCOPE)

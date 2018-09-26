@@ -1,0 +1,12 @@
+Skywriter   KEYWORD1
+begin       KEYWORD2
+poll        KEYWORD2
+onGesture   KEYWORD2
+onTouch     KEYWORD2
+onAirwheel  KEYWORD2
+onXYZ       KEYWORD2
+x           KEYWORD3
+y           KEYWORD3
+z           KEYWORD3
+last_gesture KEYWORD3
+last_touch   KEYWORD3

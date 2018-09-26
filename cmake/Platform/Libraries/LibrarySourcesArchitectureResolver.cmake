@@ -38,9 +38,8 @@ function(resolve_library_architecture _library_sources _return_var)
     else ()
 
         # Warn user and assume library is arch-agnostic
-        message(STATUS "Library's properties file can't be found "
-                "under its' root directory - Assuming the library "
-                "is architecture-agnostic (supports all architectures)")
+        message(STATUS "Library's properties file can't be found under its' root directory.\n\t"
+                "Assuming the library is architecture-agnostic (supports all architectures)")
         set(${_return_var} "${_library_sources}" PARENT_SCOPE)
         return()
 
