@@ -7,6 +7,7 @@
 #       _library_name - Name of the Arduino library to find.
 #       _board_id - Board ID associated with the linked Core Lib.
 #       [3RD_PARTY] - Whether library should be treated as a 3rd Party library.
+#       [HEADER_ONLY] - Whether library should be treated as header-only library.
 #=============================================================================#
 function(find_arduino_library _target_name _library_name _board_id)
 
