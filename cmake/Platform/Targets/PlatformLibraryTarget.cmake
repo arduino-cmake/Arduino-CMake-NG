@@ -49,7 +49,7 @@ function(link_platform_library _target_name _library_name _board_id)
         message(FATAL_ERROR "Target ${_target_name} doesn't exist - It must be created first!")
     endif ()
 
-    parse_scope_argument("${ARGN}" scope
+    parse_scope_argument(scope "${ARGN}"
             DEFAULT_SCOPE PUBLIC)
 
     if (NOT TARGET ${_library_name})

@@ -48,7 +48,7 @@ function(_link_arduino_cmake_library _target_name _library_name)
     endif ()
 
     cmake_parse_arguments(parsed_args "" "BOARD_CORE_TARGET" "" ${ARGN})
-    parse_scope_argument("${ARGN}" scope)
+    parse_scope_argument(scope "${ARGN}")
 
     # Resolve Core-Lib's target
     if (parsed_args_BOARD_CORE_TARGET)

@@ -6,16 +6,8 @@
 #=============================================================================#
 function(set_library_flags _library_target _board_id)
 
-    set(scope_options "PRIVATE" "PUBLIC" "INTERFACE")
-    cmake_parse_arguments(parsed_args "${scope_options}" "" "" ${ARGN})
-
-    if (parsed_args_PRIVATE)
-        set(scope PRIVATE)
-    elseif (parsed_args_INTERFACE)
-        set(scope INTERFACE)
-    else ()
-        set(scope PUBLIC)
-    endif ()
+    parse_scope_argument(scope "${ARGN}"
+            DEFAULT_SCOPE PUBLIC)
 
     # Set C++ compiler flags
     get_cmake_compliant_language_name(cpp flags_language)

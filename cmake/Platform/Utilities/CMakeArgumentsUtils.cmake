@@ -50,7 +50,7 @@ endfunction()
 #       _return_var - Name of a CMake variable that will hold the extraction result.
 #       Returns - Parsed scope if one is found or the DEFAULT_SCOPE if set, otherwise an error.
 #=============================================================================#
-function(parse_scope_argument _cmake_args _return_var)
+function(parse_scope_argument _return_var _cmake_args)
 
     cmake_parse_arguments(parsed_args "" "DEFAULT_SCOPE" "" ${ARGN})
 

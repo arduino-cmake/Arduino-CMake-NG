@@ -6,7 +6,7 @@
 function(set_compiler_target_flags _target_name _board_id)
 
     cmake_parse_arguments(parsed_args "" "LANGUAGE" "" ${ARGN})
-    parse_scope_argument("${ARGN}" scope
+    parse_scope_argument(scope "${ARGN}"
             DEFAULT_SCOPE PUBLIC)
 
     if (parsed_args_LANGUAGE)
