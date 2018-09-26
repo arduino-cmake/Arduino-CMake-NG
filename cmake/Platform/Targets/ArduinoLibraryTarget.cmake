@@ -3,21 +3,31 @@
 # As it's an Arduino library, it also finds and links all dependent platform libraries (if any).
 #       _target_name - Name of the library target to be created. Usually library's real name.
 #       _board_id - Board ID associated with the linked Core Lib.
-#       _sources - Source and header files to create target from.
 #       [LIB_PROPS_FILE] - Full path to the library's properties file. Optional.
+#       [Sources] - List of source files (Could also be headers for code-inspection in some IDEs)
+#                   to create the executable from, similar to CMake's built-in add_executable.
 #=============================================================================#
 function(add_arduino_library _target_name _board_id)
 
     cmake_parse_arguments(parsed_args "" "LIB_PROPS_FILE" "" ${ARGN})
     parse_sources_arguments(parsed_sources "" "LIB_PROPS_FILE" "" "${ARGN}")
 
-    get_sources_root_directory("${parsed_sources}" library_root_dir)
-
     if (parsed_args_LIB_PROPS_FILE)
-        resolve_library_architecture(${library_root_dir} "${parsed_sources}" arch_resolved_sources
+        resolve_library_architecture("${parsed_sources}" arch_resolved_sources
                 LIB_PROPS_FILE ${parsed_args_LIB_PROPS_FILE})
     else ()
-        resolve_library_architecture(${library_root_dir} "${parsed_sources}" arch_resolved_sources)
+
+        get_sources_root_directory("${parsed_sources}" library_root_dir)
+
+        get_library_properties_file(${library_root_dir} library_properties_file)
+
+        if (library_properties_file) # Properties file has been found
+            resolve_library_architecture("${parsed_sources}" arch_resolved_sources
+                    LIB_PROPS_FILE ${library_properties_file})
+        else ()
+            resolve_library_architecture("${parsed_sources}" arch_resolved_sources)
+        endif ()
+
     endif ()
 
     _add_arduino_cmake_library(${_target_name} ${_board_id} "${arch_resolved_sources}")
