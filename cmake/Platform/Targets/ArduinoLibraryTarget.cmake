@@ -47,9 +47,9 @@ endfunction()
 #=============================================================================#
 function(add_arduino_header_only_library _target_name _board_id)
 
-    set(headers ${ARGN})
+    parse_sources_arguments(parsed_headers "" "" "" "${ARGN}")
 
-    _add_arduino_cmake_library(${_target_name} ${_board_id} "${headers}" INTERFACE)
+    _add_arduino_cmake_library(${_target_name} ${_board_id} "${parsed_headers}" INTERFACE)
 
 endfunction()
 
