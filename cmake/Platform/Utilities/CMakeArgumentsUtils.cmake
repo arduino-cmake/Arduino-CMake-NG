@@ -11,18 +11,10 @@
 function(parse_sources_arguments _return_var _reserved_options _reserved_single_values
         _reserved_multi_values _cmake_args)
 
-    # Prepare arguments for further inspection - Somewhat croocked logic due to CMake's limitations
-    # If an argument is an empty string, populate it with a theoritcally impossible value.
-    # just to have some value in it
-    if ("${_reserved_options}" STREQUAL "")
-        set(_reserved_options "+-*/")
-    endif ()
-    if ("${_reserved_single_values}" STREQUAL "")
-        set(_reserved_single_values "+-*/")
-    endif ()
-    if ("${_reserved_multi_values}" STREQUAL "")
-        set(_reserved_multi_values "+-*/")
-    endif ()
+    # Initialize argument-lists for further inspection
+    initialize_list(_reserved_options)
+    initialize_list(_reserved_single_values)
+    initialize_list(_reserved_multi_values)
 
     set(sources "") # Clear list because cmake preserves scope in nested functions
 
