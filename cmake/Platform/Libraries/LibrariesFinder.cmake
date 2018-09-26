@@ -48,7 +48,7 @@ function(find_arduino_library _target_name _library_name _board_id)
                 else ()
                     set(sources ${library_headers} ${library_sources})
 
-                    add_arduino_library(${_target_name} ${_board_id} ${library_path} "${sources}"
+                    add_arduino_library(${_target_name} ${_board_id} ${sources}
                             LIB_PROPS_FILE ${library_properties_file})
                 endif ()
 

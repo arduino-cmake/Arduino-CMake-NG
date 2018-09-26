@@ -9,8 +9,7 @@ add_arduino_executable(3rd_Party_Arduino_Library ${board_id} 3rd_party.cpp
 target_include_directories(3rd_Party_Arduino_Library PRIVATE include)
 
 # Add the "NeoPixel" library manually using the library addition API
-add_arduino_library(Adafruit_NeoPixel ${board_id} libraries/Adafruit_NeoPixel
-        libraries/Adafruit_NeoPixel/Adafruit_NeoPixel.cpp)
+add_arduino_library(Adafruit_NeoPixel ${board_id} libraries/Adafruit_NeoPixel/Adafruit_NeoPixel.cpp)
 target_include_directories(Adafruit_NeoPixel PUBLIC libraries/Adafruit_NeoPixel)
 
 # Find the "GFX" library by 'tricking' the framework to use current directory as the Sketchbook path,

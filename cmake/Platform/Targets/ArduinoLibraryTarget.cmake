@@ -11,7 +11,7 @@ function(add_arduino_library _target_name _board_id)
     cmake_parse_arguments(parsed_args "" "LIB_PROPS_FILE" "" ${ARGN})
     parse_sources_arguments(parsed_sources "" "LIB_PROPS_FILE" "" "${ARGN}")
 
-    resolve_library_architecture(${_library_root_dir} "${_sources}" arch_resolved_sources "${ARGN}")
+    get_sources_root_directory("${parsed_sources}" library_root_dir)
 
     if (parsed_args_LIB_PROPS_FILE)
         resolve_library_architecture(${library_root_dir} "${parsed_sources}" arch_resolved_sources

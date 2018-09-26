@@ -9,12 +9,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Sources)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Libraries)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Targets)
 
-include(MathUtils)
-include(ListUtils)
-include(StringUtils)
-include(PropertyUtils)
-include(PlatformLibraryUtils)
-include(CMakeArgumentsUtils)
+include(Utilities)
 
 include(BoardManager)
 include(RecipeParser)
