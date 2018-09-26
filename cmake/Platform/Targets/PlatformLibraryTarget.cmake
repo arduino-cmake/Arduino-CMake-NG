@@ -11,9 +11,13 @@ function(find_dependent_platform_libraries _sources _return_var)
         get_source_file_included_headers(${source} source_includes WE)
         list(APPEND included_headers_names ${source_includes})
     endforeach ()
-    list(REMOVE_DUPLICATES included_headers_names)
+
+    if (included_headers_names)
+        list(REMOVE_DUPLICATES included_headers_names)
+    endif ()
 
     get_platform_libraries_from_names("${included_headers_names}" dependent_libs)
+
     set(${_return_var} ${dependent_libs} PARENT_SCOPE)
 
 endfunction()
@@ -29,8 +33,7 @@ function(_add_platform_library _library_name _board_id)
     find_source_files("${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/${_library_name}/src" lib_source_files)
     set(lib_sources ${lib_headers} ${lib_source_files})
 
-    _add_arduino_cmake_library(${_library_name} ${_board_id} "${lib_sources}"
-            ARCH ${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE})
+    _add_arduino_cmake_library(${_library_name} ${_board_id} "${lib_sources}")
 
 endfunction()
 
@@ -46,14 +49,20 @@ function(link_platform_library _target_name _library_name _board_id)
         message(FATAL_ERROR "Target ${_target_name} doesn't exist - It must be created first!")
     endif ()
 
+    parse_scope_argument(scope "${ARGN}"
+            DEFAULT_SCOPE PUBLIC)
+
     if (NOT TARGET ${_library_name})
+
         _add_platform_library(${_library_name} ${_board_id})
+
         get_core_lib_target_name(${_board_id} core_lib_target)
         _link_arduino_cmake_library(${_target_name} ${_library_name}
-                PUBLIC
+                ${scope}
                 BOARD_CORE_TARGET ${core_lib_target})
+
     else ()
-        target_link_libraries(${_target_name} PUBLIC ${_library_name})
+        target_link_libraries(${_target_name} ${scope} ${_library_name})
     endif ()
 
 endfunction()

@@ -5,25 +5,24 @@
 #=============================================================================#
 function(set_compiler_target_flags _target_name _board_id)
 
-    set(option_args PRIVATE PUBLIC INTERFACE)
-    set(single_args LANGUAGE)
-    cmake_parse_arguments(compiler "${option_args}" "${single_args}" "" ${ARGN})
+    cmake_parse_arguments(parsed_args "" "LANGUAGE" "" ${ARGN})
+    parse_scope_argument(scope "${ARGN}"
+            DEFAULT_SCOPE PUBLIC)
 
-    if (compiler_LANGUAGE)
-        if (compiler_PRIVATE)
-            set(scope PRIVATE)
-        elseif (compiler_INTERFACE)
-            set(scope INTERFACE)
-        else ()
-            set(scope PUBLIC)
-        endif ()
+    if (parsed_args_LANGUAGE)
+
         parse_compiler_recipe_flags("${_board_id}" compiler_recipe_flags
-                LANGUAGE "${compiler_LANGUAGE}")
+                LANGUAGE "${parsed_args_LANGUAGE}")
+
         target_compile_options(${_target_name} ${scope}
-                $<$<COMPILE_LANGUAGE:${compiler_LANGUAGE}>:${compiler_recipe_flags}>)
+                $<$<COMPILE_LANGUAGE:${parsed_args_LANGUAGE}>:${compiler_recipe_flags}>)
+
     else ()
+
         parse_compiler_recipe_flags("${_board_id}" compiler_recipe_flags)
-        target_compile_options(${_target_name} PUBLIC ${compiler_recipe_flags})
+
+        target_compile_options(${_target_name} ${scope} ${compiler_recipe_flags})
+
     endif ()
 
 endfunction()
@@ -36,7 +35,9 @@ endfunction()
 function(set_linker_flags _target_name _board_id)
 
     parse_linker_recpie_pattern("${_board_id}" linker_recipe_flags)
+
     string(REPLACE ";" " " cmake_compliant_linker_flags "${linker_recipe_flags}")
+
     set(CMAKE_EXE_LINKER_FLAGS "${cmake_compliant_linker_flags}" CACHE STRING "" FORCE)
 
 endfunction()
@@ -81,3 +82,18 @@ function(set_upload_target_flags _target_name _board_id _upload_port _return_var
 
 endfunction()
 
+#=============================================================================#
+# Adds a compiler definition (#define) for the given architecture to the target.
+# The affecting scope of the definition is controlled by the _scope argument.
+#       _target - Name of the target (Executable) to set flags on.
+#       _scope - PUBLIC|INTERFACE|PRIVATE. Affects outer scope - How other targets see it.
+#       _architecture - Architecture to define, e.g. 'avr'
+#=============================================================================#
+function(set_target_architecture_definition _target _scope _architecture)
+
+    string(TOUPPER ${_architecture} upper_arch)
+    set(arch_definition "ARDUINO_ARCH_${upper_arch}")
+
+    target_compile_definitions(${_target} ${_scope} ${arch_definition})
+
+endfunction()

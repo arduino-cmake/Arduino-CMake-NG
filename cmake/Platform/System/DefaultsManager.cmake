@@ -57,6 +57,13 @@ function(set_default_arduino_cmake_options)
 
 endfunction()
 
+function(set_default_paths)
+
+    set(ARDUINO_CMAKE_LIBRARY_PROPERTIES_FILE_NAME "library.properties" CACHE STRING
+            "Name of the libraries' properties file")
+
+endfunction()
+
 #=============================================================================#
 # Sets various defaults used throughout the platform.
 #=============================================================================#
@@ -65,5 +72,6 @@ function(set_arduino_cmake_defaults)
     set_internal_search_patterns()
     set_source_files_patterns()
     set_default_arduino_cmake_options()
+    set_default_paths()
 
 endfunction()
