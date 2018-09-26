@@ -6,11 +6,21 @@
 #       _sources - Source and header files to create target from.
 #       [LIB_PROPS_FILE] - Full path to the library's properties file. Optional.
 #=============================================================================#
-function(add_arduino_library _target_name _board_id _library_root_dir _sources)
+function(add_arduino_library _target_name _board_id)
+
+    cmake_parse_arguments(parsed_args "" "LIB_PROPS_FILE" "" ${ARGN})
+    parse_sources_arguments(parsed_sources "" "LIB_PROPS_FILE" "" "${ARGN}")
 
     resolve_library_architecture(${_library_root_dir} "${_sources}" arch_resolved_sources "${ARGN}")
 
-    _add_arduino_cmake_library(${_target_name} ${_board_id} "${arch_resolved_sources}" "${ARGN}")
+    if (parsed_args_LIB_PROPS_FILE)
+        resolve_library_architecture(${library_root_dir} "${parsed_sources}" arch_resolved_sources
+                LIB_PROPS_FILE ${parsed_args_LIB_PROPS_FILE})
+    else ()
+        resolve_library_architecture(${library_root_dir} "${parsed_sources}" arch_resolved_sources)
+    endif ()
+
+    _add_arduino_cmake_library(${_target_name} ${_board_id} "${arch_resolved_sources}")
 
     find_dependent_platform_libraries("${arch_resolved_sources}" lib_platform_libs)
 
