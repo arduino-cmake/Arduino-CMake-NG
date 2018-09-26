@@ -17,17 +17,17 @@ function(find_arduino_library _target_name _library_name _board_id)
         convert_string_to_pascal_case(${_library_name} _library_name)
     endif ()
 
-    find_file(library_properties_file library.properties
-            PATHS ${ARDUINO_SDK_LIBRARIES_PATH} ${ARDUINO_CMAKE_SKETCHBOOK_PATH}/libraries
-            PATH_SUFFIXES ${_library_name}
+    find_file(library_path
+            NAMES ${_library_name}
+            PATHS ${ARDUINO_SDK_LIBRARIES_PATH} ${ARDUINO_CMAKE_SKETCHBOOK_PATH}
+            PATH_SUFFIXES libraries
             NO_DEFAULT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
 
     if (${library_properties_file} MATCHES "NOTFOUND")
         message(SEND_ERROR "Couldn't find library named ${_library_name}")
-    else () # Library is found
 
-        get_filename_component(library_path ${library_properties_file} DIRECTORY)
+    else () # Library is found
 
         find_library_header_files("${library_path}" library_headers)
 
@@ -50,15 +50,13 @@ function(find_arduino_library _target_name _library_name _board_id)
                 else ()
                     set(sources ${library_headers} ${library_sources})
 
-                    add_arduino_library(${_target_name} ${_board_id}
-                            LIB_PROPS_FILE ${library_properties_file}
-                            ${sources})
+                    add_arduino_library(${_target_name} ${_board_id} ${sources})
                 endif ()
 
             endif ()
         endif ()
     endif ()
 
-    unset(library_properties_file CACHE)
+    unset(library_path CACHE)
 
 endfunction()
