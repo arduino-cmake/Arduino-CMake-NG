@@ -30,6 +30,8 @@ It mostly addressed *3rd Party Libraries*.
 
 ### Changes
 
+* Updated project's workflow model, which mostly modifies the development branch from now on to be the **master** branch, instead of **develop**. More can be read in the **CONTRIBUTING.md** file.
+
 * The `Find-SDK` module now searches for the **version.txt** file under a sub-directory named **lib**, which resides directly under SDK's root path. This file's path is common across all OSs, unlike the previously searched **arduino** program.
 
 * The `find_arduino_library` function now searches under the following paths:
