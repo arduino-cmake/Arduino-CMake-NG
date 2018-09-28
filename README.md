@@ -5,7 +5,53 @@
 **Arduino-CMake** is a framework which allows developers to write Arduino-based programs using any tool that supports cmake. *Arduino-based*? There are many other frameworks out there built upon Arduino's base, such as ESP32, and **we support that**.
 In other words, developers can use their favorite IDEs or text editors on their favorite OS to develop Arduino programs!
 
-Wait - Hasn't it been possible all this time? Apparently not, as you'll find out by reading further.
+Wait - Hasn't it been possible all this time? Apparently not. You can read more about it in the [Motivation](#Motivation) section.
+
+## Features
+
+**Arduino-CMake** should<sup id="fl1">[1](#f1)</sup> do almost<sup id="fl2">[2](#f2)</sup> <u>anything</u> that the **Arduino IDE** does!
+Here's a list of features **already supported** by **Arduino-CMake**:
+
+- Creating Arduino "Executables"/Programs
+- Uploading programs to hardware boards
+- Adding/Finding and using Arduino Libraries
+  - 3rd Party libraries are fully supported
+  - User libraries which are not Arduino Libraries are also supported
+- Using Arduino example programs
+  - Using Arduino library example programs
+- Attaching Arduino sketches (`.ino` files) to programs
+
+Moreover, **Arduino-CMake** allows some things that **Arduino IDE** *doesn't*:
+
+- Developing Arduino programs in any IDE or text editor
+- Completely customizing the build process per user's requirements
+
+It's also worth mentioning that **Arduino-CMake** is **<u>cross platform</u>** and works out-of-the-box on every OS that support **CMake** and **Arduino**.
+
+<b id="f1">1</b> The framework is still a WIP, meaning there are some missing features. [↩](#fl1)
+<b id="f2">2</b> The **Arduino IDE** supports several concepts which make writing code easier but are completely unprofessional. Our framework is not willing to encourage such poor coding standards, and thus doesn't support them. These will be mentioned throughout the documentation. [↩](#fl2)
+
+## Usage
+
+A very basic example of how **Arduino-CMake** can be used is listed below:
+
+```cmake
+# Define CMake's minimum version (must-do) and the project's name and supported languages
+cmake_minimum_required(VERSION 3.8.2)
+project(Hello_World LANGUAGES C CXX ASM)
+
+# Call a framework utility function, passing it information about the hardware board that will be used - This function returns a structure known only to the framework
+get_board_id(board_id nano atmega328)
+
+# Create an executable suitable for Arduino using CMake-style target-creation
+add_arduino_executable(Hello_World ${board_id} helloWorld.cpp)
+# Upload the created target through a connected Serial Port (Where your board is connected to)
+upload_arduino_target(Hello_World "${board_id}" COM3)
+```
+
+You should then call **CMake** (either through *cmd*, *cmake-gui* or an *IDE* if it supports that) passing it the argument `-DCMAKE_TOOLCHAIN_FILE=[project_path]/cmake/Arduino-Toolchain.cmake` where `[project_path]` is substituted by the project's full path. This is what allows cmake to use our framework.
+
+That's it! It's super simple, yet super extensible :)
 
 ## Motivation
 
@@ -43,27 +89,6 @@ NG stands for "New Generation".
 Inferred from the written above, it can easily be understood why the project has this name.
 However, if you don't think this name is good enough or it confuses you - Feel free to propose a name of your own, we're open for offers :)
 
-## Features
-
-**Arduino-CMake** should do <u>anything</u> that the **Arduino IDE** can!
-Why should? Because currently it's still WIP, meaning there are still some missing features.
-Here's a list of features **already supported** by **Arduino-CMake**:
-
-* Creating Arduino "Executables"/Programs
-* Uploading programs to hardware boards
-* Linking/Using Arduino libraries to programs
-  * Linking/Using custom libraries to programs
-* Creating Arduino example programs
-  * Creating Arduino library example programs
-* Attaching Arduino sketches to programs
-
-Moreover, **Arduino-CMake** allows some things that **Arduino IDE** *doesn't*:
-
-- Developing Arduino programs in any IDE or text editor
-- Completely customizing the build process per user's requirements
-
-It also worth mentioning that **Arduino-CMake** is **entirely <u>cross platform</u>**.
-
 ## Requirements
 
 The following list is the basic requirements of the framework in order to use it:
@@ -73,29 +98,6 @@ The following list is the basic requirements of the framework in order to use it
 * Arduino-Based SDK compatible with Arduino SDK Version:
   * 1.8.2 or Higher on **Microsoft Windows**
   * 1.6.10 or Higher on **Linux** and **Apple OS X**
-
-## Usage
-
-A very basic example of how **Arduino-CMake** can be used is listed below:
-
-```cmake
-# Define CMake's minimum version (must-do) and the project's name and supported languages
-cmake_minimum_required(VERSION 3.8)
-project(Hello_World LANGUAGES C CXX ASM)
-
-# Call a framework utility function, passing it information about the hardware board that will
-# be used - This function returns a structure known only to the framework
-get_board_id(board_id nano atmega328)
-
-# Create an executable suitable for the Arduino firmware using CMake-style target-creation
-add_arduino_executable(Hello_World ${board_id} helloWorld.cpp)
-# Upload the created target through a connected Serial Port (Where your board is connected to)
-upload_arduino_target(Hello_World "${board_id}" COM3)
-```
-
-You should then call **CMake** (either through cmd, cmake-gui or an IDE if it supports that) passing it the argument `-DCMAKE_TOOLCHAIN_FILE=[project_path]/cmake/Arduino-Toolchain.cmake` where `[project_path]` is substituted by the project's full path. This is what allows cmake to use our framework.
-
-That's it! It's super simple, yet super extensible :)
 
 ## Installation
 
