@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.8.2)
 
-project(Knob_Example LANGUAGES C CXX ASM)
+project(Knob_Example)
 
 get_board_id(board_id nano atmega328)
 

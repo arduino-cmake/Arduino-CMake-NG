@@ -38,7 +38,7 @@ A very basic example of how **Arduino-CMake** can be used is listed below:
 ```cmake
 # Define CMake's minimum version (must-do) and the project's name and supported languages
 cmake_minimum_required(VERSION 3.8.2)
-project(Hello_World LANGUAGES C CXX ASM)
+project(Hello_World)
 
 # Call a framework utility function, passing it information about the hardware board that will be used - This function returns a structure known only to the framework
 get_board_id(board_id nano atmega328)
