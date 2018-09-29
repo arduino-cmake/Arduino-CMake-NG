@@ -26,7 +26,7 @@ function(find_arduino_library _target_name _library_name _board_id)
             NO_DEFAULT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
 
-    if (${library_properties_file} MATCHES "NOTFOUND")
+    if ("${library_path}" MATCHES "NOTFOUND")
         message(SEND_ERROR "Couldn't find library named ${_library_name}")
 
     else () # Library is found
