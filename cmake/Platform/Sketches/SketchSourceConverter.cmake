@@ -31,7 +31,12 @@ endfunction()
 #=============================================================================#
 function(_get_matching_header_insertion_index _sketch_loc _active_index _return_var)
 
-    decrement_integer(_active_index 1)
+    if (${_active_index} EQUAL 0) # First line in a file will always result in the 1st index
+        set(${_return_var} 0 PARENT_SCOPE)
+        return()
+    else ()
+        decrement_integer(_active_index 1)
+    endif ()
 
     list(GET _sketch_loc ${_active_index} previous_loc)
 
@@ -81,6 +86,7 @@ function(convert_sketch_to_source _sketch_file _converted_source_path)
 
     set(header_insert_pattern
             "${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN}|${ARDUINO_CMAKE_FUNCTION_REGEX_PATTERN}")
+    set(include_line "#include <${ARDUINO_CMAKE_PLATFORM_HEADER_NAME}>")
 
     foreach (loc_index RANGE 0 ${num_of_loc})
 
@@ -93,18 +99,26 @@ function(convert_sketch_to_source _sketch_file _converted_source_path)
                 _get_matching_header_insertion_index("${sketch_loc}" ${loc_index} header_index)
 
                 if (${header_index} LESS ${loc_index})
-                    set(include_line "${ARDUINO_CMAKE_INCLUDE_PLATFORM_HEADER_STRING}\n\n")
+                    set(formatted_include_line ${include_line} "\n\n")
+
+                elseif (${header_index} EQUAL 0)
+                    set(formatted_include_line ${include_line} "\n")
+
                 else ()
 
-                    set(include_line "\n${ARDUINO_CMAKE_INCLUDE_PLATFORM_HEADER_STRING}")
+                    set(formatted_include_line "\n" ${include_line})
 
-                    if (${header_index} GREATER 0 AND ${header_index} GREATER_EQUAL ${loc_index})
+                    if (${header_index} GREATER_EQUAL ${loc_index})
+
                         decrement_integer(header_index 1)
+
+                        string(APPEND formatted_include_line "\n")
+
                     endif ()
 
                 endif ()
 
-                list(INSERT refined_sketch ${header_index} ${include_line})
+                list(INSERT refined_sketch ${header_index} ${formatted_include_line})
 
                 set(header_inserted TRUE)
 

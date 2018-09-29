@@ -1,15 +1,4 @@
 #=============================================================================#
-# Sets various patterns used internaly by the framework for all kinds of purposes.
-#=============================================================================#
-function(set_internal_patterns)
-
-    set(ARDUINO_CMAKE_INCLUDE_PLATFORM_HEADER_STRING
-            "#include <${ARDUINO_CMAKE_PLATFORM_HEADER_NAME}>" CACHE STRING
-            "Pattern to use in sketch-to-source conversion when inserting platform's header include")
-
-endfunction()
-
-#=============================================================================#
 # Sets search patterns used internaly by the framework for searching purposes.
 #=============================================================================#
 function(set_internal_search_patterns)
@@ -83,7 +72,6 @@ endfunction()
 #=============================================================================#
 function(set_arduino_cmake_defaults)
 
-    set_internal_patterns()
     set_internal_search_patterns()
     set_source_files_patterns()
     set_default_arduino_cmake_options()
