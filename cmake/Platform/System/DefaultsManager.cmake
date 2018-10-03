@@ -1,5 +1,5 @@
 #=============================================================================#
-# Sets search patterns used internaly by the platform for searching purposes.
+# Sets search patterns used internaly by the framework for searching purposes.
 #=============================================================================#
 function(set_internal_search_patterns)
 
@@ -34,7 +34,7 @@ function(set_source_files_patterns)
 endfunction()
 
 #=============================================================================#
-# Sets various options specific for the Arduino-CMake platform.
+# Sets various options specific for the Arduino-CMake framework.
 #=============================================================================#
 function(set_default_arduino_cmake_options)
 
@@ -57,6 +57,9 @@ function(set_default_arduino_cmake_options)
 
 endfunction()
 
+#=============================================================================#
+# Sets default paths used by the framework
+#=============================================================================#
 function(set_default_paths)
 
     set(ARDUINO_CMAKE_LIBRARY_PROPERTIES_FILE_NAME "library.properties" CACHE STRING

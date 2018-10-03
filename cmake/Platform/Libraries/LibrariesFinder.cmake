@@ -1,3 +1,9 @@
+macro(_cleanup_find_arduino_library)
+
+    unset(library_path CACHE)
+
+endmacro()
+
 #=============================================================================#
 # Finds an Arduino library with the given library name and creates a library target from it
 # with the given target name.
@@ -8,10 +14,12 @@
 #       _board_id - Board ID associated with the linked Core Lib.
 #       [3RD_PARTY] - Whether library should be treated as a 3rd Party library.
 #       [HEADER_ONLY] - Whether library should be treated as header-only library.
+#       [QUIET] - Whether function should "fail" safely without warnings/errors
+#                 in case of an actual error.
 #=============================================================================#
 function(find_arduino_library _target_name _library_name _board_id)
 
-    set(argument_options "3RD_PARTY" "HEADER_ONLY")
+    set(argument_options "3RD_PARTY" "HEADER_ONLY" "QUIET")
     cmake_parse_arguments(parsed_args "${argument_options}" "" "" ${ARGN})
 
     if (NOT parsed_args_3RD_PARTY)
@@ -26,7 +34,7 @@ function(find_arduino_library _target_name _library_name _board_id)
             NO_DEFAULT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
 
-    if (${library_properties_file} MATCHES "NOTFOUND")
+    if ("${library_path}" MATCHES "NOTFOUND" AND NOT parsed_args_QUIET)
         message(SEND_ERROR "Couldn't find library named ${_library_name}")
 
     else () # Library is found
@@ -34,7 +42,13 @@ function(find_arduino_library _target_name _library_name _board_id)
         find_library_header_files("${library_path}" library_headers)
 
         if (NOT library_headers)
-            message(SEND_ERROR "Couldn't find any header files for the ${_library_name} library")
+            if (parsed_args_QUIET)
+                _cleanup_find_arduino_library()
+                return()
+            else ()
+                message(SEND_ERROR "Couldn't find any header files for the "
+                        "${_library_name} library")
+            endif ()
 
         else ()
 
@@ -46,10 +60,15 @@ function(find_arduino_library _target_name _library_name _board_id)
                 find_library_source_files("${library_path}" library_sources)
 
                 if (NOT library_sources)
-                    message(SEND_ERROR "Couldn't find any source files for the "
-                            "${_library_name} library - Is it a header-only library?"
-                            "If so, please pass the HEADER_ONLY option "
-                            "as an argument to the function")
+                    if (parsed_args_QUIET)
+                        _cleanup_find_arduino_library()
+                        return()
+                    else ()
+                        message(SEND_ERROR "Couldn't find any source files for the "
+                                "${_library_name} library - Is it a header-only library?"
+                                "If so, please pass the HEADER_ONLY option "
+                                "as an argument to the function")
+                    endif ()
 
                 else ()
 
@@ -65,6 +84,6 @@ function(find_arduino_library _target_name _library_name _board_id)
 
     endif ()
 
-    unset(library_path CACHE)
+    _cleanup_find_arduino_library()
 
 endfunction()

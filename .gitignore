@@ -120,5 +120,6 @@ fabric.properties
 [Aa]ssets/*
 /examples/blink-example/Blink.cpp
 /examples/servo-knob-example/Knob.cpp
-/examples/sketch/sketch.cpp
+/examples/sketch/sketch1.cpp
+/examples/sketch/sketch2.cpp
 /docs/wiki
