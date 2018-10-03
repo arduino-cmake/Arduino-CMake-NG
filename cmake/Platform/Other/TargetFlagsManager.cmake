@@ -1,4 +1,21 @@
 #=============================================================================#
+# Sets compiler flags on the given target using the given board ID, compiler language and scope.
+#       _target_name - Name of the target (Executable or Library) to set flags on.
+#       _board_id - Target's bounded board ID.
+#       _language - Language for which flags are set (such as C/C++).
+#       _scope - Flags' scope relative to outer targets (targets using the given target).
+#=============================================================================#
+function(_set_target_language_flags _target_name _board_id _language _scope)
+
+    parse_compiler_recipe_flags(${_board_id} compiler_recipe_flags
+            LANGUAGE "${_language}")
+
+    target_compile_options(${_target_name} ${_scope}
+            $<$<COMPILE_LANGUAGE:${_language}>:${compiler_recipe_flags}>)
+
+endfunction()
+
+#=============================================================================#
 # Sets compiler flags on the given target, according also to the given board ID.
 #       _target_name - Name of the target (Executable or Library) to set flags on.
 #       _board_id - Target's bounded board ID.
@@ -10,18 +27,18 @@ function(set_compiler_target_flags _target_name _board_id)
             DEFAULT_SCOPE PUBLIC)
 
     if (parsed_args_LANGUAGE)
+        _set_target_language_flags(${_target_name} ${_board_id} ${parsed_args_LANGUAGE} ${scope})
 
-        parse_compiler_recipe_flags("${_board_id}" compiler_recipe_flags
-                LANGUAGE "${parsed_args_LANGUAGE}")
+    else () # No specific language requested - Use all
 
-        target_compile_options(${_target_name} ${scope}
-                $<$<COMPILE_LANGUAGE:${parsed_args_LANGUAGE}>:${compiler_recipe_flags}>)
+        get_cmake_compliant_language_name(asm lang)
+        _set_target_language_flags(${_target_name} ${_board_id} ${lang} ${scope})
 
-    else ()
+        get_cmake_compliant_language_name(c lang)
+        _set_target_language_flags(${_target_name} ${_board_id} ${lang} ${scope})
 
-        parse_compiler_recipe_flags("${_board_id}" compiler_recipe_flags)
-
-        target_compile_options(${_target_name} ${scope} ${compiler_recipe_flags})
+        get_cmake_compliant_language_name(cpp lang)
+        _set_target_language_flags(${_target_name} ${_board_id} ${lang} ${scope})
 
     endif ()
 
