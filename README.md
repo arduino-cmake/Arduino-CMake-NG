@@ -101,7 +101,8 @@ The following list is the basic requirements of the framework in order to use it
 
 ## Installation
 
-A complete installation guide can be found in the [Installation](https://github.com/arduino-cmake/arduino-cmake/wiki/Installation) Wiki page.
+First, make sure to download the [latest release](https://github.com/arduino-cmake/Arduino-CMake-NG/releases) of the framework.  
+Further instructions can be found in the [Installation](https://github.com/arduino-cmake/arduino-cmake/wiki/Installation) Wiki page.
 
 ## Documentation
 

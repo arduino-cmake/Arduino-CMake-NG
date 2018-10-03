@@ -22,6 +22,7 @@ It mostly addressed *3rd Party Libraries*.
 
 ### Bug Fixes
 
+* All functions that were expecting a theoretically "unlimited" list of sources to operate on, such as `add_arduino_executable`, `add_arduino_library` etc. couldn't parse more than one file which also was the first.
 * The `Linux-Dist-Detection` module didn't check whether the required dependencies for the detection are installed.
 * 3rd Party libraries that don't include a **library.properties** file couldn't be used.
 * 3rd Party libraries have been renamed to an "Arduino-Compliant" name when attempting to find them using the `find_arduino_library` function, which renamed them to an invalid name.
