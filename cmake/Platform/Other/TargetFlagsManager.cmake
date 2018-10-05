@@ -1,29 +1,45 @@
 #=============================================================================#
+# Sets compiler flags on the given target using the given board ID, compiler language and scope.
+#       _target_name - Name of the target (Executable or Library) to set flags on.
+#       _board_id - Target's bounded board ID.
+#       _language - Language for which flags are set (such as C/C++).
+#       _scope - Flags' scope relative to outer targets (targets using the given target).
+#=============================================================================#
+function(_set_target_language_flags _target_name _board_id _language _scope)
+
+    parse_compiler_recipe_flags(${_board_id} compiler_recipe_flags
+            LANGUAGE "${_language}")
+
+    target_compile_options(${_target_name} ${_scope}
+            $<$<COMPILE_LANGUAGE:${_language}>:${compiler_recipe_flags}>)
+
+endfunction()
+
+#=============================================================================#
 # Sets compiler flags on the given target, according also to the given board ID.
 #       _target_name - Name of the target (Executable or Library) to set flags on.
 #       _board_id - Target's bounded board ID.
 #=============================================================================#
 function(set_compiler_target_flags _target_name _board_id)
 
-    set(option_args PRIVATE PUBLIC INTERFACE)
-    set(single_args LANGUAGE)
-    cmake_parse_arguments(compiler "${option_args}" "${single_args}" "" ${ARGN})
+    cmake_parse_arguments(parsed_args "" "LANGUAGE" "" ${ARGN})
+    parse_scope_argument(scope "${ARGN}"
+            DEFAULT_SCOPE PUBLIC)
 
-    if (compiler_LANGUAGE)
-        if (compiler_PRIVATE)
-            set(scope PRIVATE)
-        elseif (compiler_INTERFACE)
-            set(scope INTERFACE)
-        else ()
-            set(scope PUBLIC)
-        endif ()
-        parse_compiler_recipe_flags("${_board_id}" compiler_recipe_flags
-                LANGUAGE "${compiler_LANGUAGE}")
-        target_compile_options(${_target_name} ${scope}
-                $<$<COMPILE_LANGUAGE:${compiler_LANGUAGE}>:${compiler_recipe_flags}>)
-    else ()
-        parse_compiler_recipe_flags("${_board_id}" compiler_recipe_flags)
-        target_compile_options(${_target_name} PUBLIC ${compiler_recipe_flags})
+    if (parsed_args_LANGUAGE)
+        _set_target_language_flags(${_target_name} ${_board_id} ${parsed_args_LANGUAGE} ${scope})
+
+    else () # No specific language requested - Use all
+
+        get_cmake_compliant_language_name(asm lang)
+        _set_target_language_flags(${_target_name} ${_board_id} ${lang} ${scope})
+
+        get_cmake_compliant_language_name(c lang)
+        _set_target_language_flags(${_target_name} ${_board_id} ${lang} ${scope})
+
+        get_cmake_compliant_language_name(cpp lang)
+        _set_target_language_flags(${_target_name} ${_board_id} ${lang} ${scope})
+
     endif ()
 
 endfunction()
@@ -36,7 +52,9 @@ endfunction()
 function(set_linker_flags _target_name _board_id)
 
     parse_linker_recpie_pattern("${_board_id}" linker_recipe_flags)
+
     string(REPLACE ";" " " cmake_compliant_linker_flags "${linker_recipe_flags}")
+
     set(CMAKE_EXE_LINKER_FLAGS "${cmake_compliant_linker_flags}" CACHE STRING "" FORCE)
 
 endfunction()
@@ -81,3 +99,18 @@ function(set_upload_target_flags _target_name _board_id _upload_port _return_var
 
 endfunction()
 
+#=============================================================================#
+# Adds a compiler definition (#define) for the given architecture to the target.
+# The affecting scope of the definition is controlled by the _scope argument.
+#       _target - Name of the target (Executable) to set flags on.
+#       _scope - PUBLIC|INTERFACE|PRIVATE. Affects outer scope - How other targets see it.
+#       _architecture - Architecture to define, e.g. 'avr'
+#=============================================================================#
+function(set_target_architecture_definition _target _scope _architecture)
+
+    string(TOUPPER ${_architecture} upper_arch)
+    set(arch_definition "ARDUINO_ARCH_${upper_arch}")
+
+    target_compile_definitions(${_target} ${_scope} ${arch_definition})
+
+endfunction()

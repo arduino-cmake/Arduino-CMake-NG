@@ -1,23 +1,34 @@
 version: '{build}'
+branches:
+  except:
+  - feature/travis-ci # Affects only 'Travis-CI' builds, shouldn't be built
 image: Visual Studio 2017
 environment:
   MINGW_PATH: C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin
+  ARDUINO_SDK_BASE_PATH: C:\arduino-sdk\arduino
   matrix:
   - ARDUINO_SDK_VERSION: 1.8.2
-  - ARDUINO_SDK_VERSION: 1.8.6
+  - ARDUINO_SDK_VERSION: 1.8.7
+cache:
+- '%ARDUINO_SDK_BASE_PATH%-%ARDUINO_SDK_VERSION% -> %ARDUINO_SDK_VERSION%'
 install:
 - ps: cinst unzip
-- ps: $env:ARDUINO_SDK_FILE = "arduino-$env:ARDUINO_SDK_VERSION-windows.zip"
-- ps: $env:ARDUINO_SDK_URI = "https://downloads.arduino.cc/$env:ARDUINO_SDK_FILE"
-- ps: wget "$env:ARDUINO_SDK_URI" -O "$env:ARDUINO_SDK_FILE"
-- ps: unzip "$env:ARDUINO_SDK_FILE" -d "arduino-sdk"
-- ps: $env:ARDUINO_SDK_PATH = "$pwd\arduino-sdk\arduino-$env:ARDUINO_SDK_VERSION"
+- ps: $sdk_file = "arduino-$env:ARDUINO_SDK_VERSION-windows.zip"
+# Append SDK's version to SDK's base path
+- ps: $env:ARDUINO_SDK_PATH = "$env:ARDUINO_SDK_BASE_PATH-$env:ARDUINO_SDK_VERSION"
+- ps: cd C:\
+- ps: |
+    if ( -Not (Test-Path -Path $env:ARDUINO_SDK_PATH) )
+    {
+    $arduino_sdk_uri = "https://downloads.arduino.cc/$sdk_file"
+    wget "$arduino_sdk_uri" -O "$sdk_file"
+    unzip -q "$sdk_file" -d "arduino-sdk"
+    }
 - ps: $env:ARDUINO_SDK_PATH = ($env:ARDUINO_SDK_PATH -replace "\\","/")
-before_build:
-- ps: Copy-Item -Path $env:MINGW_PATH\mingw32-make.exe -Destination $env:MINGW_PATH\make.exe
+- ps: $env:Path += ";$env:MINGW_PATH"
 build_script:
 # Add the MinGW Path to the system PATH temporarily for this session
-- ps: $env:Path += ";$env:MINGW_PATH"
+- ps: cd $env:APPVEYOR_BUILD_FOLDER
 - ps: mkdir build
 - ps: cd build
 - ps: echo "$env:ARDUINO_SDK_PATH"
@@ -28,7 +39,7 @@ build_script:
     --no-warn-unused-cli
     ..\examples
 - ps: |
-    make.exe 2>&1 3>&1
+    mingw32-make.exe 2>&1 3>&1
     if ($LastExitCode -eq 0) { $host.SetShouldExit(0) }
 artifacts:
 - path: cmake

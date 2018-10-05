@@ -14,7 +14,7 @@ function(add_arduino_example _target_name _board_id _example_name)
     find_arduino_example_sources("${ARDUINO_SDK_EXAMPLES_PATH}"
             ${arduino_compliant_example_name} example_sketches ${ARGN})
     # First create the target (Without sources), then add sketches as converted sources
-    add_arduino_executable(${_target_name} ${_board_id} "")
+    add_arduino_executable(${_target_name} ${_board_id})
     target_sketches(${_target_name} ${_board_id} "${example_sketches}")
 
 endfunction()
@@ -44,7 +44,7 @@ function(add_arduino_library_example _target_name _board_id
 
     find_arduino_library_example_sources("${ARDUINO_SDK_LIBRARIES_PATH}/${arduino_compliant_library_name}"
             ${arduino_compliant_example_name} example_sketches ${ARGN})
-    add_arduino_executable(${_target_name} ${_board_id} "")
+    add_arduino_executable(${_target_name} ${_board_id})
     target_sketches(${_target_name} ${_board_id} "${example_sketches}")
     link_arduino_library(${_target_name} ${_library_target_name} ${_board_id})
 

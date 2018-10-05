@@ -9,6 +9,7 @@
 function(get_cmake_compliant_language_name _language _return_var)
 
     string(TOLOWER "${_language}" language)
+
     if ("${language}" STREQUAL "s" OR "${language}" STREQUAL "asm")
         set(language ASM)
     elseif ("${language}" STREQUAL "cpp" OR "${language}" STREQUAL "cxx" OR
@@ -35,6 +36,7 @@ endfunction()
 function(get_arduino_compliant_language_name _language _return_var)
 
     string(TOLOWER "${_language}" language)
+
     if ("${language}" STREQUAL "s" OR "${language}" STREQUAL "asm")
         set(language S) # Intentionally upper-case
     elseif ("${language}" STREQUAL "cpp" OR "${language}" STREQUAL "cxx" OR
@@ -60,7 +62,9 @@ endfunction()
 function(get_core_lib_target_name _board_id _return_var)
 
     string(REPLACE "." "_" board_id "${_board_id}")
+
     set(core_lib_target_name "${board_id}_core_lib")
+
     string(TOLOWER "${core_lib_target_name}" core_lib_target_name)
 
     set(${_return_var} ${core_lib_target_name} PARENT_SCOPE)
@@ -76,12 +80,14 @@ endfunction()
 function(get_name_without_file_extension _input_string _return_var)
 
     string(REGEX MATCH "${ARDUINO_CMAKE_NAME_WE_REGEX_PATTERN}" match "${_input_string}")
+
     set(${_return_var} ${CMAKE_MATCH_1} PARENT_SCOPE)
 
 endfunction()
 
 #=============================================================================#
-# Converts a given string a PascalCase string, converting 1st letter to upper and remaining to lower.
+# Converts a given string to a PascalCase string, converting 1st letter to upper
+# and remaining to lower.
 #       _input_string - String to convert.
 #       _return_var - Name of a CMake variable that will hold the extraction result.
 #       Returns - PascalCase converted string.

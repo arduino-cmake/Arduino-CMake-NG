@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.8.2)
 
-project(Sketch LANGUAGES C CXX ASM)
+project(Sketch)
 get_board_id(board_id nano atmega328)
 
-add_arduino_executable(Sketch ${board_id} "")
-target_sketches(Sketch ${board_id} sketch.ino)
+add_arduino_executable(Sketch ${board_id})
+target_sketches(Sketch ${board_id} sketch1.ino sketch2.pde)

@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.8.2)
 
-project(Arduino_Library LANGUAGES C CXX ASM)
+project(Arduino_Library)
 get_board_id(board_id nano atmega328)
 
 add_arduino_executable(Arduino_Library ${board_id} test.cpp)

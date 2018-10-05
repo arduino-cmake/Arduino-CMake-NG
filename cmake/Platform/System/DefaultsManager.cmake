@@ -1,5 +1,5 @@
 #=============================================================================#
-# Sets search patterns used internaly by the platform for searching purposes.
+# Sets search patterns used internaly by the framework for searching purposes.
 #=============================================================================#
 function(set_internal_search_patterns)
 
@@ -34,20 +34,36 @@ function(set_source_files_patterns)
 endfunction()
 
 #=============================================================================#
-# Sets various options specific for the Arduino-CMake platform.
+# Sets various options specific for the Arduino-CMake framework.
 #=============================================================================#
 function(set_default_arduino_cmake_options)
 
     option(USE_DEFAULT_PLATFORM_IF_NONE_EXISTING
-            "Whether to use Arduino as default platform if none is supplied" ON)
+            "Whether to use Arduino as default platform if none is supplied"
+            ON)
     option(USE_CUSTOM_PLATFORM_HEADER
             "Whether to expect and use a custom-supplied platform header, \
-            skipping the selection algorithm" OFF)
+            skipping the selection algorithm"
+            OFF)
     option(USE_ARCHLINUX_BUILTIN_SUPPORT
-            "Whether to use Arduino CMake's built-in support for the archlinux distribution" ON)
+            "Whether to use Arduino CMake's built-in support for the archlinux distribution"
+            ON)
     option(CONVERT_SKETCHES_IF_CONVERTED_SOURCES_EXISTS
             "Whether to convert sketches to source files even if converted sources already exist"
             OFF)
+    option(AUTO_SET_SKETCHBOOK_PATH
+            "Whether Arduino IDE's Sketchbook Location should be automatically found"
+            OFF)
+
+endfunction()
+
+#=============================================================================#
+# Sets default paths used by the framework
+#=============================================================================#
+function(set_default_paths)
+
+    set(ARDUINO_CMAKE_LIBRARY_PROPERTIES_FILE_NAME "library.properties" CACHE STRING
+            "Name of the libraries' properties file")
 
 endfunction()
 
@@ -59,5 +75,6 @@ function(set_arduino_cmake_defaults)
     set_internal_search_patterns()
     set_source_files_patterns()
     set_default_arduino_cmake_options()
+    set_default_paths()
 
 endfunction()

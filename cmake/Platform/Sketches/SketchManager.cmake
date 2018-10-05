@@ -12,7 +12,9 @@ include(SketchHeadersManager)
 function(_get_converted_source_desired_path _sketch_file _return_var)
 
     get_filename_component(sketch_file_name "${_sketch_file}" NAME_WE)
+
     set(desired_source_path "${CMAKE_CURRENT_SOURCE_DIR}/${sketch_file_name}.cpp")
+
     set(${_return_var} ${desired_source_path} PARENT_SCOPE)
 
 endfunction()
@@ -27,16 +29,19 @@ endfunction()
 #=============================================================================#
 function(add_sketch_to_target _target_name _board_id _sketch_file)
 
-    _get_converted_source_desired_path("${_sketch_file}" sketch_converted_source_path)
+    _get_converted_source_desired_path(${_sketch_file} sketch_converted_source_path)
 
     # Only perform conversion if policy is set or if sketch hasn't been converted yet
     if (CONVERT_SKETCHES_IF_CONVERTED_SOURCES_EXISTS OR
-            NOT EXISTS "${sketch_converted_source_path}")
-        resolve_sketch_headers(${_target_name} ${_board_id} "${_sketch_file}")
-        convert_sketch_to_source("${_sketch_file}" "${sketch_converted_source_path}")
+            NOT EXISTS ${sketch_converted_source_path})
+
+        resolve_sketch_headers(${_target_name} ${_board_id} ${_sketch_file})
+
+        convert_sketch_to_source(${_sketch_file} ${sketch_converted_source_path})
+
     endif ()
 
-    target_sources(${_target_name} PRIVATE "${sketch_converted_source_path}")
+    target_sources(${_target_name} PRIVATE ${sketch_converted_source_path})
 
 endfunction()
 
@@ -44,12 +49,14 @@ endfunction()
 # Adds a list of sketch files as converted sources to the given target.
 #       _target_name - Name of the target to add the sketch file to.
 #       _board_id - ID of the board to bind to the target (Each target can have a single board).
-#       _sketch_files - List of paths to sketch files to add to the target.
+#       [Sketches] - List of paths to sketch files to add to the target.
 #=============================================================================#
-function(target_sketches _target_name _board_id _sketch_files)
+function(target_sketches _target_name _board_id)
 
-    foreach (sketch_file ${_sketch_files})
-        add_sketch_to_target(${_target_name} ${_board_id} "${sketch_file}")
+    parse_sources_arguments(parsed_sketches "" "" "" "${ARGN}")
+
+    foreach (sketch_file ${parsed_sketches})
+        add_sketch_to_target(${_target_name} ${_board_id} ${sketch_file})
     endforeach ()
 
 endfunction()
