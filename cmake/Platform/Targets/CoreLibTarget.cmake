@@ -64,21 +64,10 @@ endfunction()
 #=============================================================================#
 function(_set_core_lib_flags _core_target_name _board_id)
 
-    # Set Assembly compiler flags
-    get_cmake_compliant_language_name(asm flags_language)
-    set_compiler_target_flags(${_core_target_name} "${_board_id}" PRIVATE
-            LANGUAGE ${flags_language})
-    # Set C compiler flags
-    get_cmake_compliant_language_name(c flags_language)
-    set_compiler_target_flags(${_core_target_name} "${_board_id}" PRIVATE
-            LANGUAGE ${flags_language})
-    # Set C++ compiler flags
-    get_cmake_compliant_language_name(cpp flags_language)
-    set_compiler_target_flags(${_core_target_name} "${_board_id}" PRIVATE
-            LANGUAGE ${flags_language})
+    set_compiler_target_flags(${_core_target_name} ${_board_id} PUBLIC)
 
     # Set linker flags
-    set_linker_flags(${_core_target_name} "${_board_id}")
+    set_linker_flags(${_core_target_name} ${_board_id})
 
 endfunction()
 
