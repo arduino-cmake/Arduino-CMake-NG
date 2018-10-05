@@ -28,7 +28,7 @@ Moreover, **Arduino-CMake** allows some things that **Arduino IDE** *doesn't*:
 
 It's also worth mentioning that **Arduino-CMake** is **<u>cross platform</u>** and works out-of-the-box on every OS that support **CMake** and **Arduino**.
 
-<b id="f1">1</b> The framework is still a WIP, meaning there are some missing features. [↩](#fl1)
+<b id="f1">1</b> The framework is still a WIP, meaning there are some missing features. [↩](#fl1)  
 <b id="f2">2</b> The **Arduino IDE** supports several concepts which make writing code easier but are completely unprofessional. Our framework is not willing to encourage such poor coding standards, and thus doesn't support them. These will be mentioned throughout the documentation. [↩](#fl2)
 
 ## Usage
