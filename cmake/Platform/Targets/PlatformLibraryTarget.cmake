@@ -29,8 +29,11 @@ endfunction()
 #=============================================================================#
 function(_add_platform_library _library_name _board_id)
 
-    find_header_files("${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/${_library_name}/src" lib_headers)
-    find_source_files("${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/${_library_name}/src" lib_source_files)
+    find_library_header_files("${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/${_library_name}/src"
+            lib_headers)
+    find_library_source_files("${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/${_library_name}/src"
+            lib_source_files)
+
     set(lib_sources ${lib_headers} ${lib_source_files})
 
     _add_arduino_cmake_library(${_library_name} ${_board_id} "${lib_sources}")
@@ -38,7 +41,7 @@ function(_add_platform_library _library_name _board_id)
 endfunction()
 
 #=============================================================================#
-# Links the given platform library target to the given target, be it an executable or another library.
+# Links the given platform library target to the given target.
 #       _target_name - Name of the target to link against.
 #       _library_name - Name of the library target to create, usually the platform library name.
 #       _board_id - Board ID associated with the linked Core Lib.
