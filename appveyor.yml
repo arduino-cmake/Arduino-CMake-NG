@@ -50,7 +50,7 @@ deploy:
   description: 'ToDo'
   artifact: CMake-Framework
   auth_token:
-    secure: rjEnIYWjd3X0jhsAbVKgIOJNpjPY0dBJvvHD3wNB+PbR/F7FvlWlsiwaiQ4EmLBV
+    secure: HdFffeP0STWdHzMbRZtWPESj7B88CtHWrh1/eHTpq6DWavB2GYrc3HbAVRieAXQW
   draft: true
   on:
     appveyor_repo_tag: true
