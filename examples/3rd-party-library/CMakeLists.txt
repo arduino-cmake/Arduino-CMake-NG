@@ -21,10 +21,11 @@ target_source_directories(adafruit_GFX DIRS libraries/Adafruit-GFX-Library/Fonts
 # We can even automatically find a library that doesn't have a properties file!
 find_arduino_library(sky_writer Skywriter ${board_id} 3RD_PARTY)
 
-find_arduino_library(liquidCrystal LiquidCrystal_I2C ${board_id} 3RD_PARTY)
+# Libraries that have an inner-dependency on a platform library are also suported!
+find_arduino_library(liquid_Crystal LiquidCrystal_I2C ${board_id} 3RD_PARTY)
 
 # Link all libraries to our previously created target
 link_arduino_library(3rd_Party_Arduino_Library adafruit_NeoPixel ${board_id})
 link_arduino_library(3rd_Party_Arduino_Library adafruit_GFX ${board_id})
 link_arduino_library(3rd_Party_Arduino_Library sky_writer ${board_id})
-link_arduino_library(3rd_Party_Arduino_Library liquidCrystal ${board_id})
+link_arduino_library(3rd_Party_Arduino_Library liquid_Crystal ${board_id})
