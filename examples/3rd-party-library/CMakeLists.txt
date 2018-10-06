@@ -5,7 +5,7 @@ get_board_id(board_id nano atmega328)
 
 # First, declare and create our executable - It'll use 4 sources
 add_arduino_executable(3rd_Party_Arduino_Library ${board_id} 3rd_party.cpp
-        NeoPixelTest.cpp GFXTest.cpp)
+        NeoPixelTest.cpp GFXTest.cpp LiquidCrystalTest.cpp)
 target_include_directories(3rd_Party_Arduino_Library PRIVATE include)
 
 # Add the "NeoPixel" library manually using the library addition API
@@ -21,7 +21,10 @@ target_source_directories(adafruit_GFX DIRS libraries/Adafruit-GFX-Library/Fonts
 # We can even automatically find a library that doesn't have a properties file!
 find_arduino_library(sky_writer Skywriter ${board_id} 3RD_PARTY)
 
+find_arduino_library(liquidCrystal LiquidCrystal_I2C ${board_id} 3RD_PARTY)
+
 # Link all libraries to our previously created target
 link_arduino_library(3rd_Party_Arduino_Library adafruit_NeoPixel ${board_id})
 link_arduino_library(3rd_Party_Arduino_Library adafruit_GFX ${board_id})
 link_arduino_library(3rd_Party_Arduino_Library sky_writer ${board_id})
+link_arduino_library(3rd_Party_Arduino_Library liquidCrystal ${board_id})
