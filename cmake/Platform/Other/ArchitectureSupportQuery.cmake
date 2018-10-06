@@ -42,10 +42,14 @@ function(get_unsupported_architectures _arch_list _return_var)
     list(FILTER _arch_list EXCLUDE REGEX ${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE})
     set(unsupported_arch_list ${_arch_list}) # Just for better readability
 
+    if (NOT unsupported_arch_list) # The only supported architecture is our platform's architecture
+        return() # Return nothing as there are no uspported architectures
+    endif ()
+
     if (parsed_args_REGEX) # Return in regex format         
 
         foreach (arch ${unsupported_arch_list})
-            # Append every unsupported-architecture and "|" to represent "or" in regex-fomart
+            # Append an "|" to every unsupported-architecture to represent "or" in regex-fomart
             string(APPEND unsupported_archs_regex "${arch}" "|")
         endforeach ()
 
