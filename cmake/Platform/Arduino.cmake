@@ -18,6 +18,7 @@ include(SourcesManager)
 include(SketchManager)
 include(DefaultsManager)
 include(ArchitectureSupportQuery)
+include(CMakeProperties)
 
 include(Libraries)
 
