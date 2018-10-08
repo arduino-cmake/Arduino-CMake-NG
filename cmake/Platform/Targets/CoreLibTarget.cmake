@@ -80,17 +80,20 @@ endfunction()
 #       _board_id - Board to create the core library for.
 #                   Note that each board has a unique version of the library.
 #=============================================================================#
-function(add_arduino_core_lib _target_name _board_id)
+function(add_arduino_core_lib _target_name)
 
-    get_core_lib_target_name(${_board_id} core_lib_target)
+    # First, retrieve the board_id associated with the target from the matching property
+    get_target_property(board_id ${_target_name} BOARD_ID)
+
+    get_core_lib_target_name(${board_id} core_lib_target)
 
     if (TARGET ${core_lib_target}) # Core-lib target already created for the given board
         if (TARGET ${_target_name}) # Executable/Firmware target also exists
             target_link_libraries(${_target_name} PUBLIC ${core_lib_target})
         endif ()
     else () # Core-Lib target needs to be created
-        _get_board_core(${_board_id} board_core) # Get board's core
-        _get_board_variant(${_board_id} board_variant) # Get board's variant
+        _get_board_core(${board_id} board_core) # Get board's core
+        _get_board_variant(${board_id} board_variant) # Get board's variant
 
         # Find sources in core directory and add the library target
         find_source_files("${ARDUINO_CMAKE_CORE_${board_core}_PATH}" core_sources)
@@ -113,7 +116,7 @@ function(add_arduino_core_lib _target_name _board_id)
         target_include_directories(${core_lib_target} PUBLIC
                 "${ARDUINO_CMAKE_VARIANT_${board_variant}_PATH}")
 
-        _set_core_lib_flags(${core_lib_target} ${_board_id})
+        _set_core_lib_flags(${core_lib_target} ${board_id})
 
         # Link Core-Lib to executable target
         if (TARGET ${_target_name})

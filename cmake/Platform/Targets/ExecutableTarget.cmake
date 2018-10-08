@@ -11,8 +11,13 @@ function(add_arduino_executable _target_name _board_id)
     list(APPEND sources "${ARGN}") # Treat all remaining arguments as sources
 
     add_executable(${_target_name} "${sources}")
+
+    # Set the 'board_id' property on the target
+    set_property(TARGET ${_target_name} PROPERTY BOARD_ID ${_board_id})
+
     # Always add board's core lib
-    add_arduino_core_lib(${_target_name} "${_board_id}")
+    add_arduino_core_lib(${_target_name})
+
     # Add compiler and linker flags
     set_executable_target_flags(${_target_name} "${_board_id}")
 
@@ -38,6 +43,7 @@ function(add_arduino_executable _target_name _board_id)
 
     # Required for avr-size
     get_board_property("${_board_id}" build.mcu board_mcu)
+
     set(avr_size_script
             "${ARDUINO_CMAKE_TOOLCHAIN_DIR}/Platform/Other/FirmwareSizeCalculator.cmake")
 
