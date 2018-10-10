@@ -25,7 +25,7 @@ find_arduino_library(sky_writer Skywriter ${board_id} 3RD_PARTY)
 find_arduino_library(liquid_Crystal LiquidCrystal_I2C ${board_id} 3RD_PARTY)
 
 # Link all libraries to our previously created target
-link_arduino_library(3rd_Party_Arduino_Library adafruit_NeoPixel ${board_id})
-link_arduino_library(3rd_Party_Arduino_Library adafruit_GFX ${board_id})
-link_arduino_library(3rd_Party_Arduino_Library sky_writer ${board_id})
-link_arduino_library(3rd_Party_Arduino_Library liquid_Crystal ${board_id})
+link_arduino_library(3rd_Party_Arduino_Library adafruit_NeoPixel)
+link_arduino_library(3rd_Party_Arduino_Library adafruit_GFX)
+link_arduino_library(3rd_Party_Arduino_Library sky_writer)
+link_arduino_library(3rd_Party_Arduino_Library liquid_Crystal)

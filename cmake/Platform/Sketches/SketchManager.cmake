@@ -24,10 +24,9 @@ endfunction()
 # Each sketch is converted to a valid '.cpp' source file under the project's source directory.
 # The function also finds and links any libraries the sketch uses to the target.
 #       _target_name - Name of the target to add the sketch file to.
-#       _board_id - ID of the board to bind to the target (Each target can have a single board).
 #       _sketch_file - Path to a sketch file to add to the target.
 #=============================================================================#
-function(add_sketch_to_target _target_name _board_id _sketch_file)
+function(add_sketch_to_target _target_name _sketch_file)
 
     _get_converted_source_desired_path(${_sketch_file} sketch_converted_source_path)
 
@@ -35,7 +34,7 @@ function(add_sketch_to_target _target_name _board_id _sketch_file)
     if (CONVERT_SKETCHES_IF_CONVERTED_SOURCES_EXISTS OR
             NOT EXISTS ${sketch_converted_source_path})
 
-        resolve_sketch_headers(${_target_name} ${_board_id} ${_sketch_file})
+        resolve_sketch_headers(${_target_name} ${_sketch_file})
 
         convert_sketch_to_source(${_sketch_file} ${sketch_converted_source_path})
 
@@ -48,15 +47,14 @@ endfunction()
 #=============================================================================#
 # Adds a list of sketch files as converted sources to the given target.
 #       _target_name - Name of the target to add the sketch file to.
-#       _board_id - ID of the board to bind to the target (Each target can have a single board).
 #       [Sketches] - List of paths to sketch files to add to the target.
 #=============================================================================#
-function(target_sketches _target_name _board_id)
+function(target_sketches _target_name)
 
     parse_sources_arguments(parsed_sketches "" "" "" "${ARGN}")
 
     foreach (sketch_file ${parsed_sketches})
-        add_sketch_to_target(${_target_name} ${_board_id} ${sketch_file})
+        add_sketch_to_target(${_target_name} ${sketch_file})
     endforeach ()
 
 endfunction()

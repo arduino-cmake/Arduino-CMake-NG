@@ -34,7 +34,7 @@ function(add_arduino_library _target_name _board_id)
     find_dependent_platform_libraries("${arch_resolved_sources}" lib_platform_libs)
 
     foreach (platform_lib ${lib_platform_libs})
-        link_platform_library(${_target_name} ${platform_lib} ${_board_id})
+        link_platform_library(${_target_name} ${platform_lib})
     endforeach ()
 
 endfunction()
@@ -57,23 +57,30 @@ endfunction()
 # it adds core lib's include directories to the libraries include directories.
 #       _target_name - Name of the "executable" target.
 #       _library_target_name - Name of the library target.
-#       _board_id - Board ID associated with the linked Core Lib.
 #       [HEADER_ONLY] - Whether library is a header-only library, i.e has no source files
 #=============================================================================#
-function(link_arduino_library _target_name _library_target_name _board_id)
+function(link_arduino_library _target_name _library_target_name)
 
     cmake_parse_arguments(parsed_args "HEADER_ONLY" "" "" ${ARGN})
-
-    get_core_lib_target_name(${_board_id} core_lib_target)
 
     if (NOT TARGET ${_target_name})
         message(FATAL_ERROR "Target doesn't exist - It must be created first!")
     elseif (NOT TARGET ${_library_target_name})
         message(FATAL_ERROR "Library target doesn't exist - It must be created first!")
-    elseif (NOT TARGET ${core_lib_target})
-        message(FATAL_ERROR "Core Library target doesn't exist. This is bad and should be reported")
     endif ()
 
+    # Retrieve 'board_id' property of targets
+    get_target_property(board_id ${_target_name} BOARD_ID)
+
+    # Get the name of the Core-Lib target associated with the targets' 'board_id'
+    get_core_lib_target_name(${board_id} core_lib_target)
+
+    if (NOT TARGET ${core_lib_target})
+        message(FATAL_ERROR "Core Library target doesn't exist. "
+                "This is bad and should be reported")
+    endif ()
+
+    # Infer scope
     if (parsed_args_HEADER_ONLY)
         set(scope INTERFACE)
     else ()

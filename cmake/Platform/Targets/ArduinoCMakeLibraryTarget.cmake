@@ -16,21 +16,27 @@ function(_add_arduino_cmake_library _target_name _board_id _sources)
 
         add_library(${_target_name} INTERFACE)
         set(scope INTERFACE)
-    
+
+        set_property(TARGET ${_target_name} PROPERTY INTERFACE_BOARD_ID ${_board_id})
+
     else ()
-    
-        add_library(${_target_name} STATIC "${_sources}")   
+
+        add_library(${_target_name} STATIC "${_sources}")
         set(scope PUBLIC)
-    
+
+        set_property(TARGET ${_target_name} PROPERTY BOARD_ID ${_board_id})
+
     endif ()
+
 
     # Treat headers' parent directories as include directories of the target
     get_headers_parent_directories("${_sources}" include_dirs)
     target_include_directories(${_target_name} ${scope} ${include_dirs})
 
-    set_library_flags(${_target_name} ${_board_id} ${scope})
+    set_library_flags(${_target_name} ${scope})
 
-    set_target_architecture_definition(${_target_name} ${scope} ${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE})
+    set_target_architecture_definition(${_target_name} ${scope}
+            ${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE})
 
 endfunction()
 

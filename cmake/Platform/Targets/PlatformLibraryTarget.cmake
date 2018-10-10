@@ -41,10 +41,9 @@ endfunction()
 #=============================================================================#
 # Links the given platform library target to the given target.
 #       _target_name - Name of the target to link against.
-#       _library_name - Name of the library target to create, usually the platform library name.
-#       _board_id - Board ID associated with the linked Core Lib.
+#       _library_name - Platform library's name.
 #=============================================================================#
-function(link_platform_library _target_name _library_name _board_id)
+function(link_platform_library _target_name _platform_library_name)
 
     if (NOT TARGET ${_target_name})
         message(FATAL_ERROR "Target ${_target_name} doesn't exist - It must be created first!")
@@ -53,17 +52,19 @@ function(link_platform_library _target_name _library_name _board_id)
     parse_scope_argument(scope "${ARGN}"
             DEFAULT_SCOPE PUBLIC)
 
-    if (NOT TARGET ${_library_name})
+    if (NOT TARGET ${_platform_library_name})
 
-        _add_platform_library(${_library_name} ${_board_id})
+        get_target_property(board_id ${_target_name} BOARD_ID)
 
-        get_core_lib_target_name(${_board_id} core_lib_target)
-        _link_arduino_cmake_library(${_target_name} ${_library_name}
+        _add_platform_library(${_platform_library_name} ${board_id})
+
+        get_core_lib_target_name(${board_id} core_lib_target)
+        _link_arduino_cmake_library(${_target_name} ${_platform_library_name}
                 ${scope}
                 BOARD_CORE_TARGET ${core_lib_target})
 
     else ()
-        target_link_libraries(${_target_name} ${scope} ${_library_name})
+        target_link_libraries(${_target_name} ${scope} ${_platform_library_name})
     endif ()
 
 endfunction()
