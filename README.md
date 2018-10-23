@@ -102,16 +102,16 @@ The following list is the basic requirements of the framework in order to use it
 ## Installation
 
 First, make sure to download the [latest release](https://github.com/arduino-cmake/Arduino-CMake-NG/releases) of the framework.  
-Further instructions can be found in the [Installation](https://github.com/arduino-cmake/arduino-cmake/wiki/Installation) Wiki page.
+Further instructions can be found in the [Installation](https://github.com/arduino-cmake/Arduino-CMake-NG/wiki/Installation) Wiki page.
 
 ## Documentation
 
-The entire documentation of the project is hosted on GitHub using [Wiki pages](https://github.com/arduino-cmake/arduino-cmake/wiki).
+The entire documentation of the project is hosted on GitHub using [Wiki pages](https://github.com/arduino-cmake/Arduino-CMake-NG/wiki).
 
 ## Contributing
 
-The project has strict contributing guidelines which can be found in the [Contributing File](https://github.com/arduino-cmake/arduino-cmake/blob/develop/CONTRIBUTING.md).
+The project has strict contributing guidelines which can be found in the [Contributing File](https://github.com/arduino-cmake/Arduino-CMake-NG/blob/master/CONTRIBUTING.md).
 
 ## License
 
-MIT © 2018 [Arduino-CMake](https://github.com/arduino-cmake/arduino-cmake/blob/docs/LICENSE.md)
+MIT © 2018 [Arduino-CMake](https://github.com/arduino-cmake/Arduino-CMake-NG/blob/master/LICENSE.md)
