@@ -2,14 +2,14 @@
 
 [![AppVeyor](https://img.shields.io/appveyor/ci/arduino-cmake/arduino-cmake-ng/develop.svg?label=Windows&logo=appveyor)](https://ci.appveyor.com/project/arduino-cmake/arduino-cmake-ng)[![Travis CI](https://img.shields.io/travis/arduino-cmake/Arduino-CMake-NG.svg?label=Linux%20and%20OS%20X&logo=travis)](https://travis-ci.org/arduino-cmake/Arduino-CMake-NG)
 
-**Arduino-CMake** is a framework which allows developers to write Arduino-based programs using any tool that supports cmake. *Arduino-based*? There are many other frameworks out there built upon Arduino's base, such as ESP32, and **we support that**.
+**Arduino-CMake** is a framework which allows developers to write Arduino-based programs using any tool that supports cmake. *Arduino-based*? There are many other frameworks out there built upon Arduino's base, such as ESP32, and we respect that (Note that it doesn't mean we support it yet).  
 In other words, developers can use their favorite IDEs or text editors on their favorite OS to develop Arduino programs!
 
 Wait - Hasn't it been possible all this time? Apparently not. You can read more about it in the [Motivation](#Motivation) section.
 
 ## Features
 
-**Arduino-CMake** should<sup id="fl1">[1](#f1)</sup> do almost<sup id="fl2">[2](#f2)</sup> <u>anything</u> that the **Arduino IDE** does!
+**Arduino-CMake** should<sup id="fl1">[1](#f1)</sup> do almost<sup id="fl2">[2](#f2)</sup> <u>anything</u> that the **Arduino IDE** does!  
 Here's a list of features **already supported** by **Arduino-CMake**:
 
 - Creating Arduino "Executables"/Programs
@@ -25,6 +25,12 @@ Moreover, **Arduino-CMake** allows some things that **Arduino IDE** *doesn't*:
 
 - Developing Arduino programs in any IDE or text editor
 - Completely customizing the build process per user's requirements
+
+What's **not** supported?  
+
+* 3rd Party *Platforms* such as ESP32, Pinoccio, etc.
+* Programmers and advanced bootloaders
+* Serial connection (e.g. for monitoring)
 
 It's also worth mentioning that **Arduino-CMake** is **<u>cross platform</u>** and works out-of-the-box on every OS that support **CMake** and **Arduino**.
 
