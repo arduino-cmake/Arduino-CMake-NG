@@ -1,9 +1,12 @@
 function(find_platform_cores)
 
+    # Avoid searching system's PATH as the SDK's general `Libraries` directory 
+    # may be used instead of the platform's directory
     find_file(ARDUINO_CMAKE_PLATFORM_CORES_PATH
             NAMES cores
             PATHS ${ARDUINO_CMAKE_PLATFORM_PATH}
             DOC "Path to directory containing the Platform's core sources"
+            NO_SYSTEM_ENVIRONMENT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
 
     set(core_list "")
@@ -24,10 +27,13 @@ endfunction()
 
 function(find_platform_variants)
 
+    # Avoid searching system's PATH as the SDK's general `Libraries` directory 
+    # may be used instead of the platform's directory
     find_file(ARDUINO_CMAKE_PLATFORM_VARIANTS_PATH
             NAMES variants
             PATHS ${ARDUINO_CMAKE_PLATFORM_PATH}
             DOC "Path to directory containing the Platform's variant sources"
+            NO_SYSTEM_ENVIRONMENT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
     file(GLOB sub-dir ${ARDUINO_CMAKE_PLATFORM_VARIANTS_PATH}/*)
 
@@ -50,50 +56,65 @@ endfunction()
 
 function(find_platform_bootloaders)
 
+    # Avoid searching system's PATH as the SDK's general `Libraries` directory 
+    # may be used instead of the platform's directory
     find_file(ARDUINO_CMAKE_PLATFORM_BOOTLOADERS_PATH
             NAMES bootloaders
             PATHS ${ARDUINO_CMAKE_PLATFORM_PATH}
             DOC "Path to directory containing the Platform's bootloader images and sources"
+            NO_SYSTEM_ENVIRONMENT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
 
 endfunction()
 
 function(find_platform_programmers)
 
+    # Avoid searching system's PATH as the SDK's general `Libraries` directory 
+    # may be used instead of the platform's directory
     find_file(ARDUINO_CMAKE_PLATFORM_PROGRAMMERS_PATH
             NAMES programmers.txt
             PATHS ${ARDUINO_CMAKE_PLATFORM_PATH}
             DOC "Path to Platform's programmers definition file"
+            NO_SYSTEM_ENVIRONMENT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
 
 endfunction()
 
 function(find_platform_boards)
 
+    # Avoid searching system's PATH as the SDK's general `Libraries` directory 
+    # may be used instead of the platform's directory
     find_file(ARDUINO_CMAKE_PLATFORM_BOARDS_PATH
             NAMES boards.txt
             PATHS ${ARDUINO_CMAKE_PLATFORM_PATH}
             DOC "Path to Platform's boards definition file"
+            NO_SYSTEM_ENVIRONMENT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
 
 endfunction()
 
 function(find_platform_properties_file)
 
+    # Avoid searching system's PATH as the SDK's general `Libraries` directory 
+    # may be used instead of the platform's directory
     find_file(ARDUINO_CMAKE_PLATFORM_PROPERTIES_FILE_PATH
             NAMES platform.txt
             PATHS ${ARDUINO_CMAKE_PLATFORM_PATH}
             DOC "Path to Platform's properties file"
+            NO_SYSTEM_ENVIRONMENT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
 
 endfunction()
 
 function(find_platform_libraries)
 
+    # Avoid searching system's PATH as the SDK's general `Libraries` directory 
+    # may be used instead of the platform's directory
     find_file(ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH
             NAMES libraries
             PATHS ${ARDUINO_CMAKE_PLATFORM_PATH}
             DOC "Path to platform directory containing the Arduino libraries"
+            NO_SYSTEM_ENVIRONMENT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
 
     file(GLOB sub-dir "${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/*")
