@@ -1,0 +1,10 @@
+{
+    "cmake.sourceDirectory": "${workspaceRoot}/examples",
+    "cmake.buildDirectory": "${workspaceRoot}/build/cmake-build-debug",
+    "cmake.preferredGenerators": [
+        "Unix Makefiles",
+        "Ninja"
+    ],
+    "cmake.configureOnOpen": true,
+    "C_Cpp.intelliSenseEngineFallback": "Enabled"
+}

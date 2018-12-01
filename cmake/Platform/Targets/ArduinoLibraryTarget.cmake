@@ -10,18 +10,26 @@ function(add_arduino_library _target_name _board_id)
 
     parse_sources_arguments(parsed_sources "" "" "" "${ARGN}")
 
-    get_sources_root_directory("${parsed_sources}" library_root_dir)
+    if (parsed_sources)
 
-    get_library_properties_file(${library_root_dir} library_properties_file)
+        get_sources_root_directory("${parsed_sources}" library_root_dir)
 
-    if (library_properties_file) # Properties file has been found
-        resolve_library_architecture("${parsed_sources}" arch_resolved_sources
-                LIB_PROPS_FILE ${library_properties_file})
-    else ()
-        resolve_library_architecture("${parsed_sources}" arch_resolved_sources)
-    endif ()
+        get_library_properties_file(${library_root_dir} library_properties_file)
 
-    _add_arduino_cmake_library(${_target_name} ${_board_id} "${arch_resolved_sources}")
+        if (library_properties_file) # Properties file has been found
+            resolve_library_architecture("${parsed_sources}" arch_resolved_sources
+                    LIB_PROPS_FILE ${library_properties_file})
+        else ()
+            resolve_library_architecture("${parsed_sources}" arch_resolved_sources)
+        endif ()
+
+        _add_arduino_cmake_library(${_target_name} ${_board_id} "${arch_resolved_sources}")
+
+    else() # No sources have been provided at this stage, simply create a library target
+
+        _add_arduino_cmake_library(${_target_name} ${_board_id} "")
+    
+    endif()
 
     find_dependent_platform_libraries("${arch_resolved_sources}" lib_platform_libs)
 

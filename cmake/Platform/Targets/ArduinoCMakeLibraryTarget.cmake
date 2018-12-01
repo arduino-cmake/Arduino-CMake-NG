@@ -13,11 +13,15 @@ function(_add_arduino_cmake_library _target_name _board_id _sources)
     cmake_parse_arguments(parsed_args "INTERFACE" "" "" ${ARGN})
 
     if (parsed_args_INTERFACE)
+
         add_library(${_target_name} INTERFACE)
         set(scope INTERFACE)
+    
     else ()
-        add_library(${_target_name} STATIC "${_sources}")
+    
+        add_library(${_target_name} STATIC "${_sources}")   
         set(scope PUBLIC)
+    
     endif ()
 
     # Treat headers' parent directories as include directories of the target
@@ -26,8 +30,7 @@ function(_add_arduino_cmake_library _target_name _board_id _sources)
 
     set_library_flags(${_target_name} ${_board_id} ${scope})
 
-    set_target_architecture_definition(${_target_name} ${scope}
-            ${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE})
+    set_target_architecture_definition(${_target_name} ${scope} ${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE})
 
 endfunction()
 
