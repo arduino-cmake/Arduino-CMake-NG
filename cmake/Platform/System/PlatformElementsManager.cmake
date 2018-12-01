@@ -90,10 +90,13 @@ endfunction()
 
 function(find_platform_libraries)
 
+    # Avoid searching system's PATH as the SDK's general `Libraries` directory 
+    # may be used instead of the platform's directory
     find_file(ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH
             NAMES libraries
             PATHS ${ARDUINO_CMAKE_PLATFORM_PATH}
             DOC "Path to platform directory containing the Arduino libraries"
+            NO_SYSTEM_ENVIRONMENT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
 
     file(GLOB sub-dir "${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/*")
