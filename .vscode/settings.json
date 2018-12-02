@@ -1,4 +1,8 @@
 {
+    "travis.repository": "Arduino-CMake-NG",
+    "travis.username": "arduino-cmake",
+    "travis.statusPollingInterval": 120,
+
     "cmake.sourceDirectory": "${workspaceRoot}/examples",
     "cmake.buildDirectory": "${workspaceRoot}/build/cmake-build-debug",
     "cmake.preferredGenerators": [
