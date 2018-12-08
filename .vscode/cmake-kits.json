@@ -1,0 +1,6 @@
+[
+    {
+        "name": "Arduino-CMake-Toolchain",
+        "toolchainFile": "${workspaceRoot}/cmake/Arduino-Toolchain.cmake"
+    }
+]

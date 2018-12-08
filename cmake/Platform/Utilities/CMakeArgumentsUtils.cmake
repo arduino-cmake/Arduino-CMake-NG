@@ -11,9 +11,14 @@
 #=============================================================================#
 function(_consume_reserved_arguments _args _reserved_options _reserved_single_values _return_var)
 
+    if("${_args}" STREQUAL "") # Check if there are any arguments at all
+        return()
+    endif()
+    
     set(temp_arg_list ${_args})
 
     list(LENGTH _args args_length)
+    
     decrement_integer(args_length 1) # We'll peform index iteration - It's always length-1
 
     foreach (index RANGE ${args_length})
