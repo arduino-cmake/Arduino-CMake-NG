@@ -1,0 +1,2 @@
+include(BoardManager)
+include(BoardConfigurator)
