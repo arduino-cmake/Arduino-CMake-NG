@@ -5,11 +5,12 @@
 
     "cmake.sourceDirectory": "${workspaceRoot}/examples",
     "cmake.buildDirectory": "${workspaceRoot}/build/cmake-build-debug",
+    "cmake.configureOnOpen": true,
     "cmake.preferredGenerators": [
         "Ninja",
         "Unix Makefiles",
     ],
-    "cmake.configureOnOpen": true,
+
     "C_Cpp.intelliSenseEngineFallback": "Enabled",
-    "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools"
+    "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools",
 }

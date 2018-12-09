@@ -44,8 +44,8 @@ It mostly addressed *3rd Party Libraries*.
 
   Besides,  the following sub-directories are searched under every path mentioned above:
 
-  - **libraries**
-  - **dependencies**
+  * **libraries**
+  * **dependencies**
 
 * 3rd Party Arduino Libraries do not longer have to include the **library.properties** file in their root directory - Their root directory is searched instead.  
   Nevertheless including the file is still ***recommended***, because when the file isn't present, the framework can't infer potentially required metadata from it.
@@ -96,9 +96,9 @@ This version refactored the Sketch API entirely to enhance support for missing f
 
 ### New Features
 
-- Headers included in a sketch file are now resolved to provide better insight
-  - Arduino/Platform libraries that are resolved from a sketch's headers are linked to the target
-- Option/Policy to "forcefully" convert a sketch to a source file when adding it to a target, even if the source file already exists (Usually means that sketch has already been converted).   
+* Headers included in a sketch file are now resolved to provide better insight
+  * Arduino/Platform libraries that are resolved from a sketch's headers are linked to the target
+* Option/Policy to "forcefully" convert a sketch to a source file when adding it to a target, even if the source file already exists (Usually means that sketch has already been converted).  
   By default it's set to **OFF**.
 
 ### Changes
@@ -195,4 +195,3 @@ Although basic, there's a lot that had to be done in order to reach a somewhat "
   * Parsing the `platform.txt` file is an entirely new concept that hasn't been used until now in all forks of the old Arduino-CMake. In fact, this is what allows the framework to be truly platform-agnostic, as it defines the platform's core behavior
 
 Many more subtle and internal features have been implemented, but they won't be listed here.
-
