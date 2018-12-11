@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.8.2)
 
 project(Examples LANGUAGES C CXX ASM)
 
@@ -9,3 +9,4 @@ add_subdirectory(header-only-library)
 add_subdirectory(blink-example)
 add_subdirectory(servo-knob-example)
 add_subdirectory(sketch)
+add_subdirectory(misc)

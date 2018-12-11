@@ -31,6 +31,10 @@ endfunction()
 #=============================================================================#
 function(resolve_library_architecture _library_sources _return_var)
 
+    if(NOT _library_sources)
+        return()
+    endif()
+
     cmake_parse_arguments(parsed_args "" "LIB_PROPS_FILE" "" ${ARGN})
 
     if (parsed_args_LIB_PROPS_FILE) # Library properties file is given
