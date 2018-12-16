@@ -116,6 +116,17 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+### VisualStudioCode ###
+.vscode/*
+.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+
 ### User-Defined
 [Aa]ssets/*
 /examples/blink-example/Blink.cpp

@@ -27,21 +27,29 @@ function(target_source_directories _target_name)
     list(REMOVE_DUPLICATES source_dirs)
 
     if (parsed_args_RECURSE) # Search recursively
+
         foreach (source_dir ${source_dirs})
+
             find_header_files(${source_dir} headers RECURSE)
             find_source_files(${source_dir} sources RECURSE)
 
             list(APPEND collective_headers ${headers})
             list(APPEND collective_sources ${sources})
+
         endforeach ()
+
     else ()
+    
         foreach (source_dir ${source_dirs})
+
             find_header_files(${source_dir} headers)
             find_source_files(${source_dir} sources)
 
             list(APPEND collective_headers ${headers})
             list(APPEND collective_sources ${sources})
+
         endforeach ()
+
     endif ()
 
     if (collective_headers)
@@ -54,6 +62,7 @@ function(target_source_directories _target_name)
 
     # Treat headers' parent directories as include directories of the target
     get_headers_parent_directories("${collective_headers}" include_dirs)
+    
     target_include_directories(${_target_name} PUBLIC ${include_dirs})
 
     target_sources(${_target_name} PUBLIC ${collective_sources})
@@ -73,6 +82,7 @@ function(get_source_file_includes _source_file _return_var)
     endif ()
 
     file(STRINGS "${_source_file}" source_lines)
+    
     list(FILTER source_lines INCLUDE REGEX "${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN}")
 
     set(${_return_var} ${source_lines} PARENT_SCOPE)
@@ -91,17 +101,22 @@ function(get_source_file_included_headers _source_file _return_var)
     cmake_parse_arguments(headers "WE" "" "" ${ARGN})
 
     file(STRINGS "${_source_file}" source_lines) # Loc = Lines of code
+    
     list(FILTER source_lines INCLUDE REGEX ${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN})
 
     # Extract header names from inclusion
     foreach (loc ${source_lines})
+        
         string(REGEX MATCH ${ARDUINO_CMAKE_HEADER_NAME_REGEX_PATTERN} match ${loc})
+        
         if (headers_WE)
             get_name_without_file_extension("${CMAKE_MATCH_1}" header_name)
         else ()
             set(header_name ${CMAKE_MATCH_1})
         endif ()
+        
         list(APPEND headers ${header_name})
+    
     endforeach ()
 
     set(${_return_var} ${headers} PARENT_SCOPE)
@@ -119,10 +134,15 @@ function(get_headers_parent_directories _sources _return_var)
 
     # Extract header files
     list(FILTER _sources INCLUDE REGEX "${ARDUINO_CMAKE_HEADER_FILE_EXTENSION_REGEX_PATTERN}")
+    
     foreach (header_source ${_sources})
+
         get_filename_component(header_parent_dir ${header_source} DIRECTORY)
+        
         list(APPEND parent_dirs ${header_parent_dir})
+
     endforeach ()
+
     if (parent_dirs) # Check parent dirs, could be none if there aren't any headers amongst sources
         list(REMOVE_DUPLICATES parent_dirs)
     endif ()
