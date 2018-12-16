@@ -94,13 +94,17 @@ function(add_arduino_core_lib _target_name _board_id)
 
         # Find sources in core directory and add the library target
         find_source_files("${ARDUINO_CMAKE_CORE_${board_core}_PATH}" core_sources)
+
         if (${CMAKE_HOST_UNIX})
+
             if (CMAKE_HOST_UBUNTU OR CMAKE_HOST_DEBIAN)
-                set(core_sources_temp_copy ${core_sources})
-                list(FILTER core_sources_temp_copy INCLUDE REGEX "[Mm]ain\\.c.*")
-                message("Temp Copy: ${core_sources_temp_copy}")
+
+                list(FILTER core_sources EXCLUDE REGEX "[Mm]ain\\.c.*")
+
             endif ()
+
         endif ()
+
         add_library(${core_lib_target} STATIC "${core_sources}")
 
         # Include platform's core and variant directories
