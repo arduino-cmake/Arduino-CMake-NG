@@ -1,5 +1,22 @@
 # Change Log
 
+## Version 0.6.1
+
+Several bug-fixes discovered in the latest v0.6 and some minor features.
+
+### New Features
+
+* Added ability to create Arduino libraries without specifying sources at the moment of creation.  
+  It aligns well with CMake's `target_sources` API.
+
+### Bug Fixes
+
+* Fixed a potential regression bug on **ubuntu/debian** systems causing problems with the *CoreLib* creation.  
+
+* Platform elements search has been updated to exclude system's **PATH** in order to avoid false path detection.  
+
+* Fixed bug where platform libraries weren't using all of their sources.
+
 ## Version 0.6
 
 This is a **BIG** version including numerous bug fixes, changes and even some new features.  
