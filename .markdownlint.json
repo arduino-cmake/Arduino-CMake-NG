@@ -1,5 +1,7 @@
 {
     "default": true,
     "line_length": false,
-    "no-duplicate-heading": false
+    "no-duplicate-heading": false,
+    "first-line-h1": false,
+    "first-header-h1": false
 }
