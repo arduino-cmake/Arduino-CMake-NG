@@ -29,10 +29,8 @@ endfunction()
 #=============================================================================#
 function(_add_platform_library _library_name _board_id)
 
-    find_library_header_files("${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/${_library_name}/src"
-            lib_headers)
-    find_library_source_files("${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/${_library_name}/src"
-            lib_source_files)
+    find_library_header_files("${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/${_library_name}/src" lib_headers)
+    find_library_source_files("${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/${_library_name}/src" lib_source_files)
 
     set(lib_sources ${lib_headers} ${lib_source_files})
 
