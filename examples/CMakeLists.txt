@@ -4,6 +4,7 @@ project(Examples LANGUAGES C CXX ASM)
 
 add_subdirectory(hello-world)
 add_subdirectory(arduino-library)
+add_subdirectory(platform-library)
 add_subdirectory(3rd-party-library)
 add_subdirectory(header-only-library)
 add_subdirectory(blink-example)
