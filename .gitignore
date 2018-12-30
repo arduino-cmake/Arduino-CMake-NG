@@ -118,10 +118,10 @@ fabric.properties
 
 ### VisualStudioCode ###
 .vscode/*
-.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/cmake-kits.json
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
