@@ -58,7 +58,8 @@ function(link_platform_library _target_name _platform_library_name)
 
         _add_platform_library(${_platform_library_name} ${board_id})
 
-        get_core_lib_target_name(${board_id} core_lib_target)
+        generate_core_lib_target_name(${board_id} core_lib_target)
+
         _link_arduino_cmake_library(${_target_name} ${_platform_library_name}
                 ${scope}
                 BOARD_CORE_TARGET ${core_lib_target})

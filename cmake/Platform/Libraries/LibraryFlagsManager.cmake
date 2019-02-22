@@ -20,6 +20,6 @@ function(set_library_flags _library_target)
     set_target_compile_flags(${_library_target} ${scope})
 
     # Set linker flags
-    set_linker_flags(${_library_target})
+    set_target_linker_flags(${_library_target})
 
 endfunction()

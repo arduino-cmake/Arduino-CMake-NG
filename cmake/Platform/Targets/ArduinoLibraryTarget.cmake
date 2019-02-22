@@ -73,7 +73,7 @@ function(link_arduino_library _target_name _library_target_name)
     get_target_property(board_id ${_target_name} BOARD_ID)
 
     # Get the name of the Core-Lib target associated with the targets' 'board_id'
-    get_core_lib_target_name(${board_id} core_lib_target)
+    generate_core_lib_target_name(${board_id} core_lib_target)
 
     if (NOT TARGET ${core_lib_target})
         message(FATAL_ERROR "Core Library target doesn't exist. "

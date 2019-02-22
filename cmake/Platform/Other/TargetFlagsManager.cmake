@@ -55,7 +55,7 @@ endfunction()
 # Sets linker flags on the given target, according also to the given board ID.
 #       _target_name - Name of the target (Executable or Library) to set flags on.
 #=============================================================================#
-function(set_linker_flags _target_name)
+function(set_target_linker_flags _target_name)
 
     # Infer target's type and act differently if it's an interface-library
     get_target_property(target_type ${_target_name} TYPE)
@@ -82,7 +82,7 @@ endfunction()
 function(set_executable_target_flags _target_name)
 
     set_target_compile_flags(${_target_name})
-    set_linker_flags(${_target_name})
+    set_target_linker_flags(${_target_name})
 
     target_link_libraries(${_target_name} PUBLIC m) # Add math library
 

@@ -5,6 +5,7 @@
 function(_is_board_core_valid _board_core _board_id)
 
     list(FIND ARDUINO_CMAKE_PLATFORM_CORES "${board_core}" index)
+
     if (${index} LESS 0)
         message(FATAL_ERROR "Unknown board core \"${board_core}\" for the ${_board_id} board")
     endif ()
@@ -18,6 +19,7 @@ endfunction()
 function(_is_board_variant_valid _board_variant _board_id)
 
     list(FIND ARDUINO_CMAKE_PLATFORM_VARIANTS "${board_variant}" index)
+
     if (${index} LESS 0)
         message(FATAL_ERROR "Unknown board variant \"${board_variant}\" for the ${_board_id} board")
     endif ()
@@ -64,23 +66,23 @@ endfunction()
 function(_set_core_lib_flags _core_target_name)
 
     set_target_compile_flags(${_core_target_name} PUBLIC)
-
-    set_linker_flags(${_core_target_name})
+    set_target_linker_flags(${_core_target_name})
 
 endfunction()
 
 #=============================================================================#
 # Adds/Creates a static library target for Arduino's core library (Core-Lib),
-# required by every standard Arduino Application/Executable.
-# The library is then linked against the given executable target
-# (Which also means is has to be created first).
+# required by every arduino target.
 #       _target_name - Name of the Application/Executable target created earlier.
 #       _board_id - Board to create the core library for.
 #                   Note that each board has a unique version of the library.
 #=============================================================================#
 function(add_arduino_core_lib _target_name)
 
-    get_core_lib_target_name(${board_id} core_lib_target)
+    # First, retrieve the board_id associated with the target from the matching property
+    get_target_property(board_id ${_target_name} BOARD_ID)
+
+    generate_core_lib_target_name(${board_id} core_lib_target)
 
     if (TARGET ${core_lib_target}) # Core-lib target already created for the given board
         if (TARGET ${_target_name}) # Executable/Firmware target also exists
@@ -89,16 +91,13 @@ function(add_arduino_core_lib _target_name)
 
     else () # Core-Lib target needs to be created
 
-        # First, retrieve the board_id associated with the target from the matching property
-        get_target_property(board_id ${_target_name} BOARD_ID)
-
         _get_board_core(${board_id} board_core) # Get board's core
         _get_board_variant(${board_id} board_variant) # Get board's variant
 
         # Find sources in core directory and add the library target
         find_source_files("${ARDUINO_CMAKE_CORE_${board_core}_PATH}" core_sources)
 
-        if (${CMAKE_HOST_UNIX})
+        if (CMAKE_HOST_UNIX)
             if (CMAKE_HOST_UBUNTU OR CMAKE_HOST_DEBIAN)
                 list(FILTER core_sources EXCLUDE REGEX "[Mm]ain\\.c.*")
             endif ()
