@@ -5,8 +5,6 @@
 #=============================================================================#
 function(upload_arduino_target _target_name _port)
 
-    get_target_property(board_id ${_target_name} BOARD_ID)
-
     if ("${_target_name}" STREQUAL "")
         message(FATAL_ERROR "Can't create upload target for an invalid target ${_target_name}")
     endif ()

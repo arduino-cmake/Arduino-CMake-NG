@@ -2,11 +2,10 @@
 # Creates a library target for the given name and sources.
 # As it's an Arduino library, it also finds and links all dependent platform libraries (if any).
 #       _target_name - Name of the library target to be created. Usually library's real name.
-#       _board_id - Board ID associated with the linked Core Lib.
 #       [Sources] - List of source files (Could also be headers for code-inspection in some IDEs)
 #                   to create the executable from, similar to CMake's built-in add_executable.
 #=============================================================================#
-function(add_arduino_library _target_name _board_id)
+function(add_arduino_library _target_name)
 
     parse_sources_arguments(parsed_sources "" "" "" "${ARGN}")
 
@@ -23,11 +22,11 @@ function(add_arduino_library _target_name _board_id)
             resolve_library_architecture("${parsed_sources}" arch_resolved_sources)
         endif ()
 
-        _add_arduino_cmake_library(${_target_name} ${_board_id} "${arch_resolved_sources}")
+        _add_arduino_cmake_library(${_target_name} "${arch_resolved_sources}")
 
     else() # No sources have been provided at this stage, simply create a library target
 
-        _add_arduino_cmake_library(${_target_name} ${_board_id} "")
+        _add_arduino_cmake_library(${_target_name} "")
     
     endif()
 
@@ -42,13 +41,12 @@ endfunction()
 #=============================================================================#
 # Creates a header-only library target for the given name and sources.
 #       _target_name - Name of the "executable" target.
-#       _board_id - Board ID associated with the linked Core Lib.
 #=============================================================================#
-function(add_arduino_header_only_library _target_name _board_id)
+function(add_arduino_header_only_library _target_name)
 
     parse_sources_arguments(parsed_headers "" "" "" "${ARGN}")
 
-    _add_arduino_cmake_library(${_target_name} ${_board_id} "${parsed_headers}" INTERFACE)
+    _add_arduino_cmake_library(${_target_name} "${parsed_headers}" INTERFACE)
 
 endfunction()
 
@@ -69,11 +67,9 @@ function(link_arduino_library _target_name _library_target_name)
         message(FATAL_ERROR "Library target doesn't exist - It must be created first!")
     endif ()
 
-    # Retrieve 'board_id' property of targets
-    get_target_property(board_id ${_target_name} BOARD_ID)
 
     # Get the name of the Core-Lib target associated with the targets' 'board_id'
-    generate_core_lib_target_name(${board_id} core_lib_target)
+    generate_core_lib_target_name(${ARDUINO_CMAKE_PROJECT_BOARD} core_lib_target)
 
     if (NOT TARGET ${core_lib_target})
         message(FATAL_ERROR "Core Library target doesn't exist. "

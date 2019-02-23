@@ -9,17 +9,9 @@ function(_set_target_language_flags _target_name _language _scope)
     # Infer target's type and act differently if it's an interface-library
     get_target_property(target_type ${_target_name} TYPE)
 
-    if ("${target_type}" STREQUAL "INTERFACE_LIBRARY")
-        get_target_property(board_id ${_target_name} INTERFACE_BOARD_ID)
-    else ()
-        get_target_property(board_id ${_target_name} BOARD_ID)
-    endif ()
+    parse_compiler_recipe_flags(${ARDUINO_CMAKE_PROJECT_BOARD} compiler_recipe_flags LANGUAGE "${_language}")
 
-    parse_compiler_recipe_flags(${board_id} compiler_recipe_flags
-            LANGUAGE "${_language}")
-
-    target_compile_options(${_target_name} ${_scope}
-            $<$<COMPILE_LANGUAGE:${_language}>:${compiler_recipe_flags}>)
+    target_compile_options(${_target_name} ${_scope} $<$<COMPILE_LANGUAGE:${_language}>:${compiler_recipe_flags}>)
 
 endfunction()
 
@@ -60,13 +52,7 @@ function(set_target_linker_flags _target_name)
     # Infer target's type and act differently if it's an interface-library
     get_target_property(target_type ${_target_name} TYPE)
 
-    if ("${target_type}" STREQUAL "INTERFACE_LIBRARY")
-        get_target_property(board_id ${_target_name} INTERFACE_BOARD_ID)
-    else ()
-        get_target_property(board_id ${_target_name} BOARD_ID)
-    endif ()
-
-    parse_linker_recpie_pattern(${board_id} linker_recipe_flags)
+    parse_linker_recpie_pattern(${ARDUINO_CMAKE_PROJECT_BOARD} linker_recipe_flags)
 
     string(REPLACE ";" " " cmake_compliant_linker_flags "${linker_recipe_flags}")
 
@@ -97,10 +83,8 @@ endfunction()
 #=============================================================================#
 function(set_upload_target_flags _target_name _upload_port _return_var)
 
-    get_target_property(board_id ${_target_name} BOARD_ID)
-
     # Parse and append recipe flags
-    parse_upload_recipe_pattern(${board_id} "${_upload_port}" upload_recipe_flags)
+    parse_upload_recipe_pattern(${ARDUINO_CMAKE_PROJECT_BOARD} "${_upload_port}" upload_recipe_flags)
     list(APPEND upload_flags "${upload_recipe_flags}")
 
     set(target_binary_base_path "${CMAKE_CURRENT_BINARY_DIR}/${_target_name}")

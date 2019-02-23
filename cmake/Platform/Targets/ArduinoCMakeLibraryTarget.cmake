@@ -3,12 +3,11 @@
 # One can also specify an architecture for the library, which will result in a special parsing
 # of the sources, ommiting non-compliant sources.
 #       _target_name - Name of the library target to be created. Usually library's real name.
-#       _board_id - Board ID associated with the linked Core Lib.
 #       _sources - Source and header files to create library target from.
 #       [ARCH] - Optional library architecture (Such as 'avr', 'nrf52', etc.).
 #       [INTERFACE] - Whether the library should be created as an interface library (header-only).
 #=============================================================================#
-function(_add_arduino_cmake_library _target_name _board_id _sources)
+function(_add_arduino_cmake_library _target_name _sources)
 
     cmake_parse_arguments(parsed_args "INTERFACE" "" "" ${ARGN})
 
@@ -17,17 +16,12 @@ function(_add_arduino_cmake_library _target_name _board_id _sources)
         add_library(${_target_name} INTERFACE)
         set(scope INTERFACE)
 
-        set_property(TARGET ${_target_name} PROPERTY INTERFACE_BOARD_ID ${_board_id})
-
     else ()
 
         add_library(${_target_name} STATIC "${_sources}")
         set(scope PUBLIC)
 
-        set_property(TARGET ${_target_name} PROPERTY BOARD_ID ${_board_id})
-
     endif ()
-
 
     # Treat headers' parent directories as include directories of the target
     get_headers_parent_directories("${_sources}" include_dirs)
@@ -35,8 +29,7 @@ function(_add_arduino_cmake_library _target_name _board_id _sources)
 
     set_library_flags(${_target_name} ${scope})
 
-    set_target_architecture_definition(${_target_name} ${scope}
-            ${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE})
+    set_target_architecture_definition(${_target_name} ${scope} ${ARDUINO_CMAKE_PLATFORM_ARCHITECTURE})
 
 endfunction()
 

@@ -8,8 +8,6 @@ function(resolve_sketch_headers _target_name _sketch_file)
 
     get_source_file_included_headers("${_sketch_file}" sketch_headers)
 
-    get_target_property(board_id ${_target_name} BOARD_ID)
-
     foreach (header ${sketch_headers})
 
         # Header name without extension (such as '.h') can represent an Arduino/Platform library
@@ -27,7 +25,7 @@ function(resolve_sketch_headers _target_name _sketch_file)
         else ()
 
             # Pass the '3RD_PARTY' option to avoid name-conversion
-            find_arduino_library(${header_we}_sketch_lib ${header_we} ${board_id} 3RD_PARTY QUIET)
+            find_arduino_library(${header_we}_sketch_lib ${header_we} 3RD_PARTY QUIET)
 
             # If library isn't found, display a status since it might be a user library
             if (NOT TARGET ${header_we}_sketch_lib OR
