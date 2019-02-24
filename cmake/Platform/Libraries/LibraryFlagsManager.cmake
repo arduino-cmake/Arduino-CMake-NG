@@ -8,12 +8,9 @@ function(set_library_flags _library_target)
     parse_scope_argument(scope "${ARGN}"
             DEFAULT_SCOPE PUBLIC)
 
-    # Infer target's type and act differently if it's an interface-library
-    get_target_property(target_type ${_library_target} TYPE)
-
-    set_target_compile_flags(${_library_target} ${scope})
+    set_target_compile_flags(${_library_target} ${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD} ${scope})
 
     # Set linker flags
-    set_target_linker_flags(${_library_target})
+    set_target_linker_flags(${_library_target} ${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD})
 
 endfunction()

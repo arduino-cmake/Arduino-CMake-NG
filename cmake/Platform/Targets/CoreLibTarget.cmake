@@ -62,11 +62,12 @@ endfunction()
 # Sets compiler and linker flags on the given Core-Lib target.
 # Changes are kept even outside the scope of the function since they apply on a target.
 #       _core_target_name - Name of the Core-Lib target.
+#       _board_id - Board ID asociated with the target.
 #=============================================================================#
-function(_set_core_lib_flags _core_target_name)
+function(_set_core_lib_flags _core_target_name _board_id)
 
-    set_target_compile_flags(${_core_target_name} PUBLIC)
-    set_target_linker_flags(${_core_target_name})
+    set_target_compile_flags(${_core_target_name} ${_board_id} PUBLIC)
+    set_target_linker_flags(${_core_target_name} ${_board_id})
 
 endfunction()
 
@@ -82,8 +83,8 @@ function(add_arduino_core_lib _board_id _return_var)
 
     generate_core_lib_target_name(${_board_id} core_lib_target)
 
-    _get_board_core(${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD} board_core) # Get board's core
-    _get_board_variant(${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD} board_variant) # Get board's variant
+    _get_board_core(${_board_id} board_core) # Get board's core
+    _get_board_variant(${_board_id} board_variant) # Get board's variant
 
     # Find sources in core directory and add the library target
     find_source_files("${ARDUINO_CMAKE_CORE_${board_core}_PATH}" core_sources)
@@ -100,7 +101,7 @@ function(add_arduino_core_lib _board_id _return_var)
     target_include_directories(${core_lib_target} PUBLIC "${ARDUINO_CMAKE_CORE_${board_core}_PATH}")
     target_include_directories(${core_lib_target} PUBLIC "${ARDUINO_CMAKE_VARIANT_${board_variant}_PATH}")
 
-    _set_core_lib_flags(${core_lib_target})
+    _set_core_lib_flags(${core_lib_target} ${_board_id})
 
     set(${_return_var} ${core_lib_target} PARENT_SCOPE)
 

@@ -7,7 +7,7 @@ function(arduino_cmake_project _project_name)
     # thus a custom one is needed.
     set(ARDUINO_CMAKE_PROJECT_NAME ${_project_name} PARENT_SCOPE)
 
-    setup_project_board(${ARGN} ${_project_name})
+    setup_project_board(${_project_name} ${ARGN})
 
     setup_project_core_lib(${_project_name})
 
