@@ -8,7 +8,7 @@ function(setup_project_board)
 
         get_board_id(board_id ${parsed_args_BOARD_NAME} ${parsed_args_BOARD_CPU})
 
-        set(ARDUINO_CMAKE_PROJECT_BOARD ${board_id} CACHE STRING "Project-Wide board ID")
+        set(PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD ${board_id} CACHE STRING "Project-Global board ID")
 
     endif ()
 

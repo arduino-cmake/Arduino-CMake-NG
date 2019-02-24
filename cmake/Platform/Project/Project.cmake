@@ -1,2 +1,3 @@
 include(BoardSetup)
-include(Setup)
+include(CoreLibSetup)
+include(ProjectSetup)

@@ -40,8 +40,7 @@ endfunction()
 #       _target_name - Name of the target to link against.
 #       _library_name - Name of the library target to link.
 #       [PRIVATE|PUBLIC|INTERFACE] - Optional link scope for the internally linked Core-Lib.
-#       [BOARD_CORE_TARGET] - Optional target name of the Core Lib to use.
-#                             Use when the target is a library.
+#       [BOARD_CORE_TARGET] - Optional target name of the Core Lib to use. Use when the target is a library.
 #=============================================================================#
 function(_link_arduino_cmake_library _target_name _library_name)
 
@@ -56,7 +55,7 @@ function(_link_arduino_cmake_library _target_name _library_name)
     if (parsed_args_BOARD_CORE_TARGET)
         set(core_target ${parsed_args_BOARD_CORE_TARGET})
     else ()
-        set(core_target ${${_target_name}_CORE_LIB_TARGET})
+        set(core_target ${${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD}_CORELIB_TARGET})
     endif ()
 
     get_target_property(core_lib_includes ${core_target} INCLUDE_DIRECTORIES)

@@ -11,8 +11,7 @@ function(add_arduino_executable _target_name)
 
     add_executable(${_target_name} "${sources}")
 
-    # Always add board's core lib
-    add_arduino_core_lib(${_target_name})
+    target_link_libraries(${_target_name} PRIVATE ${${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD}_CORELIB_TARGET})
 
     # Add compiler and linker flags
     set_executable_target_flags(${_target_name})
@@ -38,7 +37,7 @@ function(add_arduino_executable _target_name)
             VERBATIM)
 
     # Required for avr-size
-    get_board_property(${ARDUINO_CMAKE_PROJECT_BOARD} build.mcu board_mcu)
+    get_board_property(${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD} build.mcu board_mcu)
 
     set(avr_size_script "${ARDUINO_CMAKE_TOOLCHAIN_DIR}/Platform/Other/FirmwareSizeCalculator.cmake")
 

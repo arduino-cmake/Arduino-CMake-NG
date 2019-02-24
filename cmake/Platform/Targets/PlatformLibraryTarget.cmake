@@ -55,11 +55,9 @@ function(link_platform_library _target_name _platform_library_name)
 
         _add_platform_library(${_platform_library_name})
 
-        generate_core_lib_target_name(${ARDUINO_CMAKE_PROJECT_BOARD} core_lib_target)
-
         _link_arduino_cmake_library(${_target_name} ${_platform_library_name}
                 ${scope}
-                BOARD_CORE_TARGET ${core_lib_target})
+                BOARD_CORE_TARGET ${${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD}_CORELIB_TARGET})
 
     else ()
         target_link_libraries(${_target_name} ${scope} ${_platform_library_name})

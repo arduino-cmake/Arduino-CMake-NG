@@ -73,46 +73,35 @@ endfunction()
 #=============================================================================#
 # Adds/Creates a static library target for Arduino's core library (Core-Lib),
 # required by every arduino target.
-#       _target_name - Name of the Application/Executable target created earlier.
 #       _board_id - Board to create the core library for.
 #                   Note that each board has a unique version of the library.
+#       _return_var - Name of variable in parent-scope holding the return value.
+#       Returns - Generated Core-lib's target name.
 #=============================================================================#
-function(add_arduino_core_lib _target_name)
+function(add_arduino_core_lib _board_id _return_var)
 
-    generate_core_lib_target_name(${ARDUINO_CMAKE_PROJECT_BOARD} core_lib_target)
+    generate_core_lib_target_name(${_board_id} core_lib_target)
 
-    if (TARGET ${core_lib_target}) # Core-lib target already created for the given board
-        if (TARGET ${_target_name}) # Executable/Firmware target also exists
-            target_link_libraries(${_target_name} PUBLIC ${core_lib_target})
+    _get_board_core(${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD} board_core) # Get board's core
+    _get_board_variant(${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD} board_variant) # Get board's variant
+
+    # Find sources in core directory and add the library target
+    find_source_files("${ARDUINO_CMAKE_CORE_${board_core}_PATH}" core_sources)
+
+    if (CMAKE_HOST_UNIX)
+        if (CMAKE_HOST_UBUNTU OR CMAKE_HOST_DEBIAN)
+            list(FILTER core_sources EXCLUDE REGEX "[Mm]ain\\.c.*")
         endif ()
-
-    else () # Core-Lib target needs to be created
-
-        _get_board_core(${ARDUINO_CMAKE_PROJECT_BOARD} board_core) # Get board's core
-        _get_board_variant(${ARDUINO_CMAKE_PROJECT_BOARD} board_variant) # Get board's variant
-
-        # Find sources in core directory and add the library target
-        find_source_files("${ARDUINO_CMAKE_CORE_${board_core}_PATH}" core_sources)
-
-        if (CMAKE_HOST_UNIX)
-            if (CMAKE_HOST_UBUNTU OR CMAKE_HOST_DEBIAN)
-                list(FILTER core_sources EXCLUDE REGEX "[Mm]ain\\.c.*")
-            endif ()
-        endif ()
-
-        add_library(${core_lib_target} STATIC "${core_sources}")
-
-        # Include platform's core and variant directories
-        target_include_directories(${core_lib_target} PUBLIC "${ARDUINO_CMAKE_CORE_${board_core}_PATH}")
-        target_include_directories(${core_lib_target} PUBLIC "${ARDUINO_CMAKE_VARIANT_${board_variant}_PATH}")
-
-        _set_core_lib_flags(${core_lib_target})
-
-        # Link Core-Lib to executable target
-        if (TARGET ${_target_name})
-            target_link_libraries(${_target_name} PUBLIC "${core_lib_target}")
-        endif ()
-
     endif ()
+
+    add_library(${core_lib_target} STATIC "${core_sources}")
+
+    # Include platform's core and variant directories
+    target_include_directories(${core_lib_target} PUBLIC "${ARDUINO_CMAKE_CORE_${board_core}_PATH}")
+    target_include_directories(${core_lib_target} PUBLIC "${ARDUINO_CMAKE_VARIANT_${board_variant}_PATH}")
+
+    _set_core_lib_flags(${core_lib_target})
+
+    set(${_return_var} ${core_lib_target} PARENT_SCOPE)
 
 endfunction()
