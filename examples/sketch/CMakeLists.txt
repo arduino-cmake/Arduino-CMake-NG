@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.8.2)
 
+project(Sketch)
 
 arduino_cmake_project(Sketch BOARD_NAME nano BOARD_CPU atmega328)
 

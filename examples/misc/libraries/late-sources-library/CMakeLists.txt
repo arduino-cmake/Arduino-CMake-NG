@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.8.2)
 
+project(Late_Source_Library)
 
 arduino_cmake_project(Late_Source_Library BOARD_NAME nano BOARD_CPU atmega328)
 
