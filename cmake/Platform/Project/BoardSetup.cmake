@@ -1,4 +1,4 @@
-function(setup_project_board)
+function(setup_project_board _project_name)
 
     cmake_parse_arguments(parsed_args "" "BOARD_NAME;BOARD_CPU" "" ${ARGV})
 
@@ -8,7 +8,7 @@ function(setup_project_board)
 
         get_board_id(board_id ${parsed_args_BOARD_NAME} ${parsed_args_BOARD_CPU})
 
-        set(PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD ${board_id} CACHE STRING "Project-Global board ID")
+        set(PROJECT_${_project_name}_BOARD ${board_id} CACHE STRING "Project-Global board ID")
 
     endif ()
 

@@ -1,12 +1,12 @@
-function(setup_project_core_lib)
+function(setup_project_core_lib _project_name)
 
     # Guard against redefiniton of the Core Lib target
-    if (NOT TARGET ${${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD}_CORELIB_TARGET})
+    if (NOT TARGET ${${PROJECT_${_project_name}_BOARD}_CORELIB_TARGET})
 
-        add_arduino_core_lib(${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD} target_name)
+        add_arduino_core_lib(${PROJECT_${_project_name}_BOARD} target_name)
 
         # Define a global way to access Core Lib's target name
-        set(${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD}_CORELIB_TARGET ${target_name}
+        set(${PROJECT_${_project_name}_BOARD}_CORELIB_TARGET ${target_name}
                 CACHE STRING "Project-Global CoreLib target name")
 
     endif ()
