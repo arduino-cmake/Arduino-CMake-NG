@@ -3,7 +3,7 @@
 #       _target_name - Name of the target (Executable) to upload.
 #       _port - Serial port on the host system used to upload/flash the connected Arduino board.
 #=============================================================================#
-function(upload_arduino_target _target_name _port)
+function(set_target_upload_port _target_name _port)
 
     if ("${_target_name}" STREQUAL "")
         message(FATAL_ERROR "Can't create upload target for an invalid target ${_target_name}")
@@ -11,10 +11,10 @@ function(upload_arduino_target _target_name _port)
 
     set_upload_target_flags(${_target_name} ${_port} upload_args)
 
-    add_custom_command(TARGET ${_target_name} POST_BUILD
-            COMMAND ${ARDUINO_CMAKE_AVRDUDE_PROGRAM}
-            ARGS ${upload_args}
-            COMMENT "Uploading ${_target_name} target"
-            DEPENDS ${_target_name})
+    add_custom_target(${_target_name}_flash
+            COMMAND ${ARDUINO_CMAKE_AVRDUDE_PROGRAM} ${upload_args}
+            COMMENT "Uploading ${_target_name} target")
+
+    add_dependencies(${_target_name}_flash ${_target_name})
 
 endfunction()
