@@ -5,8 +5,13 @@
 #=============================================================================#
 function(set_target_upload_port _target_name _port)
 
-    if ("${_target_name}" STREQUAL "")
+    if (NOT TARGET ${_target_name})
         message(FATAL_ERROR "Can't create upload target for an invalid target ${_target_name}")
+    else ()
+        get_target_property(target_type ${_target_name} TYPE)
+        if (NOT ${target_type} STREQUAL "EXECUTABLE") # Target is not executable
+            message(SEND_ERROR "Upload target ${_target_name} must be an executable target")
+        endif ()
     endif ()
 
     set_upload_target_flags(${_target_name} ${_port} upload_args)
