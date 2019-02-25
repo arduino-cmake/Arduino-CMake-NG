@@ -41,9 +41,6 @@ function(resolve_library_architecture _library_sources _return_var)
         set(lib_props_file ${parsed_args_LIB_PROPS_FILE})
     else ()
 
-        # Warn user and assume library is arch-agnostic
-        message(STATUS "Library's properties file can't be found under its' root directory.\n\t"
-                "Assuming the library is architecture-agnostic (supports all architectures)")
         set(${_return_var} "${_library_sources}" PARENT_SCOPE)
         return()
 

@@ -19,7 +19,8 @@ function(get_library_properties_file _library_root_directory _return_var)
     set(lib_props_file ${absolute_lib_root_dir}/${ARDUINO_CMAKE_LIBRARY_PROPERTIES_FILE_NAME})
 
     if (NOT EXISTS ${lib_props_file})
-        message(STATUS "Library's properties file doesn't exist under the given root directory.\n\t"
+        message(STATUS "Library's properties file doesn't exist under the given root directory, "
+                "assuming it's architecture-agnostic (supports all architectures)\n\t"
                 "Root directory: ${absolute_lib_root_dir}")
         return()
     endif ()

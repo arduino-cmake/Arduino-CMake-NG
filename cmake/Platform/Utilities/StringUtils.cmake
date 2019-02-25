@@ -59,13 +59,13 @@ endfunction()
 #       _return_var - Name of variable in parent-scope holding the return value.
 #       Returns - Name of the core library target for the given board.
 #=============================================================================#
-function(get_core_lib_target_name _board_id _return_var)
+function(generate_core_lib_target_name _board_id _return_var)
 
     string(REPLACE "." "_" board_id "${_board_id}")
 
-    set(core_lib_target_name "${board_id}_core_lib")
+    string(TOLOWER "${board_id}" board_id)
 
-    string(TOLOWER "${core_lib_target_name}" core_lib_target_name)
+    set(core_lib_target_name "${board_id}_Core_Lib")
 
     set(${_return_var} ${core_lib_target_name} PARENT_SCOPE)
 

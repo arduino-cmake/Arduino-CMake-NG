@@ -25,26 +25,24 @@ endfunction()
 #=============================================================================#
 # Creates a platform library target with the given name.
 #       _library_name - Name of the library target to create, usually the platform library name.
-#       _board_id - Board ID associated with the linked Core Lib.
 #=============================================================================#
-function(_add_platform_library _library_name _board_id)
+function(_add_platform_library _library_name)
 
     find_library_header_files("${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/${_library_name}/src" lib_headers)
     find_library_source_files("${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/${_library_name}/src" lib_source_files)
 
     set(lib_sources ${lib_headers} ${lib_source_files})
 
-    _add_arduino_cmake_library(${_library_name} ${_board_id} "${lib_sources}")
+    _add_arduino_cmake_library(${_library_name} "${lib_sources}")
 
 endfunction()
 
 #=============================================================================#
 # Links the given platform library target to the given target.
 #       _target_name - Name of the target to link against.
-#       _library_name - Name of the library target to create, usually the platform library name.
-#       _board_id - Board ID associated with the linked Core Lib.
+#       _library_name - Platform library's name.
 #=============================================================================#
-function(link_platform_library _target_name _library_name _board_id)
+function(link_platform_library _target_name _platform_library_name)
 
     if (NOT TARGET ${_target_name})
         message(FATAL_ERROR "Target ${_target_name} doesn't exist - It must be created first!")
@@ -53,17 +51,16 @@ function(link_platform_library _target_name _library_name _board_id)
     parse_scope_argument(scope "${ARGN}"
             DEFAULT_SCOPE PUBLIC)
 
-    if (NOT TARGET ${_library_name})
+    if (NOT TARGET ${_platform_library_name})
 
-        _add_platform_library(${_library_name} ${_board_id})
+        _add_platform_library(${_platform_library_name})
 
-        get_core_lib_target_name(${_board_id} core_lib_target)
-        _link_arduino_cmake_library(${_target_name} ${_library_name}
+        _link_arduino_cmake_library(${_target_name} ${_platform_library_name}
                 ${scope}
-                BOARD_CORE_TARGET ${core_lib_target})
+                BOARD_CORE_TARGET ${${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD}_CORELIB_TARGET})
 
     else ()
-        target_link_libraries(${_target_name} ${scope} ${_library_name})
+        target_link_libraries(${_target_name} ${scope} ${_platform_library_name})
     endif ()
 
 endfunction()

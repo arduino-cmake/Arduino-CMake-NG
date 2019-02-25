@@ -11,13 +11,12 @@ endmacro()
 # using the current platform architecture.
 #       _target_name - Name of the library target to be created. Usually library's real name.
 #       _library_name - Name of the Arduino library to find.
-#       _board_id - Board ID associated with the linked Core Lib.
 #       [3RD_PARTY] - Whether library should be treated as a 3rd Party library.
 #       [HEADER_ONLY] - Whether library should be treated as header-only library.
 #       [QUIET] - Whether function should "fail" safely without warnings/errors
 #                 in case of an actual error.
 #=============================================================================#
-function(find_arduino_library _target_name _library_name _board_id)
+function(find_arduino_library _target_name _library_name)
 
     set(argument_options "3RD_PARTY" "HEADER_ONLY" "QUIET")
     cmake_parse_arguments(parsed_args "${argument_options}" "" "" ${ARGN})
@@ -53,7 +52,7 @@ function(find_arduino_library _target_name _library_name _board_id)
         else ()
 
             if (parsed_args_HEADER_ONLY)
-                add_arduino_header_only_library(${_target_name} ${_board_id} ${library_headers})
+                add_arduino_header_only_library(${_target_name} ${library_headers})
 
             else ()
 
@@ -74,7 +73,7 @@ function(find_arduino_library _target_name _library_name _board_id)
 
                     set(sources ${library_headers} ${library_sources})
 
-                    add_arduino_library(${_target_name} ${_board_id} ${sources})
+                    add_arduino_library(${_target_name} ${sources})
 
                 endif ()
 
