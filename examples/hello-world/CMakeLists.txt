@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.8.2)
 
 project(Hello_World)
-#get_board_id(board_id nano atmega328)
 
-arduino_cmake_project(Hello_World BOARD_NAME nano BOARD_CPU atmega328)
+arduino_cmake_project(Hello_World BOARD_NAME uno)
 
-add_arduino_executable(Hello_World ${board_id} helloWorld.cpp)
+add_arduino_executable(Hello_World helloWorld.cpp)
 
-#upload_arduino_target(Hello_World "${board_id}" COM3)
+set_target_upload_port(Hello_World COM3)
