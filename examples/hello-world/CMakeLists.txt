@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8.2)
 
 project(Hello_World)
 
-arduino_cmake_project(Hello_World BOARD_NAME nano BOARD_CPU atmega328old)
+arduino_cmake_project(Hello_World BOARD_NAME uno)
 
 add_arduino_executable(Hello_World helloWorld.cpp)
 
