@@ -118,19 +118,20 @@ function(find_platform_libraries)
             NO_CMAKE_FIND_ROOT_PATH)
 
     file(GLOB sub-dir "${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH}/*")
-    set(platform_lib_list)
+
     foreach (dir ${sub-dir})
         if (IS_DIRECTORY ${dir})
             get_filename_component(platform_lib ${dir} NAME)
             string(TOLOWER ${platform_lib} platform_lib)
+
             set(ARDUINO_CMAKE_LIBRARY_${platform_lib}_PATH ${dir} CACHE INTERNAL
                     "Path to ${platform_lib} platform library")
+
             list(APPEND platform_lib_list ${platform_lib})
         endif ()
     endforeach ()
 
-    set(ARDUINO_CMAKE_PLATFORM_LIBRARIES "${platform_lib_list}" CACHE STRING
-            "List of existing platform libraries")
+    set(ARDUINO_CMAKE_PLATFORM_LIBRARIES "${platform_lib_list}" CACHE STRING "List of existing platform libraries")
 
 endfunction()
 

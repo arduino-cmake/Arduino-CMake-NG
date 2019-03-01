@@ -1,8 +1,11 @@
 #include <Arduino.h>
+#include <Wire.h>
+#include <SPI.h>
 
 void setup()
 {
     pinMode(LED_BUILTIN, OUTPUT);
+    SPIClass::setDataMode(0);
 }
 
 void loop()

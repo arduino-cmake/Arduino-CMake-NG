@@ -2,12 +2,16 @@
 # Creates a library target for the given name and sources.
 # As it's an Arduino library, it also finds and links all dependent platform libraries (if any).
 #       _target_name - Name of the library target to be created. Usually library's real name.
+#       [PLATFORM] -
 #       [Sources] - List of source files (Could also be headers for code-inspection in some IDEs)
 #                   to create the executable from, similar to CMake's built-in add_executable.
 #=============================================================================#
 function(add_arduino_library _target_name)
 
-    parse_sources_arguments(parsed_sources "" "" "" "${ARGN}")
+    # First parse keyword arguments
+    cmake_parse_arguments(parsed_args "PLATFORM" "" "" ${ARGN})
+    # Then parse unlimited sources
+    parse_sources_arguments(parsed_sources "PLATFORM" "" "" "${ARGN}")
 
     if (parsed_sources)
 
@@ -23,9 +27,13 @@ function(add_arduino_library _target_name)
 
         _add_arduino_cmake_library(${_target_name} "${arch_resolved_sources}")
 
-    else() # No sources have been provided at this stage, simply create a library target
+    else () # No sources have been provided at this stage, simply create a library target
         _add_arduino_cmake_library(${_target_name} "")
-    endif()
+    endif ()
+
+    if (parsed_args_PLATFORM)
+        return()
+    endif ()
 
     find_dependent_platform_libraries("${arch_resolved_sources}" lib_platform_libs)
 

@@ -27,8 +27,8 @@ function(find_arduino_library _target_name _library_name)
 
     find_file(library_path
             NAMES ${_library_name}
-            PATHS ${ARDUINO_SDK_LIBRARIES_PATH} ${ARDUINO_CMAKE_SKETCHBOOK_PATH}
-            ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}
+            PATHS ${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH} ${ARDUINO_SDK_LIBRARIES_PATH}
+            ${ARDUINO_CMAKE_SKETCHBOOK_PATH} ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}
             PATH_SUFFIXES libraries dependencies
             NO_DEFAULT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
@@ -37,7 +37,6 @@ function(find_arduino_library _target_name _library_name)
         message(SEND_ERROR "Couldn't find library named ${_library_name}")
 
     else () # Library is found
-
         find_library_header_files("${library_path}" library_headers)
 
         if (NOT library_headers)
@@ -50,12 +49,10 @@ function(find_arduino_library _target_name _library_name)
             endif ()
 
         else ()
-
             if (parsed_args_HEADER_ONLY)
                 add_arduino_header_only_library(${_target_name} ${library_headers})
 
             else ()
-
                 find_library_source_files("${library_path}" library_sources)
 
                 if (NOT library_sources)
@@ -68,19 +65,20 @@ function(find_arduino_library _target_name _library_name)
                                 "If so, please pass the HEADER_ONLY option "
                                 "as an argument to the function")
                     endif ()
-
                 else ()
-
                     set(sources ${library_headers} ${library_sources})
 
-                    add_arduino_library(${_target_name} ${sources})
+                    is_platform_library(${_library_name} is_plib)
+                    if (is_plib)
+                        add_arduino_library(${_target_name} PLATFORM ${sources})
+                    else ()
+                        add_arduino_library(${_target_name} ${sources})
+                    endif ()
 
                 endif ()
 
             endif ()
-
         endif ()
-
     endif ()
 
     _cleanup_find_arduino_library()
