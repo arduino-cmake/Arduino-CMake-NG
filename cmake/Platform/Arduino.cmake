@@ -18,7 +18,9 @@ include(Boards)
 include(RecipeParser)
 include(TargetFlagsManager)
 include(SourcesManager)
-include(SketchManager)
+
+include(Sketches)
+
 include(DefaultsManager)
 include(ArchitectureSupportQuery)
 include(CMakeProperties)

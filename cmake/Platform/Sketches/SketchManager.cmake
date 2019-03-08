@@ -1,6 +1,3 @@
-include(SketchSourceConverter)
-include(SketchHeadersManager)
-
 #=============================================================================#
 # Returns a desired path for sources converted from sketches.
 # It can't be resolved just by a cache variable since sketches may belong each to a different project,
