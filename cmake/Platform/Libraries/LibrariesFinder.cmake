@@ -21,7 +21,9 @@ function(find_arduino_library _target_name _library_name)
     set(argument_options "3RD_PARTY" "HEADER_ONLY" "QUIET")
     cmake_parse_arguments(parsed_args "${argument_options}" "" "" ${ARGN})
 
-    if (NOT parsed_args_3RD_PARTY)
+    is_platform_library(${_library_name} is_plib) # Detect whether library is a platform library
+
+    if (NOT parsed_args_3RD_PARTY AND NOT is_plib)
         convert_string_to_pascal_case(${_library_name} _library_name)
     endif ()
 
@@ -47,11 +49,9 @@ function(find_arduino_library _target_name _library_name)
                 message(SEND_ERROR "Couldn't find any header files for the "
                         "${_library_name} library")
             endif ()
-
         else ()
             if (parsed_args_HEADER_ONLY)
                 add_arduino_header_only_library(${_target_name} ${library_headers})
-
             else ()
                 find_library_source_files("${library_path}" library_sources)
 
@@ -68,15 +68,12 @@ function(find_arduino_library _target_name _library_name)
                 else ()
                     set(sources ${library_headers} ${library_sources})
 
-                    is_platform_library(${_library_name} is_plib)
                     if (is_plib)
                         add_arduino_library(${_target_name} PLATFORM ${sources})
                     else ()
                         add_arduino_library(${_target_name} ${sources})
                     endif ()
-
                 endif ()
-
             endif ()
         endif ()
     endif ()
