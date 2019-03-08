@@ -8,12 +8,8 @@ function(_write_source_file _sketch_loc _file_path)
     file(WRITE "${_file_path}" "") # Clear previous file's contents
 
     foreach (loc ${_sketch_loc})
-
-        string(REGEX REPLACE "^(.+)${ARDUINO_CMAKE_SEMICOLON_REPLACEMENT}(.*)$" "\\1;\\2"
-                original_loc "${loc}")
-
+        string(REGEX REPLACE "^(.+)${ARDUINO_CMAKE_SEMICOLON_REPLACEMENT}(.*)$" "\\1;\\2" original_loc "${loc}")
         file(APPEND "${_file_path}" "${original_loc}")
-
     endforeach ()
 
 endfunction()
@@ -42,30 +38,51 @@ function(_get_matching_header_insertion_index _sketch_loc _active_index _return_
 
     if ("${previous_loc}" MATCHES "^//") # Simple one-line comment
         set(matching_index ${_active_index})
-
     elseif ("${previous_loc}" MATCHES "\\*/$") # End of multi-line comment
 
         foreach (index RANGE ${_active_index} 0)
-
             list(GET _sketch_loc ${index} multi_comment_line)
 
             if ("${multi_comment_line}" MATCHES "^\\/\\*") # Start of multi-line comment
                 set(matching_index ${index})
                 break()
             endif ()
-
         endforeach ()
 
     else () # Previous line isn't a comment - Return original index
-
         increment_integer(_active_index 1)
         set(matching_index ${_active_index})
-
     endif ()
 
     set(${_return_var} ${matching_index} PARENT_SCOPE)
 
 endfunction()
+
+#=============================================================================#
+# Inline macro which handles the process of inserting a line including the platform header.
+#        _sketch_lines - List of code lines read from the converted sketch file.
+#        _insertion_line_index - Index of a code line at which the header should be inserted
+#=============================================================================#
+macro(_insert_platform_header_include_line _sketch_lines _insertion_line_index)
+
+    _get_matching_header_insertion_index("${_sketch_lines}" ${_insertion_line_index} header_index)
+
+    if (${header_index} LESS ${_insertion_line_index})
+        set(formatted_include_line ${ARDUINO_CMAKE_PLATFORM_HEADER_INCLUDE_LINE} "\n\n")
+    elseif (${header_index} EQUAL 0)
+        set(formatted_include_line ${ARDUINO_CMAKE_PLATFORM_HEADER_INCLUDE_LINE} "\n")
+    else ()
+        set(formatted_include_line "\n" ${ARDUINO_CMAKE_PLATFORM_HEADER_INCLUDE_LINE})
+
+        if (${header_index} GREATER_EQUAL ${_insertion_line_index})
+            decrement_integer(header_index 1)
+            string(APPEND formatted_include_line "\n")
+        endif ()
+    endif ()
+
+    list(INSERT refined_sketch ${header_index} ${formatted_include_line})
+
+endmacro()
 
 #=============================================================================#
 # Converts the given sketch file into a valid 'cpp' source file under the project's working dir.
@@ -78,63 +95,26 @@ function(convert_sketch_to_source _sketch_file _converted_source_path)
 
     file(STRINGS "${_sketch_file}" sketch_loc)
 
-    list(LENGTH sketch_loc num_of_loc)
-    decrement_integer(num_of_loc 1)
-
-    set(refined_sketch)
+    set(header_insert_pattern "${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN}|${ARDUINO_CMAKE_FUNCTION_REGEX_PATTERN}")
     set(header_inserted FALSE)
 
-    set(header_insert_pattern
-            "${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN}|${ARDUINO_CMAKE_FUNCTION_REGEX_PATTERN}")
-    set(include_line "#include <${ARDUINO_CMAKE_PLATFORM_HEADER_NAME}>")
+    list(LENGTH sketch_loc num_of_loc)
+    decrement_integer(num_of_loc 1)
 
     foreach (loc_index RANGE 0 ${num_of_loc})
 
         list(GET sketch_loc ${loc_index} loc)
 
-        if (NOT ${header_inserted})
-
-            if ("${loc}" MATCHES "${header_insert_pattern}")
-
-                _get_matching_header_insertion_index("${sketch_loc}" ${loc_index} header_index)
-
-                if (${header_index} LESS ${loc_index})
-                    set(formatted_include_line ${include_line} "\n\n")
-
-                elseif (${header_index} EQUAL 0)
-                    set(formatted_include_line ${include_line} "\n")
-
-                else ()
-
-                    set(formatted_include_line "\n" ${include_line})
-
-                    if (${header_index} GREATER_EQUAL ${loc_index})
-
-                        decrement_integer(header_index 1)
-
-                        string(APPEND formatted_include_line "\n")
-
-                    endif ()
-
-                endif ()
-
-                list(INSERT refined_sketch ${header_index} ${formatted_include_line})
-
-                set(header_inserted TRUE)
-
-            endif ()
-
+        if (NOT ${header_inserted} AND "${loc}" MATCHES "${header_insert_pattern}")
+            _insert_platform_header_include_line("${sketch_loc}" ${loc_index})
+            set(header_inserted TRUE)
         endif ()
 
         if ("${loc}" STREQUAL "")
             list(APPEND refined_sketch "\n")
         else ()
-
-            string(REGEX REPLACE "^(.+);(.*)$" "\\1${ARDUINO_CMAKE_SEMICOLON_REPLACEMENT}\\2"
-                    refined_loc "${loc}")
-
+            string(REGEX REPLACE "^(.+);(.*)$" "\\1${ARDUINO_CMAKE_SEMICOLON_REPLACEMENT}\\2" refined_loc "${loc}")
             list(APPEND refined_sketch "${refined_loc}\n")
-
         endif ()
 
     endforeach ()
