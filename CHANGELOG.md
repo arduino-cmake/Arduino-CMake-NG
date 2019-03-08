@@ -1,5 +1,21 @@
 # Change Log
 
+## Version 0.7
+
+Major API improvements and changes, focusing on delivering a much better UX.  
+This version forms a basis for many other important features still missing from the framework.
+
+### Changes
+
+* Every project now requires a call to a setup function named `arduino_cmake_project()`, 
+which accepts the project's name and the hardware board associated with it 
+(similar to `board_id`).
+* Derived from the above, there's no more need to pass a `board_id` argument
+to various API functions - They use the one passed to the setup function internally.
+* Platform libraries (**SPI**, **Wire**, etc.) can now be treated as all 
+Arduino libraries, i.e. found using `find_arduino_library` and then linked using `link_arduino_library`.  
+Before that, a dedicated function named `link_platform_library` had to be called.
+
 ## Version 0.6.1
 
 Several bug-fixes discovered in the latest v0.6 and some minor features.
