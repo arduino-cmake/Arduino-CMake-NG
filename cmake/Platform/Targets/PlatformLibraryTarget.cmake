@@ -8,7 +8,7 @@
 function(find_dependent_platform_libraries _sources _return_var)
 
     foreach (source ${_sources})
-        get_source_file_included_headers(${source} source_includes WE)
+        _get_source_included_headers(${source} source_includes WE)
         list(APPEND included_headers_names ${source_includes})
     endforeach ()
 

@@ -17,8 +17,8 @@ include(Boards)
 
 include(RecipeParser)
 include(TargetFlagsManager)
-include(SourcesManager)
 
+include(Sources)
 include(Sketches)
 
 include(DefaultsManager)

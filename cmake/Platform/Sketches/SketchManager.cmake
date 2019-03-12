@@ -28,10 +28,9 @@ function(add_sketch_to_target _target_name _sketch_file)
     _get_converted_source_desired_path(${_sketch_file} sketch_converted_source_path)
 
     # Only perform conversion if policy is set or if sketch hasn't been converted yet
-    if (CONVERT_SKETCHES_IF_CONVERTED_SOURCES_EXISTS OR
-            NOT EXISTS ${sketch_converted_source_path})
+    if (CONVERT_SKETCHES_IF_CONVERTED_SOURCES_EXISTS OR NOT EXISTS ${sketch_converted_source_path})
 
-        resolve_sketch_headers(${_target_name} ${_sketch_file})
+        resolve_sketch_libraries(${_target_name} ${_sketch_file})
 
         convert_sketch_to_source(${_sketch_file} ${sketch_converted_source_path})
 
