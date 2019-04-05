@@ -49,20 +49,21 @@ function(get_source_headers _source_file _include_dirs _return_var)
     foreach (header ${included_headers})
 
         _check_header_existance(${header} ${_include_dirs} header_path)
-        if ("${header_path}" MATCHES "NOTFOUND")
+        if (NOT header_path OR "${header_path}" MATCHES "NOTFOUND")
             continue()
         endif ()
 
-        list(APPEND total_included_headers ${header_path})
+        list(APPEND final_included_headers ${header_path})
 
         if (parsed_args_RECURSIVE)
-            _get_header_internal_headers(${header_path} ${_include_dirs} recursive_included_headers)
+            get_source_headers(${header_path} ${_include_dirs} recursive_included_headers RECURSIVE)
+            list(APPEND final_included_headers ${recursive_included_headers})
         endif ()
 
     endforeach ()
 
-    list(REMOVE_DUPLICATES total_included_headers)
+    list(REMOVE_DUPLICATES final_included_headers)
 
-    set(${_return_var} ${total_included_headers} PARENT_SCOPE)
+    set(${_return_var} ${final_included_headers} PARENT_SCOPE)
 
 endfunction()
