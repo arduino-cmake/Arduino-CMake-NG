@@ -1,5 +1,7 @@
 include(SourceSeeker)
 include(ExampleSourcesSeeker)
 include(ArduinoLibrarySourcesSeeker)
+include(HeaderRetriever)
 include(HeaderExistanceChecker)
-include(IncludedHeadersRetriever)
+include(SourceHeadersRetriever)
+include(SourcesManager)

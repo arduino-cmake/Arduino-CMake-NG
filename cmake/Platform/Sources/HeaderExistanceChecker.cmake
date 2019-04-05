@@ -1,23 +1,11 @@
-function(_check_header_existance _header_we _dir_list _return_var)
-
-    foreach (include_dir ${_dir_list})
-
-        find_header_files("${include_dir}" include_dir_headers RECURSE)
-
-        foreach (included_header ${include_dir_headers})
-            get_name_without_file_extension(${included_header} included_header_we)
-            if ("${included_header_we}" STREQUAL "${_header_we}")
-                set(_return_var ${included_header} PARENT_SCOPE)
-                return()
-            endif ()
-        endforeach ()
-
-    endforeach ()
-
-    set(_return_var NOTFOUND PARENT_SCOPE)
-
-endfunction()
-
+#=============================================================================#
+# Checks whether the given header name is discoverable by the given target,
+# i.e. whether it's part of the target's 'INCLUDE_DIRECTORIES' property.
+#       _header_we - Name of a header to check its' discoverability.
+#       _target_name - Name of a target to check discoverability against.
+#       _return_var - Name of variable in parent-scope holding the return value.
+#       Returns - True if discoverable, false otherwise.
+#=============================================================================#
 function(is_header_discoverable_by_target _header_we _target_name _return_var)
 
     # Get target's direct include dirs

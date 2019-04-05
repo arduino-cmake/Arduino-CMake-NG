@@ -48,7 +48,7 @@ function(get_source_headers _source_file _include_dirs _return_var)
 
     foreach (header ${included_headers})
 
-        _check_header_existance(${header} ${_include_dirs} header_path)
+        get_header_file(${header} ${_include_dirs} header_path)
         if (NOT header_path OR "${header_path}" MATCHES "NOTFOUND")
             continue()
         endif ()
