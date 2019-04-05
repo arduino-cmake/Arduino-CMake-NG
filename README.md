@@ -7,6 +7,8 @@ In other words, developers can use their favorite IDEs or text editors on their 
 
 Wait - Hasn't it been possible all this time? Apparently not. You can read more about it in the [Motivation](#Motivation) section.
 
+> Note to new users: The master branch is used for active development only, so if you seek to simply use the framework then you should head to the [releases section](https://github.com/arduino-cmake/Arduino-CMake-NG/releases) instead!
+
 ## Features
 
 **Arduino-CMake** should<sup id="fl1">[1](#f1)</sup> do almost<sup id="fl2">[2](#f2)</sup> <u>anything</u> that the **Arduino IDE** does!  
