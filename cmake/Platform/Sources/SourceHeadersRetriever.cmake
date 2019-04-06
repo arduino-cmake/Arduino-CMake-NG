@@ -36,11 +36,12 @@ endfunction()
 #=============================================================================#
 # Retrieves all headers used by a source file, possibly recursively (Headers used by headers).
 #       _source_file - Path to a source file to get its' used headers.
+#       _search_dirs - List of directories where headers should be searched at.
 #       [RECURSIVE] - Whether to search for headers recursively.
 #       _return_var - Name of variable in parent-scope holding the return value.
 #       Returns - List of full paths to the headers that are used by the given source file.
 #=============================================================================#
-function(get_source_headers _source_file _include_dirs _return_var)
+function(get_source_headers _source_file _search_dirs _return_var)
 
     cmake_parse_arguments(parsed_args "RECURSIVE" "" "" ${ARGN})
 
@@ -48,7 +49,7 @@ function(get_source_headers _source_file _include_dirs _return_var)
 
     foreach (header ${included_headers})
 
-        get_header_file(${header} ${_include_dirs} header_path)
+        get_header_file(${header} ${_search_dirs} header_path)
         if (NOT header_path OR "${header_path}" MATCHES "NOTFOUND")
             continue()
         endif ()
@@ -56,13 +57,15 @@ function(get_source_headers _source_file _include_dirs _return_var)
         list(APPEND final_included_headers ${header_path})
 
         if (parsed_args_RECURSIVE)
-            get_source_headers(${header_path} ${_include_dirs} recursive_included_headers RECURSIVE)
+            get_source_headers(${header_path} ${_search_dirs} recursive_included_headers RECURSIVE)
             list(APPEND final_included_headers ${recursive_included_headers})
         endif ()
 
     endforeach ()
 
-    list(REMOVE_DUPLICATES final_included_headers)
+    if (final_included_headers)
+        list(REMOVE_DUPLICATES final_included_headers)
+    endif ()
 
     set(${_return_var} ${final_included_headers} PARENT_SCOPE)
 
