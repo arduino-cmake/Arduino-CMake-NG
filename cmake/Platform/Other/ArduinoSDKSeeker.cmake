@@ -40,3 +40,43 @@ function(find_arduino_sdk _return_var)
 
 endfunction()
 
+function(find_arduino_sdk_bin _return_var)
+
+    if (DEFINED ENV{ARDUINO_SDK_BIN_PATH})
+        string(REPLACE "\\" "/" unix_style_sdk_bin_path $ENV{ARDUINO_SDK_BIN_PATH})
+        set(${_return_var} "${unix_style_sdk_bin_path}" PARENT_SCOPE)
+    elseif (IS_DIRECTORY "${ARDUINO_SDK_PATH}/hardware/tools/avr/bin")
+        set(${_return_var} "${ARDUINO_SDK_PATH}/hardware/tools/avr/bin" PARENT_SCOPE)
+    else ()
+        # Some systems like the Arch Linux arduino package install binaries to /usr/bin
+        find_program(avr_gcc_location avr-gcc)
+        if (avr_gcc_location)
+            get_filename_component(avr_gcc_parent ${avr_gcc_location} DIRECTORY)
+            set(${_return_var} "${avr_gcc_parent}" PARENT_SCOPE)
+        else ()
+            string(CONCAT error_message
+                    "Couldn't find Arduino bin path - Is it in a non-standard location?" "\n"
+                    "If so, please set the ARDUINO_SDK_BIN_PATH CMake-Variable")
+            message(FATAL_ERROR ${error_message})
+        endif ()
+    endif ()
+
+endfunction()
+
+function(find_arduino_sdk_root _return_var)
+
+    if (DEFINED ENV{ARDUINO_SDK_ROOT_PATH})
+        string(REPLACE "\\" "/" unix_style_sdk_root_path $ENV{ARDUINO_SDK_ROOT_PATH})
+        set(${_return_var} "${unix_style_sdk_root_path}" PARENT_SCOPE)
+    elseif (EXISTS "${ARDUINO_SDK_PATH}/hardware/tools/avr/etc/avrdude.conf")
+        set(${_return_var} "${ARDUINO_SDK_PATH}/hardware/tools/avr" PARENT_SCOPE)
+    elseif (EXISTS "/etc/avrdude.conf")
+        set(${_return_var} "/" PARENT_SCOPE)
+    else ()
+        string(CONCAT error_message
+                "Couldn't find Arduino root path - Is it in a non-standard location?" "\n"
+                "If so, please set the ARDUINO_SDK_ROOT_PATH CMake-Variable")
+        message(FATAL_ERROR ${error_message})
+    endif ()
+
+endfunction()
