@@ -42,7 +42,15 @@ function(add_arduino_library_example _target_name _library_target_name _library_
         message(SEND_ERROR "Library target doesn't exist - It must be created first!")
     endif ()
 
-    find_arduino_library_example_sources("${ARDUINO_SDK_LIBRARIES_PATH}/${arduino_compliant_library_name}"
+    find_file(library_path
+            NAMES ${arduino_compliant_library_name}
+            PATHS ${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH} ${ARDUINO_SDK_LIBRARIES_PATH}
+            ${ARDUINO_CMAKE_SKETCHBOOK_PATH} ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}
+            PATH_SUFFIXES libraries dependencies
+            NO_DEFAULT_PATH
+            NO_CMAKE_FIND_ROOT_PATH)
+
+    find_arduino_library_example_sources("${library_path}"
             ${arduino_compliant_example_name} example_sketches ${ARGN})
 
     add_arduino_executable(${_target_name})
