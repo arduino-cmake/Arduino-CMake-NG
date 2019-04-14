@@ -12,7 +12,11 @@ function(_get_user_preferences_file_path _return_var)
         if (${CMAKE_HOST_APPLE}) # Mac OS X
             set(dir_path "$ENV{HOME}/Library/Processing/${preferences_file_name}")
         else () # Linux
-            set(dir_path "$ENV{HOME}/.processing/${preferences_file_name}")
+            if (EXISTS "$ENV{HOME}/.arduino15/${preferences_file_name}")
+                set(dir_path "$ENV{HOME}/.arduino15/${preferences_file_name}")
+            else ()
+                set(dir_path "$ENV{HOME}/.processing/${preferences_file_name}")
+            endif ()
         endif ()
     else () # Windows
         string(REPLACE "\\" "/" home_path $ENV{HOMEPATH})
