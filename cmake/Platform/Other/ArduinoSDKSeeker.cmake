@@ -86,7 +86,7 @@ function(find_arduino_sdk_root _return_var)
         set(${_return_var} "${unix_style_sdk_root_path}" PARENT_SCOPE)
     elseif (EXISTS "${ARDUINO_SDK_PATH}/hardware/tools/avr/etc/avrdude.conf")
         set(${_return_var} "${ARDUINO_SDK_PATH}/hardware/tools/avr" PARENT_SCOPE)
-    elseif (EXISTS "/etc/avrdude.conf")
+    elseif (EXISTS "/etc/avrdude.conf" OR EXISTS "/etc/avrdude/avrdude.conf")
         set(${_return_var} "/" PARENT_SCOPE)
     else ()
         string(CONCAT error_message
