@@ -37,7 +37,7 @@ function(initialize_arduino_platform)
 
     if (NOT DEFINED ARDUINO_CMAKE_PLATFORM_NAME OR NOT DEFINED ARDUINO_CMAKE_PLATFORM_PATH)
         if (USE_DEFAULT_PLATFORM_IF_NONE_EXISTING)
-            if (CMAKE_HOST_ARCHLINUX AND ${USE_ARCHLINUX_BUILTIN_SUPPORT})
+            if (IS_DIRECTORY "${ARDUINO_SDK_PATH}/hardware/archlinux-arduino")
                 set(ARDUINO_CMAKE_PLATFORM_NAME "archlinux-arduino" CACHE STRING "")
             else ()
                 set(ARDUINO_CMAKE_PLATFORM_NAME "arduino" CACHE STRING "")
