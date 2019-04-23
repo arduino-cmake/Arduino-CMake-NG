@@ -19,6 +19,15 @@ matrix:
       install: []
       script:
         - docker run -v "$TRAVIS_BUILD_DIR/cmake":/cmake -v "$TRAVIS_BUILD_DIR/examples":/examples fedorabuild
+    - os: linux
+      service: docker
+      env: TEST_ARCH=TRUE
+      addons: {}
+      before_install:
+        - docker build -t archbuild .travis-arch-build
+      install: []
+      script:
+        - docker run -v "$TRAVIS_BUILD_DIR/cmake":/cmake -v "$TRAVIS_BUILD_DIR/examples":/examples archbuild
 cache:
   directories:
   - $HOME/$ARDUINO_SDK_BASE_PATH-$ARDUINO_SDK_VERSION
