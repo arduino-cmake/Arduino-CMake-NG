@@ -7,3 +7,4 @@ RUN git clone https://github.com/arduino-libraries/Ethernet.git /root/Arduino/li
 COPY preferences.txt /root/.arduino15/preferences.txt
 COPY run.sh /run.sh
 CMD /run.sh
+
