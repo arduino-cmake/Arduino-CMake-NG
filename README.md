@@ -12,27 +12,27 @@ Wait - Hasn't it been possible all this time? Apparently not. You can read more 
 ## Features
 
 **Arduino-CMake** should<sup id="fl1">[1](#f1)</sup> do almost<sup id="fl2">[2](#f2)</sup> <u>anything</u> that the **Arduino IDE** does!  
-Here's a list of features **already supported** by **Arduino-CMake**:
+#### What's supported?
 
-* Creating Arduino "Executables"/Programs
-* Uploading programs to hardware boards
-* Adding/Finding and using Arduino Libraries
-  * 3rd Party libraries are fully supported
-  * User libraries which are not Arduino Libraries are also supported
-* Using Arduino example programs
-  * Using Arduino library example programs
-* Attaching Arduino sketches (`.ino` files) to programs
-
-Moreover, **Arduino-CMake** allows some things that **Arduino IDE** *doesn't*:
-
-* Developing Arduino programs in any IDE or text editor
-* Completely customizing the build process per user's requirements
-
-What's **not** supported?  
-
-* 3rd Party *Platforms* such as ESP32, Pinoccio, etc.
-* Programmers and advanced bootloaders
-* Serial connection (e.g. for monitoring)
+- [x] Developing Arduino programs in any IDE or text editor
+- [x] Arduino Programs - *Executables*
+- [x] Uploading/Flashing programs to hardware boards
+- [x] Libraries
+    - [x] Arduino *native* libraries, built-in with most of the SDKs (such as **Blink**)
+    - [x] 3rd Party libraries
+    - [x] User libraries
+- [x] Arduino example programs
+    - [x] Arduino library example programs
+- [x] Arduino sketches (`.ino` files)
+    - [x] Conversion of sketch files to `.cpp` source files
+    - [ ] Resolving libraries used by a sketch file
+    - [ ] Generating required function prototypes/signatures in converted sources
+- [ ] 3rd Party platforms (such as **ESP32**, **pinoccio**, etc.)
+- [ ] Programmers and bootloaders
+- [ ] Serial Connection (e.g. for monitoring)
+- [ ] Completely customizing the build process per user's requirements
+    - [x] Setting custom build flags
+    - [ ] Using user-generated build recipes
 
 It's also worth mentioning that **Arduino-CMake** is **<u>cross platform</u>** and works out-of-the-box on every OS that support **CMake** and **Arduino**.
 
@@ -57,7 +57,8 @@ add_arduino_executable(Hello_World ${board_id} helloWorld.cpp)
 upload_arduino_target(Hello_World "${board_id}" COM3)
 ```
 
-You should then call **CMake** (either through *cmd*, *cmake-gui* or an *IDE* if it supports that) passing it the argument `-DCMAKE_TOOLCHAIN_FILE=[project_path]/cmake/Arduino-Toolchain.cmake` where `[project_path]` is substituted by the project's full path. This is what allows cmake to use our framework.
+You should then call **CMake** (either through *cmd*, *cmake-gui* or an *IDE* if it supports that), passing it the argument 
+`-DCMAKE_TOOLCHAIN_FILE=[project_path]/cmake/Arduino-Toolchain.cmake` where `[project_path]` is substituted by the project's full path. This is what allows cmake to use our framework.
 
 That's it! It's super simple, yet super extensible :)
 
