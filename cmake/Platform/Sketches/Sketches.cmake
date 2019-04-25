@@ -1,4 +1,5 @@
 include(SketchHeadersResolver)
 include(SketchLibrariesResolver)
+include(SketchPrototypesResolver)
 include(SketchSourceConverter)
 include(SketchManager)

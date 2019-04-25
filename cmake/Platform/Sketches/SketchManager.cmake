@@ -31,8 +31,8 @@ function(add_sketch_to_target _target_name _sketch_file)
     if (CONVERT_SKETCHES_IF_CONVERTED_SOURCES_EXISTS OR NOT EXISTS ${sketch_converted_source_path})
 
         resolve_sketch_headers(${_target_name} ${_sketch_file} sketch_headers)
-
         resolve_sketch_libraries(${_target_name} ${_sketch_file} "${sketch_headers}")
+        resolve_sketch_prototypes(${_sketch_file} "${sketch_headers}" sketch_prototypes)
 
         convert_sketch_to_source(${_sketch_file} ${sketch_converted_source_path})
 

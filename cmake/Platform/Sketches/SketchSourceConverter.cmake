@@ -95,7 +95,8 @@ function(convert_sketch_to_source _sketch_file _converted_source_path)
 
     file(STRINGS "${_sketch_file}" sketch_loc)
 
-    set(header_insert_pattern "${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN}|${ARDUINO_CMAKE_FUNCTION_REGEX_PATTERN}")
+    set(header_insert_pattern
+            "${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN}|${ARDUINO_CMAKE_FUNCTION_DEFINITION_REGEX_PATTERN}")
     set(header_inserted FALSE)
 
     list(LENGTH sketch_loc num_of_loc)
