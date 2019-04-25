@@ -11,4 +11,13 @@ function(arduino_cmake_project _project_name)
 
     setup_project_core_lib(${_project_name})
 
+    set(ARDUINO_CMAKE_FUNCTION_DEFINITION_REGEX_PATTERN
+            "^([A-Za-z0-9_][ \t\r\n]*)+\\(.*\\)$" PARENT_SCOPE)
+    set(ARDUINO_CMAKE_FUNCTION_DECLARATION_REGEX_PATTERN
+            "^([A-Za-z0-9_])+.+([A-Za-z0-9_])+[ \t\r\n]*\\((.*)\\);$" PARENT_SCOPE)
+    set(ARDUINO_CMAKE_FUNCTION_NAME_REGEX_PATTERN "(([A-Za-z0-9_])+)[ \t\r\n]*\\(.*\\)" PARENT_SCOPE)
+    set(ARDUINO_CMAKE_FUNCTION_ARGS_REGEX_PATTERN "\\((.*)\\)" PARENT_SCOPE)
+    set(ARDUINO_CMAKE_FUNCTION_SINGLE_ARG_REGEX_PATTERN "([A-Za-z0-9_]+)[^,]*" PARENT_SCOPE)
+    set(ARDUINO_CMAKE_FUNCTION_ARG_TYPE_REGEX_PATTERN "[A-Za-z0-9_]+.*[ \t\r\n]+" PARENT_SCOPE)
+
 endfunction()
