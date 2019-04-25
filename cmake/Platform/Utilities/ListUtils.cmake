@@ -37,8 +37,8 @@ function(list_max_index _list _return_var)
     list(LENGTH _list list_length)
 
     set(index ${list_length})
-    if (${index} GREATER 0)
-        decrement_integer(${index} 1)
+    if (${list_length} GREATER 0)
+        decrement_integer(index 1)
     endif ()
 
     set(${_return_var} ${index} PARENT_SCOPE)

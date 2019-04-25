@@ -74,7 +74,7 @@ endfunction()
 #=============================================================================#
 # Extracts a name symbol without possible file extension (marked usually by a dot ('.').
 #       _input_string - String containing name symbol and possibly file extension.
-#       _return_var - Name of a CMake variable that will hold the extraction result.
+#       _return_var - Name of a CMake variable that will hold the return value.
 #       Returns - String containing input name without possible file extension.
 #=============================================================================#
 function(get_name_without_file_extension _input_string _return_var)
@@ -89,7 +89,7 @@ endfunction()
 # Converts a given string to a PascalCase string, converting 1st letter to upper
 # and remaining to lower.
 #       _input_string - String to convert.
-#       _return_var - Name of a CMake variable that will hold the extraction result.
+#       _return_var - Name of a CMake variable that will hold the return value.
 #       Returns - PascalCase converted string.
 #=============================================================================#
 function(convert_string_to_pascal_case _input_string _return_var)
@@ -106,5 +106,28 @@ function(convert_string_to_pascal_case _input_string _return_var)
     string(APPEND combined_string ${first_letter_upper} ${remaining_letters_lower})
 
     set(${_return_var} ${combined_string} PARENT_SCOPE)
+
+endfunction()
+
+#=============================================================================#
+# Escapes a semicolon in a given string by replacing it with a "magic" string instead, 
+# which isn't parsed as a list separator by CMake.
+# This function can also reverse an escaped semicolon by replacing it back with a semicolon.
+#       _string - String to escape/re-escape.
+#       [REVERSE] - Optional flag indicating whether to reverse an already-escaped string back to its original form.
+#       _return_var - Name of a CMake variable that will hold the return value.
+#       Returns - Original string if [REVERSE] provided, Semicolon-escaped string otherwise.
+#=============================================================================#
+function(escape_semicolon_in_string _string _return_var)
+
+    cmake_parse_arguments(parsed_args "REVERSE" "" "" ${ARGN})
+
+    if (parsed_args_REVERSE)
+        string(REGEX REPLACE "^(.+)${ARDUINO_CMAKE_SEMICOLON_REPLACEMENT}(.*)$" "\\1;\\2" escaped_line "${_string}")
+    else ()
+        string(REGEX REPLACE "^(.+);(.*)$" "\\1${ARDUINO_CMAKE_SEMICOLON_REPLACEMENT}\\2" escaped_line "${_string}")
+    endif ()
+
+    set(${_return_var} ${escaped_line} PARENT_SCOPE)
 
 endfunction()

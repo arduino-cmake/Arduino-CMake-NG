@@ -22,10 +22,11 @@ function(resolve_sketch_prototypes _sketch_file _sketch_headers _return_var)
         match_function_declaration("${func_def}" "${_sketch_headers}" match)
 
         if (${match} MATCHES "NOTFOUND")
-            # ToDo: Append signature to list of prototypes to create
-            message("Coludn't find a matching declaration for `${func_def}`")
+            list(APPEND prototypes "${func_def}")
         endif ()
 
     endforeach ()
+
+    set(${_return_var} ${prototypes} PARENT_SCOPE)
 
 endfunction()
