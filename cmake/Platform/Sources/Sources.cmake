@@ -1,3 +1,6 @@
+include(FunctionSignatureStripper)
+include(FunctionDeclarationMatcher)
+include(SourceFunctionsRetriever)
 include(SourceSeeker)
 include(ExampleSourcesSeeker)
 include(ArduinoLibrarySourcesSeeker)
