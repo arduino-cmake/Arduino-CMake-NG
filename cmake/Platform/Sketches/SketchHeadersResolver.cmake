@@ -14,7 +14,7 @@ function(resolve_sketch_headers _target_name _sketch_file _return_var)
 
     list(APPEND sketch_headers ${platform_headers})
 
-    if (sketch_headers AND ${sketch_headers})
+    if (sketch_headers)
         list(REMOVE_DUPLICATES sketch_headers)
     endif ()
 
