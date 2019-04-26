@@ -13,7 +13,10 @@ function(resolve_sketch_headers _target_name _sketch_file _return_var)
     get_source_headers("${ARDUINO_CMAKE_PLATFORM_HEADER_PATH}" "${target_include_dirs}" platform_headers RECURSIVE)
 
     list(APPEND sketch_headers ${platform_headers})
-    list(REMOVE_DUPLICATES sketch_headers)
+
+    if (sketch_headers AND ${sketch_headers})
+        list(REMOVE_DUPLICATES sketch_headers)
+    endif ()
 
     set(${_return_var} ${sketch_headers} PARENT_SCOPE)
 
