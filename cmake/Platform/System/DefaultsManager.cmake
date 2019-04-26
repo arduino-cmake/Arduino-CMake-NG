@@ -6,6 +6,9 @@ function(set_internal_search_patterns)
     set(ARDUINO_CMAKE_SEMICOLON_REPLACEMENT "!@&#%" CACHE STRING
             "String replacement for the semicolon char, required when treating lists as code")
 
+    set(ARDUINO_CMAKE_PREPROCESSOR_REGEX_PATTERN "^#([A-Za-z0-9_])+" CACHE STRING
+            "Regex pattern matching preprocessor directives in source files")
+
     set(ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN "^#include.*[<\"]" CACHE STRING
             "Regex pattern matching header inclusion in a source file")
 
