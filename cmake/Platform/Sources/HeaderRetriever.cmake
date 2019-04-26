@@ -15,15 +15,15 @@ function(get_header_file _header_we _dir_list _return_var)
         find_header_files("${include_dir}" include_dir_headers RECURSE)
 
         foreach (included_header ${include_dir_headers})
-            get_name_without_file_extension(${included_header} included_header_we)
+            get_name_without_file_extension("${included_header}" included_header_we)
             if ("${included_header_we}" STREQUAL "${_header_we}")
-                set(_return_var ${included_header} PARENT_SCOPE)
+                set(${_return_var} ${included_header} PARENT_SCOPE)
                 return()
             endif ()
         endforeach ()
 
     endforeach ()
 
-    set(_return_var NOTFOUND PARENT_SCOPE)
+    set(${_return_var} "NOTFOUND" PARENT_SCOPE)
 
 endfunction()

@@ -8,6 +8,13 @@
 function(resolve_sketch_headers _target_name _sketch_file _return_var)
 
     get_target_include_directories(${_target_name} target_include_dirs)
-    get_source_headers("${_sketch_file}" ${target_include_dirs} sketch_headers RECURSIVE)
+
+    get_source_headers("${_sketch_file}" "${target_include_dirs}" sketch_headers RECURSIVE)
+    get_source_headers("${ARDUINO_CMAKE_PLATFORM_HEADER_PATH}" "${target_include_dirs}" platform_headers RECURSIVE)
+
+    list(APPEND sketch_headers ${platform_headers})
+    list(REMOVE_DUPLICATES sketch_headers)
+
+    set(${_return_var} ${sketch_headers} PARENT_SCOPE)
 
 endfunction()

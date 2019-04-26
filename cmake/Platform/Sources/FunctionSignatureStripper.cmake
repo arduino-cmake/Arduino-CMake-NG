@@ -8,13 +8,17 @@ function(_get_function_arguments_types _signature _return_var)
 
     string(REGEX MATCH ${ARDUINO_CMAKE_FUNCTION_ARGS_REGEX_PATTERN} function_args_string "${_signature}")
     string(REGEX MATCHALL ${ARDUINO_CMAKE_FUNCTION_SINGLE_ARG_REGEX_PATTERN}
-            function_arg_list "${_function_args_string}")
-
+            function_arg_list "${function_args_string}")
     # Iterate through all arguments to extract only their type
     foreach (arg ${function_arg_list})
+
         string(REGEX MATCH ${ARDUINO_CMAKE_FUNCTION_ARG_TYPE_REGEX_PATTERN} arg_type "${arg}")
         string(STRIP "${arg_type}" arg_type) # Strip remaining whitespaces
-        list(APPEND function_args ${arg_type})
+
+        if (NOT "${arg_type}" STREQUAL "void") # Do NOT append 'void' arguments - they're meaningless
+            list(APPEND function_args ${arg_type})
+        endif ()
+
     endforeach ()
 
     set(${_return_var} ${function_args} PARENT_SCOPE)
