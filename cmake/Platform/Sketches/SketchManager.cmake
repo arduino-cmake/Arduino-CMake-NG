@@ -34,7 +34,7 @@ function(add_sketch_to_target _target_name _sketch_file)
         resolve_sketch_libraries(${_target_name} ${_sketch_file} "${sketch_headers}")
         resolve_sketch_prototypes(${_sketch_file} "${sketch_headers}" sketch_prototypes)
 
-        convert_sketch_to_source(${_sketch_file} ${sketch_converted_source_path} ${sketch_prototypes})
+        convert_sketch_to_source(${_sketch_file} ${sketch_converted_source_path} "${sketch_prototypes}")
 
     endif ()
 
