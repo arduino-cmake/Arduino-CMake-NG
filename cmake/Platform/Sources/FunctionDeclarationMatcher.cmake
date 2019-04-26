@@ -10,6 +10,8 @@
 #=============================================================================#
 function(match_function_declaration _definition_signature _included_headers _return_var)
 
+    get_property(function_declaration_regex GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_DECLARATION_REGEX_PATTERN)
+
     # Get function name and list of argument-types
     strip_function_signature("${_definition_signature}" original_stripped_function)
     list(GET original_stripped_function 0 original_function_name)
@@ -22,7 +24,7 @@ function(match_function_declaration _definition_signature _included_headers _ret
         foreach (line ${header_lines})
 
             # Search for function declarations
-            if ("${line}" MATCHES "${ARDUINO_CMAKE_FUNCTION_DECLARATION_REGEX_PATTERN}")
+            if ("${line}" MATCHES "${function_declaration_regex}")
 
                 # Get function name and list of argument-types
                 strip_function_signature("${line}" iterated_stripped_function)

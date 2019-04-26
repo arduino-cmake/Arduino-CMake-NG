@@ -78,8 +78,9 @@ function(get_source_file_includes _source_file _return_var)
     endif ()
 
     file(STRINGS "${_source_file}" source_lines)
-    
-    list(FILTER source_lines INCLUDE REGEX "${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN}")
+
+    get_property(header_include_regex GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN)
+    list(FILTER source_lines INCLUDE REGEX "${header_include_regex}")
 
     set(${_return_var} ${source_lines} PARENT_SCOPE)
 
@@ -94,8 +95,10 @@ endfunction()
 #=============================================================================#
 function(get_headers_parent_directories _sources _return_var)
 
+    get_property(header_file_extension_regex GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_FILE_EXTENSION_REGEX_PATTERN)
+
     # Extract header files
-    list(FILTER _sources INCLUDE REGEX "${ARDUINO_CMAKE_HEADER_FILE_EXTENSION_REGEX_PATTERN}")
+    list(FILTER _sources INCLUDE REGEX "${header_file_extension_regex}")
     
     foreach (header_source ${_sources})
         get_filename_component(header_parent_dir ${header_source} DIRECTORY)

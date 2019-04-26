@@ -10,14 +10,17 @@ function(_get_source_included_headers _source_file _return_var)
 
     cmake_parse_arguments(parsed_args "WE" "" "" ${ARGN})
 
+    get_property(header_include_regex GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN)
+    get_property(header_name_regex GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_NAME_REGEX_PATTERN)
+
     file(STRINGS "${_source_file}" source_lines) # Loc = Lines of code
 
-    list(FILTER source_lines INCLUDE REGEX ${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN})
+    list(FILTER source_lines INCLUDE REGEX ${header_include_regex})
 
     # Extract header names from inclusion
     foreach (loc ${source_lines})
 
-        string(REGEX MATCH ${ARDUINO_CMAKE_HEADER_NAME_REGEX_PATTERN} match ${loc})
+        string(REGEX MATCH ${header_name_regex} match ${loc})
 
         if (parsed_args_WE)
             get_name_without_file_extension("${CMAKE_MATCH_1}" header_name)

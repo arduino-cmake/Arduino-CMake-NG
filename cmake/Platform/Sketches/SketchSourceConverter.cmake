@@ -16,12 +16,16 @@ endfunction()
 
 macro(_setup_regex_patterns)
 
-    string(CONCAT function_prototype_pattern
-            "${ARDUINO_CMAKE_FUNCTION_DECLARATION_REGEX_PATTERN}"
-            "|${ARDUINO_CMAKE_FUNCTION_DEFINITION_REGEX_PATTERN}")
+    get_property(function_declaration_regex GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_DECLARATION_REGEX_PATTERN)
+    get_property(function_definition_regex GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_DEFINITION_REGEX_PATTERN)
+    get_property(preprocessor_regex GLOBAL PROPERTY ARDUINO_CMAKE_PREPROCESSOR_REGEX_PATTERN)
+
+    string(CONCAT function_prototype_regex
+            "${function_declaration_regex}"
+            "|${function_definition_regex}")
     string(CONCAT code_pattern
-            "${ARDUINO_CMAKE_PREPROCESSOR_REGEX_PATTERN}"
-            "|${function_prototype_pattern}")
+            "${preprocessor_regex}"
+            "|${function_prototype_regex}")
 
     set(comment_line_pattern "\\/\\/")
     set(comment_block_start_pattern "\\/\\*")
@@ -31,7 +35,9 @@ endmacro()
 
 macro(_insert_platform_header _current_line _line_index)
 
-    if ("${_current_line}" MATCHES "${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN}")
+    get_property(header_include_regex GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN)
+
+    if ("${_current_line}" MATCHES "${header_include_regex}")
         set(include_line "${ARDUINO_CMAKE_PLATFORM_HEADER_INCLUDE_LINE}\n")
     else ()
         set(include_line "${ARDUINO_CMAKE_PLATFORM_HEADER_INCLUDE_LINE}\n\n")
@@ -73,7 +79,9 @@ endmacro()
 
 macro(_handle_prototype_generation)
 
-    if (NOT "${line}" MATCHES "${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN}")
+    get_property(header_include_regex GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN)
+
+    if (NOT "${line}" MATCHES "${header_include_regex}")
         if (NOT "${line}" STREQUAL "") # Not a newline
 
             if (NOT header_inclusion_block)

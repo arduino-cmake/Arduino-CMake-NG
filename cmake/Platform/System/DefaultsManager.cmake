@@ -3,46 +3,25 @@
 #=============================================================================#
 function(set_internal_search_patterns)
 
-    set(ARDUINO_CMAKE_SEMICOLON_REPLACEMENT "!@&#%" CACHE STRING
-            "String replacement for the semicolon char, required when treating lists as code")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_SEMICOLON_REPLACEMENT "!@&#%")
 
-    set(ARDUINO_CMAKE_PREPROCESSOR_REGEX_PATTERN "^#([A-Za-z0-9_])+" CACHE STRING
-            "Regex pattern matching preprocessor directives in source files")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_PREPROCESSOR_REGEX_PATTERN "^#([A-Za-z0-9_])+")
+    set(header_include_regex "^#include.*[<\"]")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN "${header_include_regex}")
 
-    set(ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN "^#include.*[<\"]" CACHE STRING
-            "Regex pattern matching header inclusion in a source file")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_NAME_REGEX_PATTERN "${header_include_regex}(.+)[>\"]$")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_FILE_EXTENSION_REGEX_PATTERN ".+\\.h.*$")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_NAME_WE_REGEX_PATTERN "([^\\/]+)\\.")
 
-    set(ARDUINO_CMAKE_HEADER_NAME_REGEX_PATTERN
-            "${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN}(.+)[>\"]$" CACHE STRING
-            "Regex pattern matching a header's name when wrapped in inclusion line")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_DEFINITION_REGEX_PATTERN
+            "^([A-Za-z0-9_][ \t\r\n]*)+\\(.*\\)$")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_DECLARATION_REGEX_PATTERN
+            "^([A-Za-z0-9_])+.+([A-Za-z0-9_])+[ \t\r\n]*\\((.*)\\);$")
 
-    set(ARDUINO_CMAKE_HEADER_FILE_EXTENSION_REGEX_PATTERN ".+\\.h.*$" CACHE STRING
-            "Regex pattern matching all header file extensions")
-
-    set(ARDUINO_CMAKE_NAME_WE_REGEX_PATTERN "([^\\/]+)\\." CACHE STRING
-            "Regex pattern matching name without file extension")
-
-    #[[set(ARDUINO_CMAKE_FUNCTION_DECLARATION_REGEX_PATTERN "^([A-Za-z0-9_])+.+([A-Za-z0-9_])+[ \t\r\\n]*\((.*)\);$"
-            CACHE STRING "Regex pattern matching a function signature definition in a source file")
-
-    set(ARDUINO_CMAKE_FUNCTION_DEFINITION_REGEX_PATTERN "^([A-Za-z0-9_])+[ \t\r\n]*\(([A-Za-z0-9_])*\)$"
-            CACHE STRING "Regex pattern matching a function signature definition in a source file")
-
-    set(ARDUINO_CMAKE_FUNCTION_NAME_REGEX_PATTERN "(([A-Za-z0-9_])+)[ \t\r\\n]*\(.*\)"
-            CACHE STRING
-            "Regex pattern matching a function's name (and everything following it), can be retrieved by the 1st group")
-
-    set(ARDUINO_CMAKE_FUNCTION_ARGS_REGEX_PATTERN "\((.*)\)"
-            CACHE STRING
-            "Regex pattern matching a function's argument list, i.e. What's inside the parentheses")
-
-    set(ARDUINO_CMAKE_FUNCTION_SINGLE_ARG_REGEX_PATTERN "([A-Za-z0-9_]+)[^,]*"
-            CACHE STRING
-            "Regex pattern matching a function's argument, requiring maximum matches to get all arguments")
-
-    set(ARDUINO_CMAKE_FUNCTION_ARG_TYPE_REGEX_PATTERN "[A-Za-z0-9_]+.*[ \t\r\\n]+"
-            CACHE STRING
-            "Regex pattern matching a function argument type, ommiting it's name")]]
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_NAME_REGEX_PATTERN "(([A-Za-z0-9_])+)[ \t\r\n]*\\(.*\\)")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_ARGS_REGEX_PATTERN "\\((.*)\\)")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_SINGLE_ARG_REGEX_PATTERN "([A-Za-z0-9_]+)[^,]*")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_ARG_TYPE_REGEX_PATTERN "[A-Za-z0-9_]+.*[ \t\r\n]+")
 
 endfunction()
 

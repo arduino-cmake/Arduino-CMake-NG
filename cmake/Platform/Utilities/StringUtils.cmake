@@ -79,7 +79,9 @@ endfunction()
 #=============================================================================#
 function(get_name_without_file_extension _input_string _return_var)
 
-    string(REGEX MATCH "${ARDUINO_CMAKE_NAME_WE_REGEX_PATTERN}" match "${_input_string}")
+    get_property(name_we_regex GLOBAL PROPERTY ARDUINO_CMAKE_NAME_WE_REGEX_PATTERN)
+
+    string(REGEX MATCH "${name_we_regex}" match "${_input_string}")
 
     set(${_return_var} ${CMAKE_MATCH_1} PARENT_SCOPE)
 
@@ -122,10 +124,12 @@ function(escape_semicolon_in_string _string _return_var)
 
     cmake_parse_arguments(parsed_args "REVERSE" "" "" ${ARGN})
 
+    get_property(semicolon_replacement GLOBAL PROPERTY ARDUINO_CMAKE_SEMICOLON_REPLACEMENT)
+
     if (parsed_args_REVERSE)
-        string(REGEX REPLACE "^(.+)${ARDUINO_CMAKE_SEMICOLON_REPLACEMENT}(.*)$" "\\1;\\2" escaped_line "${_string}")
+        string(REGEX REPLACE "^(.+)${semicolon_replacement}(.*)$" "\\1;\\2" escaped_line "${_string}")
     else ()
-        string(REGEX REPLACE "^(.+);(.*)$" "\\1${ARDUINO_CMAKE_SEMICOLON_REPLACEMENT}\\2" escaped_line "${_string}")
+        string(REGEX REPLACE "^(.+);(.*)$" "\\1${semicolon_replacement}\\2" escaped_line "${_string}")
     endif ()
 
     set(${_return_var} ${escaped_line} PARENT_SCOPE)
