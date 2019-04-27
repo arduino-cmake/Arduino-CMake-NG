@@ -14,7 +14,7 @@ function(set_internal_search_patterns)
     set_property(GLOBAL PROPERTY ARDUINO_CMAKE_NAME_WE_REGEX_PATTERN "([^\\/]+)\\.")
 
     set_property(GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_DEFINITION_REGEX_PATTERN
-            "^([A-Za-z0-9_][ \t\r\n]*)+\\(.*\\)$")
+            "^([A-Za-z0-9_][ \t\r\n]*)+\\(.*\\)[ \t\r\n]*[{]*$")
     set_property(GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_DECLARATION_REGEX_PATTERN
             "^([A-Za-z0-9_])+.+([A-Za-z0-9_])+[ \t\r\n]*\\((.*)\\);$")
 
