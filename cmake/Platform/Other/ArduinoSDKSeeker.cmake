@@ -57,15 +57,16 @@ function(find_arduino_sdk_bin _return_var)
         set(${_return_var} "${ARDUINO_SDK_PATH}/hardware/tools/avr/bin" PARENT_SCOPE)
     else ()
         # Some systems like the Arch Linux arduino package install binaries to /usr/bin
-        find_program(avr_gcc_location avr-gcc)
-        if ("${avr_gcc_location}" MATCHES "NOTFOUND")
+        # But gcc can be found first in ccache folder so let's search ar instead
+        find_program(avr_gcc_ar_location avr-gcc-ar)
+        if ("${avr_gcc_ar_location}" MATCHES "NOTFOUND")
             string(CONCAT error_message
                     "Couldn't find Arduino bin path - Is it in a non-standard location?" "\n"
                     "If so, please set the ARDUINO_SDK_BIN_PATH CMake-Variable")
             message(FATAL_ERROR ${error_message})
         else ()
-            get_filename_component(avr_gcc_parent ${avr_gcc_location} DIRECTORY)
-            set(${_return_var} "${avr_gcc_parent}" PARENT_SCOPE)
+            get_filename_component(avr_gcc_ar_parent ${avr_gcc_ar_location} DIRECTORY)
+            set(${_return_var} "${avr_gcc_ar_parent}" PARENT_SCOPE)
         endif ()
     endif ()
 
