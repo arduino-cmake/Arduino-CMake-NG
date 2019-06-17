@@ -1,7 +1,3 @@
-include(SourceSeeker)
-include(ExampleSourcesSeeker)
-include(ArduinoLibrarySourcesSeeker)
-
 #=============================================================================#
 # Appends all sources and headers under the given directory to the givne target.
 # This could also be done recursively if the RECURSE option is provided.
@@ -82,49 +78,16 @@ function(get_source_file_includes _source_file _return_var)
     endif ()
 
     file(STRINGS "${_source_file}" source_lines)
-    
-    list(FILTER source_lines INCLUDE REGEX "${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN}")
+
+    get_property(header_include_regex GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN)
+    list(FILTER source_lines INCLUDE REGEX "${header_include_regex}")
 
     set(${_return_var} ${source_lines} PARENT_SCOPE)
 
 endfunction()
 
 #=============================================================================#
-# Retrieves all headers includedby a source file. 
-# Headers are returned by their name, with extension (such as '.h').
-#       _source_file - Path to a source file to get its' included headers.
-#       _return_var - Name of variable in parent-scope holding the return value.
-#       Returns - List of headers names with extension that are included by the given source file.
-#=============================================================================#
-function(get_source_file_included_headers _source_file _return_var)
-
-    cmake_parse_arguments(headers "WE" "" "" ${ARGN})
-
-    file(STRINGS "${_source_file}" source_lines) # Loc = Lines of code
-    
-    list(FILTER source_lines INCLUDE REGEX ${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN})
-
-    # Extract header names from inclusion
-    foreach (loc ${source_lines})
-        
-        string(REGEX MATCH ${ARDUINO_CMAKE_HEADER_NAME_REGEX_PATTERN} match ${loc})
-        
-        if (headers_WE)
-            get_name_without_file_extension("${CMAKE_MATCH_1}" header_name)
-        else ()
-            set(header_name ${CMAKE_MATCH_1})
-        endif ()
-        
-        list(APPEND headers ${header_name})
-    
-    endforeach ()
-
-    set(${_return_var} ${headers} PARENT_SCOPE)
-
-endfunction()
-
-#=============================================================================#
-# Gets paths of parent directories from all header files amongst the given sources.
+# Gets paths of parent directories of all header files amongst the given sources.
 # The list of paths is unique (without duplicates).
 #        _sources - List of sources to get include directories from.
 #        _return_var - Name of variable in parent-scope holding the return value.
@@ -132,15 +95,14 @@ endfunction()
 #=============================================================================#
 function(get_headers_parent_directories _sources _return_var)
 
+    get_property(header_file_extension_regex GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_FILE_EXTENSION_REGEX_PATTERN)
+
     # Extract header files
-    list(FILTER _sources INCLUDE REGEX "${ARDUINO_CMAKE_HEADER_FILE_EXTENSION_REGEX_PATTERN}")
+    list(FILTER _sources INCLUDE REGEX "${header_file_extension_regex}")
     
     foreach (header_source ${_sources})
-
         get_filename_component(header_parent_dir ${header_source} DIRECTORY)
-        
         list(APPEND parent_dirs ${header_parent_dir})
-
     endforeach ()
 
     if (parent_dirs) # Check parent dirs, could be none if there aren't any headers amongst sources

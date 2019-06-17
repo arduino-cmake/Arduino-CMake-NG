@@ -1,4 +1,4 @@
-macro(_cleanup_find_arduino_library)
+macro(_clear_find_library_state)
 
     unset(library_path CACHE)
 
@@ -18,6 +18,8 @@ endmacro()
 #=============================================================================#
 function(find_arduino_library _target_name _library_name)
 
+    _clear_find_library_state()
+
     set(argument_options "3RD_PARTY" "HEADER_ONLY" "QUIET")
     cmake_parse_arguments(parsed_args "${argument_options}" "" "" ${ARGN})
 
@@ -28,7 +30,7 @@ function(find_arduino_library _target_name _library_name)
     endif ()
 
     find_file(library_path
-            NAMES ${_library_name}
+            NAMES "${_library_name}"
             PATHS ${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH} ${ARDUINO_SDK_LIBRARIES_PATH}
             ${ARDUINO_CMAKE_SKETCHBOOK_PATH} ${CMAKE_CURRENT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}
             PATH_SUFFIXES libraries dependencies
@@ -43,7 +45,7 @@ function(find_arduino_library _target_name _library_name)
 
         if (NOT library_headers)
             if (parsed_args_QUIET)
-                _cleanup_find_arduino_library()
+                _clear_find_library_state()
                 return()
             else ()
                 message(SEND_ERROR "Couldn't find any header files for the "
@@ -57,7 +59,7 @@ function(find_arduino_library _target_name _library_name)
 
                 if (NOT library_sources)
                     if (parsed_args_QUIET)
-                        _cleanup_find_arduino_library()
+                        _clear_find_library_state()
                         return()
                     else ()
                         message(SEND_ERROR "Couldn't find any source files for the "
@@ -78,6 +80,6 @@ function(find_arduino_library _target_name _library_name)
         endif ()
     endif ()
 
-    _cleanup_find_arduino_library()
+    _clear_find_library_state()
 
 endfunction()

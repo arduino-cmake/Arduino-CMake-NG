@@ -7,6 +7,7 @@
 function(is_platform_library _name _return_var)
 
     string(TOLOWER "${_name}" name_lower)
+
     if ("${name_lower}" IN_LIST ARDUINO_CMAKE_PLATFORM_LIBRARIES)
         set(lib_found TRUE)
     else ()

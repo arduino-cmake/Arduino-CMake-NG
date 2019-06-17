@@ -165,8 +165,11 @@ function(find_platform_main_header)
     message(STATUS "Determined Platform Header: ${biggest_header}")
     # Store both header's name (with extension) and path
     get_filename_component(platform_header_name "${biggest_header}" NAME)
+
     set(ARDUINO_CMAKE_PLATFORM_HEADER_NAME "${platform_header_name}" CACHE STRING
             "Platform's main header name (With extension)")
+    set(ARDUINO_CMAKE_PLATFORM_HEADER_INCLUDE_LINE "#include <${platform_header_name}>" CACHE STRING
+            "Include line of the platform's main header file to be embedded in source files")
     set(ARDUINO_CMAKE_PLATFORM_HEADER_PATH "${biggest_header}" CACHE PATH
             "Path to platform's main header file")
 

@@ -1,144 +1,162 @@
 #=============================================================================#
 # Writes the given lines of code belonging to the sketch to the given file path.
-#        _sketch_loc - List of lines-of-code belonging to the sketch.
+#        _sketch_lines - List of lines-of-code belonging to the sketch.
 #        _file_path - Full path to the written source file.
 #=============================================================================#
-function(_write_source_file _sketch_loc _file_path)
+function(_write_source_file _sketch_lines _file_path)
 
     file(WRITE "${_file_path}" "") # Clear previous file's contents
 
-    foreach (loc ${_sketch_loc})
-
-        string(REGEX REPLACE "^(.+)${ARDUINO_CMAKE_SEMICOLON_REPLACEMENT}(.*)$" "\\1;\\2"
-                original_loc "${loc}")
-
-        file(APPEND "${_file_path}" "${original_loc}")
-
+    foreach (line ${_sketch_lines})
+        escape_semicolon_in_string("${line}" original_line REVERSE)
+        file(APPEND "${_file_path}" "${original_line}")
     endforeach ()
 
 endfunction()
 
-#=============================================================================#
-# Finds the best line to insert an '#include' of the platform's main header to.
-# The function assumes that the initial state of the given 'active index' is set to the line that
-# best fitted the insertion, however, it might need a bit more optimization. Why?
-# Because above those lines there might be a comment, or a comment block,
-# all of which should be taken into account in order to minimize the effect on code's readability.
-#        _sketch_loc - List of lines-of-code belonging to the sketch.
-#        _active_index - Index that indicates the best-not-optimized loc to insert header to.
-#        _return_var - Name of variable in parent-scope holding the return value.
-#        Returns - Best fitted index to insert platform's main header '#include' to.
-#=============================================================================#
-function(_get_matching_header_insertion_index _sketch_loc _active_index _return_var)
+macro(_setup_regex_patterns)
 
-    if (${_active_index} EQUAL 0) # First line in a file will always result in the 1st index
-        set(${_return_var} 0 PARENT_SCOPE)
-        return()
+    get_property(function_declaration_regex GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_DECLARATION_REGEX_PATTERN)
+    get_property(function_definition_regex GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_DEFINITION_REGEX_PATTERN)
+    get_property(preprocessor_regex GLOBAL PROPERTY ARDUINO_CMAKE_PREPROCESSOR_REGEX_PATTERN)
+
+    string(CONCAT function_prototype_regex
+            "${function_declaration_regex}"
+            "|${function_definition_regex}")
+    string(CONCAT code_pattern
+            "${preprocessor_regex}"
+            "|${function_prototype_regex}")
+
+    set(comment_line_pattern "\\/\\/")
+    set(comment_block_start_pattern "\\/\\*")
+    set(comment_block_end_pattern "\\*\\/")
+
+endmacro()
+
+macro(_insert_platform_header _current_line _line_index)
+
+    get_property(header_include_regex GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN)
+
+    if ("${_current_line}" MATCHES "${header_include_regex}")
+        set(include_line "${ARDUINO_CMAKE_PLATFORM_HEADER_INCLUDE_LINE}\n")
     else ()
-        decrement_integer(_active_index 1)
+        set(include_line "${ARDUINO_CMAKE_PLATFORM_HEADER_INCLUDE_LINE}\n\n")
+        set(header_inclusion_block FALSE)
     endif ()
 
-    list(GET _sketch_loc ${_active_index} previous_loc)
+    list(INSERT converted_source ${_line_index} "${include_line}")
 
-    if ("${previous_loc}" MATCHES "^//") # Simple one-line comment
-        set(matching_index ${_active_index})
+endmacro()
 
-    elseif ("${previous_loc}" MATCHES "\\*/$") # End of multi-line comment
+macro(_handle_platform_header)
 
-        foreach (index RANGE ${_active_index} 0)
+    if ("${line}" MATCHES "${comment_line_pattern}")
+        set(last_comment_start_index ${line_index})
+        set(last_comment_end_index ${line_index})
+    elseif ("${line}" MATCHES "${comment_block_start_pattern}")
+        set(last_comment_start_index ${line_index})
+    elseif ("${line}" MATCHES "${comment_block_end_pattern}")
+        set(last_comment_end_index ${line_index})
+    elseif ("${line}" MATCHES "${code_pattern}")
 
-            list(GET _sketch_loc ${index} multi_comment_line)
+        set(header_inclusion_block TRUE)
 
-            if ("${multi_comment_line}" MATCHES "^\\/\\*") # Start of multi-line comment
-                set(matching_index ${index})
-                break()
-            endif ()
+        # Calculate difference between current line index and last comment's end index
+        math(EXPR line_index_diff "${line_index} - ${last_comment_end_index}")
 
-        endforeach ()
-
-    else () # Previous line isn't a comment - Return original index
-
-        increment_integer(_active_index 1)
-        set(matching_index ${_active_index})
-
-    endif ()
-
-    set(${_return_var} ${matching_index} PARENT_SCOPE)
-
-endfunction()
-
-#=============================================================================#
-# Converts the given sketch file into a valid 'cpp' source file under the project's working dir.
-# During the conversion process the platform's main header file is inserted to the source file
-# since it's critical for it to include it - Something that doesn't happen in "Standard" sketches.
-#        _sketch_file - Full path to the original sketch file (Read from).
-#        _converted_source_path - Full path to the converted target source file (Written to).
-#=============================================================================#
-function(convert_sketch_to_source _sketch_file _converted_source_path)
-
-    file(STRINGS "${_sketch_file}" sketch_loc)
-
-    list(LENGTH sketch_loc num_of_loc)
-    decrement_integer(num_of_loc 1)
-
-    set(refined_sketch)
-    set(header_inserted FALSE)
-
-    set(header_insert_pattern
-            "${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN}|${ARDUINO_CMAKE_FUNCTION_REGEX_PATTERN}")
-    set(include_line "#include <${ARDUINO_CMAKE_PLATFORM_HEADER_NAME}>")
-
-    foreach (loc_index RANGE 0 ${num_of_loc})
-
-        list(GET sketch_loc ${loc_index} loc)
-
-        if (NOT ${header_inserted})
-
-            if ("${loc}" MATCHES "${header_insert_pattern}")
-
-                _get_matching_header_insertion_index("${sketch_loc}" ${loc_index} header_index)
-
-                if (${header_index} LESS ${loc_index})
-                    set(formatted_include_line ${include_line} "\n\n")
-
-                elseif (${header_index} EQUAL 0)
-                    set(formatted_include_line ${include_line} "\n")
-
-                else ()
-
-                    set(formatted_include_line "\n" ${include_line})
-
-                    if (${header_index} GREATER_EQUAL ${loc_index})
-
-                        decrement_integer(header_index 1)
-
-                        string(APPEND formatted_include_line "\n")
-
-                    endif ()
-
-                endif ()
-
-                list(INSERT refined_sketch ${header_index} ${formatted_include_line})
-
-                set(header_inserted TRUE)
-
-            endif ()
-
-        endif ()
-
-        if ("${loc}" STREQUAL "")
-            list(APPEND refined_sketch "\n")
+        # Comment ends above current line, any lines should be inserted above
+        if (${line_index_diff} EQUAL 1)
+            _insert_platform_header("${line}" ${last_comment_start_index})
         else ()
+            _insert_platform_header("${line}" ${line_index})
+        endif ()
 
-            string(REGEX REPLACE "^(.+);(.*)$" "\\1${ARDUINO_CMAKE_SEMICOLON_REPLACEMENT}\\2"
-                    refined_loc "${loc}")
+        set(header_inserted TRUE)
 
-            list(APPEND refined_sketch "${refined_loc}\n")
+    endif ()
+
+endmacro()
+
+macro(_handle_prototype_generation)
+
+    get_property(header_include_regex GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN)
+
+    if (NOT "${line}" MATCHES "${header_include_regex}")
+        if (NOT "${line}" STREQUAL "") # Not a newline
+
+            if (NOT header_inclusion_block)
+                # Insert a newline to separate prototypes from the rest of the code
+                list(INSERT converted_source ${line_index} "\n")
+            endif ()
+
+            foreach (prototype ${_sketch_prototypes})
+                # Add missing semicolon to make a definition a declaration and escape it
+                escape_semicolon_in_string("${prototype};" escaped_prototype)
+                list(INSERT converted_source ${line_index} "${escaped_prototype}\n")
+            endforeach ()
+
+            if (header_inclusion_block)
+                list(INSERT converted_source ${line_index} "\n// Prototypes generated by Arduino-CMake\n")
+            else ()
+                list(INSERT converted_source ${line_index} "// Prototypes generated by Arduino-CMake\n")
+            endif ()
+
+            set(prototypes_inserted TRUE)
+            set(header_inclusion_block FALSE)
 
         endif ()
+    endif ()
+
+endmacro()
+
+macro(_handle_simple_lines)
+
+    if ("${line}" STREQUAL "")
+        list(APPEND converted_source "\n")
+    else ()
+        escape_semicolon_in_string("${line}" formatted_line)
+        list(APPEND converted_source "${formatted_line}\n")
+    endif ()
+
+endmacro()
+
+#=============================================================================#
+# Converts the given sketch file into a valid '.cpp' source file under the project's working dir.
+# During the conversion process the platform's main header file is inserted to the source file,
+# as well as any given prototypes, found earlier through a function def-dec matching process.
+#       _sketch_file - Full path to the original sketch file (Read from).
+#       _converted_source_path - Full path to the converted target source file (Written to).
+#       _sketch_prototypes - List of prototypes to genereate, i.e. function definitions without a declaration.
+#=============================================================================#
+function(convert_sketch_to_source _sketch_file _converted_source_path _sketch_prototypes)
+
+    file(STRINGS "${_sketch_file}" sketch_lines)
+
+    _setup_regex_patterns()
+
+    set(header_inserted FALSE)
+    set(prototypes_inserted FALSE)
+    set(header_inclusion_block FALSE)
+
+    set(last_comment_start_index 0)
+    set(last_comment_end_index 0)
+
+    list_max_index("${sketch_lines}" lines_count)
+
+    foreach (line_index RANGE ${lines_count})
+
+        list(GET sketch_lines ${line_index} line)
+
+        if (NOT header_inserted)
+            _handle_platform_header()
+        elseif (NOT prototypes_inserted)
+            _handle_prototype_generation()
+        endif ()
+
+        _handle_simple_lines()
 
     endforeach ()
 
-    _write_source_file("${refined_sketch}" "${_converted_source_path}")
+    _write_source_file("${converted_source}" "${_converted_source_path}")
 
 endfunction()

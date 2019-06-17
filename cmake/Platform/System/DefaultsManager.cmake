@@ -3,19 +3,25 @@
 #=============================================================================#
 function(set_internal_search_patterns)
 
-    set(ARDUINO_CMAKE_SEMICOLON_REPLACEMENT "!@&#%" CACHE STRING
-            "String replacement for the semicolon char, required when treating lists as code")
-    set(ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN "^#include.*[<\"]" CACHE STRING
-            "Regex pattern matching header inclusion in a source file")
-    set(ARDUINO_CMAKE_HEADER_NAME_REGEX_PATTERN
-            "${ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN}(.+)[>\"]$" CACHE STRING
-            "Regex pattern matching a header's name when wrapped in inclusion line")
-    set(ARDUINO_CMAKE_HEADER_FILE_EXTENSION_REGEX_PATTERN ".+\\.h.*$" CACHE STRING
-            "Regex pattern matching all header file extensions")
-    set(ARDUINO_CMAKE_NAME_WE_REGEX_PATTERN "(.+)\\." CACHE STRING
-            "Regex pattern matching name without file extension")
-    set(ARDUINO_CMAKE_FUNCTION_REGEX_PATTERN "^([a-z]|[A-Z])+.*\(([a-z]|[A-Z])*\)" CACHE STRING
-            "Regex pattern matching a function signature in a source file")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_SEMICOLON_REPLACEMENT "!@&#%")
+
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_PREPROCESSOR_REGEX_PATTERN "^#([A-Za-z0-9_])+")
+    set(header_include_regex "^#include.*[<\"]")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_INCLUDE_REGEX_PATTERN "${header_include_regex}")
+
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_NAME_REGEX_PATTERN "${header_include_regex}(.+)[>\"]$")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_HEADER_FILE_EXTENSION_REGEX_PATTERN ".+\\.h.*$")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_NAME_WE_REGEX_PATTERN "([^\\/]+)\\.")
+
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_DEFINITION_REGEX_PATTERN
+            "^([A-Za-z0-9_][ \t\r\n]*)+\\(.*\\)[ \t\r\n]*[{]*$")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_DECLARATION_REGEX_PATTERN
+            "^([A-Za-z0-9_])+.+([A-Za-z0-9_])+[ \t\r\n]*\\((.*)\\);$")
+
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_NAME_REGEX_PATTERN "(([A-Za-z0-9_])+)[ \t\r\n]*\\(.*\\)")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_ARGS_REGEX_PATTERN "\\((.*)\\)")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_SINGLE_ARG_REGEX_PATTERN "([A-Za-z0-9_]+)[^,]*")
+    set_property(GLOBAL PROPERTY ARDUINO_CMAKE_FUNCTION_ARG_TYPE_REGEX_PATTERN "[A-Za-z0-9_]+.*[ \t\r\n]+")
 
 endfunction()
 
