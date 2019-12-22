@@ -54,6 +54,7 @@ function(detect_sdk_version)
             PATHS "${ARDUINO_SDK_PATH}"
             PATH_SUFFIXES lib
             DOC "Path to Arduino's version file"
+            NO_DEFAULT_PATH
             NO_CMAKE_FIND_ROOT_PATH)
 
     if (NOT ARDUINO_CMAKE_VERSION_FILE_PATH)
