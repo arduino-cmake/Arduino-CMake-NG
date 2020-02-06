@@ -11,3 +11,6 @@ link_arduino_library(Platform_Library wire)
 
 find_arduino_library(spi SPI)
 link_arduino_library(Platform_Library spi)
+
+find_arduino_library(sd SD)
+link_arduino_library(Platform_Library sd)
