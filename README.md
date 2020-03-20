@@ -9,7 +9,9 @@ Wait - Hasn't it been possible all this time? Apparently not. You can read more 
 
 > Note to new users: The master branch is used for active development only, so if you seek to simply use the framework then you should head to the [releases section](https://github.com/arduino-cmake/Arduino-CMake-NG/releases) instead!
 
-**Important Notice:** This project is dead and is no longer maintained! You can find more info [here](https://github.com/arduino-cmake/Arduino-CMake-NG/issues/100).
+## Important Notice
+This project is dead and is no longer maintained! You can find more info [here](https://github.com/arduino-cmake/Arduino-CMake-NG/issues/100).  
+However, there's a new framework named [Arduino-CMake-Toolchain](https://github.com/a9183756-gh/Arduino-CMake-Toolchain) that took the basis of this project and continued it very well - **Please use it!**
  
 ## Features
 
