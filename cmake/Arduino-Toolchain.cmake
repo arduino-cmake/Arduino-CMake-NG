@@ -67,6 +67,7 @@ else ()
     # Set default path if none is set
     find_arduino_sdk(arduino_sdk_path)
     set(ARDUINO_SDK_PATH "${arduino_sdk_path}" CACHE PATH "Arduino SDK Path")
+    set(ENV{ARDUINO_SDK_PATH} "${ARDUINO_SDK_PATH}")
 endif ()
 
 _setup_sdk_internal_paths()
