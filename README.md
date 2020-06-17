@@ -83,7 +83,7 @@ And yet, it still had its own problems, leading once again to an abandoned state
 
 Then, in 2018, an extreme effort has been made and the project has been completely rewritten (mostly by [MrPointer](https://github.com/MrPointer)) with a few very clear goals in mind:
 
-* **Platform-Independent** - The framework shouldn't assume it works only with the basic Arduino platform, as there are many others out there. Any platform that confront to the design of the basic Arduino SDK is appropriate for use. An example of such a platform is ESP32.
+* **Platform-Independent** - The framework shouldn't assume it works only with the basic Arduino platform, as there are many others out there. Any platform that conforms to the design of the basic Arduino SDK is appropriate for use. An example of such a platform is ESP32.
 * **Modern CMake** - All previous projects/forks have been using the fairly old CMake 2.8. CMake itself has transitioned much from version 2 to 3, benefiting from a whole lot of new exciting features. Even the official package managers support CMake 3 versions, so there's no excuse to not use it.
 * **Modern Arduino SDK** - The Arduino SDK, much like CMake, has also undergone several major changes during the years, especially with version 1.6. The Arduino SDK has only recently got stable, and that's why we recommend always having the latest version installed, although we do have some minimum requirements for the framework to even work. You can find them at the Requirements section.
 
