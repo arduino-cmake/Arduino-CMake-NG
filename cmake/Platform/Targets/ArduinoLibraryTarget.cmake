@@ -69,7 +69,7 @@ function(link_arduino_library _target_name _library_target_name)
     if (NOT TARGET ${_target_name})
         message(FATAL_ERROR "Target doesn't exist - It must be created first!")
     elseif (NOT TARGET ${_library_target_name})
-        message(FATAL_ERROR "Library target doesn't exist - It must be created first!")
+        message(FATAL_ERROR "Library target (${_library_target_name}) doesn't exist - It must be created first!")
     endif ()
 
     # Infer scope

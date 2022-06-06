@@ -36,7 +36,7 @@ function(get_board_id _return_var _board_name)
                 list(FIND ${_board_name}_cpu_list ${_board_cpu} board_cpu_index)
 
                 if (${board_cpu_index} LESS 0)
-                    message(FATAL_ERROR "Unknown given board cpu")
+                    message(FATAL_ERROR "Unknown given board cpu. Available CPUs: ${${_board_name}_cpu_list}")
                 endif ()
 
                 set(board_id "${_board_name}.${_board_cpu}")

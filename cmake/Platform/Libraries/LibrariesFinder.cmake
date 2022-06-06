@@ -43,6 +43,7 @@ function(find_arduino_library _target_name _library_name)
         message(SEND_ERROR "Couldn't find library named ${_library_name}")
 
     else () # Library is found
+        message(STATUS "${_library_name} is located by ${library_path}")
         find_library_header_files("${library_path}" library_headers)
 
         if (NOT library_headers)
