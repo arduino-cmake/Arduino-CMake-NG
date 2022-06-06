@@ -37,7 +37,7 @@ function(add_arduino_executable _target_name)
             VERBATIM)
 
     # Required for avr-size
-    get_board_property(${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD} build.mcu board_mcu)
+    get_board_property("${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD}" build.mcu board_mcu)
 
     set(avr_size_script "${ARDUINO_CMAKE_TOOLCHAIN_DIR}/Platform/Other/FirmwareSizeCalculator.cmake")
 

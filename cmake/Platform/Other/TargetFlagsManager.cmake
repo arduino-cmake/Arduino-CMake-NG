@@ -25,18 +25,18 @@ function(set_target_compile_flags _target_name _board_id)
             DEFAULT_SCOPE PUBLIC)
 
     if (parsed_args_LANGUAGE)
-        _set_target_language_flags(${_target_name} ${_board_id} ${parsed_args_LANGUAGE} ${scope})
+        _set_target_language_flags("${_target_name}" "${_board_id}" "${parsed_args_LANGUAGE}" "${scope}")
 
     else () # No specific language requested - Use all
 
         get_cmake_compliant_language_name(asm lang)
-        _set_target_language_flags(${_target_name} ${_board_id} ${lang} ${scope})
+        _set_target_language_flags("${_target_name}" "${_board_id}" "${lang}" "${scope}")
 
         get_cmake_compliant_language_name(c lang)
-        _set_target_language_flags(${_target_name} ${_board_id} ${lang} ${scope})
+        _set_target_language_flags("${_target_name}" "${_board_id}" "${lang}" "${scope}")
 
         get_cmake_compliant_language_name(cpp lang)
-        _set_target_language_flags(${_target_name} ${_board_id} ${lang} ${scope})
+        _set_target_language_flags("${_target_name}" "${_board_id}" "${lang}" "${scope}")
 
     endif ()
 
@@ -49,7 +49,7 @@ endfunction()
 #=============================================================================#
 function(set_target_linker_flags _target_name _board_id)
 
-    parse_linker_recpie_pattern(${_board_id} linker_recipe_flags)
+    parse_linker_recpie_pattern("${_board_id}" linker_recipe_flags)
 
     string(REPLACE ";" " " cmake_compliant_linker_flags "${linker_recipe_flags}")
 
@@ -64,10 +64,10 @@ endfunction()
 #=============================================================================#
 function(set_executable_target_flags _target_name)
 
-    set_target_compile_flags(${_target_name} ${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD})
-    set_target_linker_flags(${_target_name} ${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD})
+    set_target_compile_flags("${_target_name}" "${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD}")
+    set_target_linker_flags("${_target_name}" "${PROJECT_${ARDUINO_CMAKE_PROJECT_NAME}_BOARD}")
 
-    target_link_libraries(${_target_name} PUBLIC m) # Add math library
+    target_link_libraries("${_target_name}" PUBLIC m) # Add math library
 
     # Modify executable's suffix to be '.elf'
     set_target_properties("${_target_name}" PROPERTIES SUFFIX ".elf")
