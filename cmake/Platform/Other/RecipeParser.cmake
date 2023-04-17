@@ -30,11 +30,12 @@ function(parse_compiler_recipe_flags _board_id _return_var)
     foreach (recipe_element ${original_list})
         _resolve_recipe_property("${recipe_element}" "${_board_id}" resolved_element)
         if (NOT "${resolved_element}" STREQUAL "") # Unresolved element, don't append
-            list(APPEND final_recipe "${resolved_element}")
+            string(STRIP ${resolved_element} element)
+            list(APPEND final_recipe "${element}")
         endif ()
     endforeach ()
 
-    set(${_return_var} "${final_recipe} " PARENT_SCOPE)
+    set(${_return_var} "${final_recipe}" PARENT_SCOPE)
 
 endfunction()
 
