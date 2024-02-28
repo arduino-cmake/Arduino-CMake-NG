@@ -27,10 +27,6 @@ function(find_arduino_library _target_name _library_name)
 
     is_platform_library(${_library_name} is_plib) # Detect whether library is a platform library
 
-    if (NOT parsed_args_3RD_PARTY AND NOT is_plib)
-        convert_string_to_pascal_case(${_library_name} _library_name)
-    endif ()
-
     find_file(library_path
             NAMES "${_library_name}"
             PATHS ${ARDUINO_CMAKE_PLATFORM_LIBRARIES_PATH} ${ARDUINO_SDK_LIBRARIES_PATH}
